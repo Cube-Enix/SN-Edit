@@ -39030,7 +39030,7 @@ class VideoProvider {
 
 
   static get DIMENSIONS() {
-    return [480, 360];
+    return [640, 360];
   }
   /**
    * Order preview drawable is inserted at in the renderer.
@@ -39097,7 +39097,7 @@ class VideoProvider {
    * Return frame data from the video feed in a specified dimensions, format, and mirroring.
    *
    * @param {object} frameInfo A descriptor of the frame you would like to receive.
-   * @param {Array.<number>} frameInfo.dimensions [width, height] array of numbers.  Defaults to [480,360]
+   * @param {Array.<number>} frameInfo.dimensions [width, height] array of numbers.  Defaults to [640,360]
    * @param {boolean} frameInfo.mirror If you specificly want a mirror/non-mirror frame, defaults to true
    * @param {string} frameInfo.format Requested video format, available formats are 'image-data' and 'canvas'.
    * @param {number} frameInfo.cacheTimeout Will reuse previous image data if the time since capture is less than
@@ -39210,8 +39210,8 @@ class VideoProvider {
         ideal: 640
       },
       height: {
-        min: 360,
-        ideal: 480
+        min: 270,
+        ideal: 360
       }
     }).then(stream => {
       this._video = document.createElement('video'); // Use the new srcObject API, falling back to createObjectURL
@@ -40665,7 +40665,7 @@ const getDimensions = () => {
 };
 
 const defaultStageSize = {
-  width: 480,
+  width: 640,
   height: 360
 };
 const initialState = getDimensions() || defaultStageSize;

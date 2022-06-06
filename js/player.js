@@ -2896,13 +2896,11 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 
 
 
-
-
-if (window.parent !== window) {
-  // eslint-disable-next-line no-alert
-  alert('This page is embedding TurboWarp in a way that is unsupported and will cease to function in the near future. Please read https://docs.turbowarp.org/embedding');
-  throw new Error('Invalid embed');
-}
+ // if (window.parent !== window) {
+//     // eslint-disable-next-line no-alert
+//     alert('This page is embedding TurboWarp in a way that is unsupported and will cease to function in the near future. Please read https://docs.turbowarp.org/embedding');
+//     throw new Error('Invalid embed');
+// }
 
 let announcement = null;
 
@@ -2916,7 +2914,7 @@ const handleClickAddonSettings = () => {
 const messages = Object(react_intl__WEBPACK_IMPORTED_MODULE_5__["defineMessages"])({
   defaultTitle: {
     "id": "tw.guiDefaultTitle",
-    "defaultMessage": "Run Scratch projects faster"
+    "defaultMessage": "Develop like never before."
   }
 });
 const WrappedMenuBar = Object(redux__WEBPACK_IMPORTED_MODULE_4__["compose"])(_lib_sb_file_uploader_hoc_jsx__WEBPACK_IMPORTED_MODULE_13__["default"], _lib_tw_packager_integration_hoc_jsx__WEBPACK_IMPORTED_MODULE_14__["default"])(_components_menu_bar_menu_bar_jsx__WEBPACK_IMPORTED_MODULE_18__["default"]);
@@ -3054,7 +3052,7 @@ class Interface extends react__WEBPACK_IMPORTED_MODULE_2___default.a.Component {
       className: _interface_css__WEBPACK_IMPORTED_MODULE_29___default.a.center,
       style: isPlayerOnly ? {
         // add a couple pixels to account for border (TODO: remove weird hack)
-        width: "".concat(Math.max(480, props.customStageSize.width) + 2, "px")
+        width: "".concat(Math.max(640, props.customStageSize.width) + 2, "px")
       } : null
     }, isHomepage && announcement ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_containers_dom_element_renderer_jsx__WEBPACK_IMPORTED_MODULE_7__["default"], {
       domElement: announcement
@@ -3073,11 +3071,11 @@ class Interface extends react__WEBPACK_IMPORTED_MODULE_2___default.a.Component {
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_components_tw_project_input_project_input_jsx__WEBPACK_IMPORTED_MODULE_19__["default"], null)), ( // eslint-disable-next-line max-len
     projectId === '0' || description.instructions === 'unshared' || description.credits === 'unshared') && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       className: _interface_css__WEBPACK_IMPORTED_MODULE_29___default.a.unsharedUpdate
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("i", null, 'Updated June 1, 2022')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, 'Unshared projects will no longer be accessible using just their project ID **at some point in the future** due to upcoming Scratch API changes.'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, 'Instead, you can either share the project or save the project to your computer (File > Save to your computer) and load the file instead.'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, 'For more information, visit: ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("a", {
-      href: "https://docs.turbowarp.org/unshared-projects",
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("i", null, 'Version 2.0.0')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, "Welcome to the SN-Edit v2 Update. You may have notcied that we look **way** different! Thats because we've moved from our old SheepTester fork to a new Turbowarp fork. Sn-Edit looks different and thats because we've added TONS of new features! We hope that you enjoy this update."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, 'For more information, visit: ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("a", {
+      href: "https://cube-enix.github.io/DevKit.html",
       target: "_blank",
       rel: "noopener noreferrer"
-    }, 'https://docs.turbowarp.org/unshared-projects')), (description.instructions === 'unshared' || description.credits === 'unshared') && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, 'If this project was recently shared, this message may incorrectly appear for up to an hour.')), hasCloudVariables && projectId !== '0' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+    }, 'our news page'))), hasCloudVariables && projectId !== '0' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       className: _interface_css__WEBPACK_IMPORTED_MODULE_29___default.a.section
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_components_tw_cloud_variable_badge_cloud_variable_badge_jsx__WEBPACK_IMPORTED_MODULE_24__["default"], null)), description.instructions || description.credits ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       className: _interface_css__WEBPACK_IMPORTED_MODULE_29___default.a.section
@@ -3085,17 +3083,7 @@ class Interface extends react__WEBPACK_IMPORTED_MODULE_2___default.a.Component {
       instructions: description.instructions,
       credits: description.credits,
       projectId: projectId
-    })) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      className: _interface_css__WEBPACK_IMPORTED_MODULE_29___default.a.section
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_5__["FormattedMessage"] // eslint-disable-next-line max-len
-    , {
-      defaultMessage: "TurboWarp is a Scratch mod that compiles projects to JavaScript to make them run really fast. Try it out by inputting a project ID or URL above or choosing a featured project below.",
-      id: "tw.home.description"
-    }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      className: _interface_css__WEBPACK_IMPORTED_MODULE_29___default.a.section
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_components_tw_featured_projects_featured_projects_jsx__WEBPACK_IMPORTED_MODULE_20__["default"], {
-      studio: "27205657"
-    }))) : null), isHomepage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(Footer, null));
+    })) : null) : null), isHomepage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(Footer, null));
   }
 
 }
