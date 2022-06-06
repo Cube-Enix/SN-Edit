@@ -10530,7 +10530,7 @@ MenuItemLink.propTypes = {
 class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
   constructor(props) {
     super(props);
-    lodash_bindall__WEBPACK_IMPORTED_MODULE_5___default()(this, ['handleClickSeeInside', 'handleClickNew', 'handleClickRemix', 'handleClickSave', 'handleClickSaveAsCopy', 'handleClickPackager', 'handleClickSeeCommunity', 'handleClickShare', 'handleKeyPress', 'handleLanguageMouseUp', 'handleRestoreOption', 'getSaveToComputerHandler', 'restoreOptionMessage']);
+    lodash_bindall__WEBPACK_IMPORTED_MODULE_5___default()(this, ['handleClickSeeInside', 'handleClickNew', 'handleClickRemix', 'handleClickSave', 'handleClickSaveAsCopy', 'handleClickSeeCommunity', 'handleClickShare', 'handleKeyPress', 'handleLanguageMouseUp', 'handleRestoreOption', 'getSaveToComputerHandler', 'restoreOptionMessage']);
   }
 
   componentDidMount() {
@@ -10570,11 +10570,7 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
   handleClickSaveAsCopy() {
     this.props.onClickSaveAsCopy();
     this.props.onRequestCloseFile();
-  } // handleClickPackager () {
-  //     this.props.onClickPackager();
-  //     this.props.onRequestCloseFile();
-  // }
-
+  }
 
   handleClickSeeCommunity(waitForUpdate) {
     if (this.props.shouldSaveBeforeTransition()) {
@@ -11063,7 +11059,6 @@ MenuBar.propTypes = {
   onClickAccount: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   onClickAddonSettings: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   onClickTheme: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
-  onClickPackager: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   onClickEdit: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   onClickFile: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   onClickLanguage: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
