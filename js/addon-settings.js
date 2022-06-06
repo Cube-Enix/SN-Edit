@@ -1369,7 +1369,7 @@ if (locale !== 'en') {
   }
 }
 
-document.title = "".concat(settingsTranslations.title, " - TurboWarp");
+document.title = "".concat(settingsTranslations.title, " - SN-Edit");
 const theme = Object(_lib_tw_theme_hoc_jsx__WEBPACK_IMPORTED_MODULE_10__["getInitialDarkMode"])() ? 'dark' : 'light';
 document.body.setAttribute('theme', theme);
 

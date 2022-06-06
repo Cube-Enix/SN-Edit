@@ -13032,7 +13032,7 @@ const PromptComponent = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"]
 /* eslint-disable-next-line max-len */
 , {
-  defaultMessage: "Although you can create cloud variables, they won't work unless this project is uploaded to Scratch or using a tool such as the {packager}.",
+  defaultMessage: "Although you can create cloud variables, they won't work unless this project is compiled.",
   values: {
     packager: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("a", {
       href: "https://packager.turbowarp.org",
@@ -17361,7 +17361,7 @@ const DisableCompiler = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__
   }),
   help: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_0__["FormattedMessage"] // eslint-disable-next-line max-len
   , {
-    defaultMessage: "Disables the TurboWarp compiler. You may want to enable this while editing projects so that scripts update immediately. Otherwise, you should never enable this.",
+    defaultMessage: "Disables the JIT (Just In Time) compiler. You may want to enable this while editing projects so that scripts update immediately. Otherwise, you should never enable this.",
     id: "tw.settingsModal.disableCompilerHelp"
   }),
   slug: "disable-compiler"
@@ -17406,7 +17406,7 @@ const CustomStageSize = ({
   })),
   help: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_0__["FormattedMessage"] // eslint-disable-next-line max-len
   , {
-    defaultMessage: "Changes the size of the Scratch stage from 480x360 to something else. Try 640x360 to make the stage widescreen. Very few projects will handle this properly.",
+    defaultMessage: "Changes the size of the Scratch stage from 640x480 to something else. SNext games require Widescreen so you normally won't need to change this. For the old scratch ratio (4:3) try 480x360",
     id: "tw.settingsModal.customStageSizeHelp"
   }),
   slug: "custom-stage-size"
