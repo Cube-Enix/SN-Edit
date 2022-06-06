@@ -10570,12 +10570,11 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
   handleClickSaveAsCopy() {
     this.props.onClickSaveAsCopy();
     this.props.onRequestCloseFile();
-  }
+  } // handleClickPackager () {
+  //     this.props.onClickPackager();
+  //     this.props.onRequestCloseFile();
+  // }
 
-  handleClickPackager() {
-    this.props.onClickPackager();
-    this.props.onRequestCloseFile();
-  }
 
   handleClickSeeCommunity(waitForUpdate) {
     if (this.props.shouldSaveBeforeTransition()) {
@@ -10863,13 +10862,7 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
       defaultMessage: "Save to your computer",
       // eslint-disable-line max-len
       id: "gui.menuBar.downloadToComputer"
-    }))))), this.props.onClickPackager && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__["MenuSection"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__["MenuItem"], {
-      onClick: this.handleClickPackager
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__["FormattedMessage"], {
-      defaultMessage: "Package project" // eslint-disable-next-line max-len
-      ,
-      id: "tw.menuBar.package"
-    }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__["MenuSection"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_containers_tw_restore_point_loader_jsx__WEBPACK_IMPORTED_MODULE_28__["default"], null, (className, loadRestorePoint) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__["MenuItem"], {
+    }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__["MenuSection"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_containers_tw_restore_point_loader_jsx__WEBPACK_IMPORTED_MODULE_28__["default"], null, (className, loadRestorePoint) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_18__["MenuItem"], {
       className: className,
       onClick: loadRestorePoint
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__["FormattedMessage"], {
@@ -11012,19 +11005,7 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
     })) : this.props.enableSeeInside ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_tw_see_inside_jsx__WEBPACK_IMPORTED_MODULE_48__["default"], {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.menuBarButton,
       onClick: this.handleClickSeeInside
-    }) : []), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
-      className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.menuBarItem
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("a", {
-      className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.feedbackLink,
-      href: "https://scratch.mit.edu/users/GarboMuffin/#comments",
-      rel: "noopener noreferrer",
-      target: "_blank"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_button_button_jsx__WEBPACK_IMPORTED_MODULE_10__["default"], {
-      className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.feedbackButton
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__["FormattedMessage"], {
-      defaultMessage: "TurboWarp Feedback",
-      id: "tw.feedbackButton"
-    }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
+    }) : [])), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.accountInfoGroup
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.menuBarItem
