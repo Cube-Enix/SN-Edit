@@ -42964,11 +42964,11 @@ const SET_FILE_HANDLE = 'tw/SET_FILE_HANDLE';
 const SET_USERNAME_INVALID = 'tw/SET_USERNAME_INVALID';
 const SET_HAS_CLOUD_VARIABLES = 'tw/SET_HAS_CLOUD_VARIABLES';
 const initialState = {
-  framerate: 30,
+  framerate: 60,
   interpolation: false,
   cloud: true,
   username: '',
-  highQualityPen: false,
+  highQualityPen: true,
   compilerOptions: {
     enabled: true,
     warpTimer: false
