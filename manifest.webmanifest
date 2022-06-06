@@ -1,0 +1,16 @@
+{
+  "short_name": "SN-Edit",
+  "name": "SN-Edit",
+  "description": "The official SNext Project Editor.",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "editor",
+  "background_color": "#333333",
+  "display": "standalone",
+  "theme_color": "#333333"
+}
