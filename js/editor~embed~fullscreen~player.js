@@ -28663,7 +28663,7 @@ const alerts = [{
   alertType: AlertTypes.STANDARD,
   clearList: ['cloudInfo'],
   content: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
-    defaultMessage: "Please note, cloud variables only support numbers, not letters or symbols. {learnMoreLink}" // eslint-disable-line max-len
+    defaultMessage: "SN-Edit supports are variable types including letters and special characters. Theres also no limit." // eslint-disable-line max-len
     ,
     id: "gui.alerts.cloudInfo",
     values: {
