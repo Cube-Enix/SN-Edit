@@ -17427,7 +17427,7 @@ const StoreProjectOptions = ({
   id: "tw.settingsModal.storeProjectOptions"
 })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_0__["FormattedMessage"] // eslint-disable-next-line max-len
 , {
-  defaultMessage: "Stores the selected settings in the project so they will be automatically applied when TurboWarp loads this project. Warp timer and disable compiler will not be saved.",
+  defaultMessage: "Stores the selected settings in the project so they will be automatically applied when SN-Edit loads this project. Warp timer and disable compiler will not be saved.",
   id: "tw.settingsModal.storeProjectOptionsHelp"
 }))));
 
