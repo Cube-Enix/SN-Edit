@@ -10743,17 +10743,17 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.mainMenu
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.fileGroup
-    }, this.props.onClickLogo ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.menuBarItem)
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("img", {
-      alt: "Scratch",
+      alt: "Sn-Edit",
       className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.scratchLogo, {
         [_menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.clickable]: typeof this.props.onClickLogo !== 'undefined'
       }),
       draggable: false,
       src: this.props.logo,
       onClick: this.props.onClickLogo
-    })) : null, this.props.canChangeLanguage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
+    })), this.props.canChangeLanguage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.hoverable, _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.languageMenu)
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("img", {
       className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.languageIcon,
@@ -11306,7 +11306,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "static/assets/a4769f9498673f8acfa0317f14307cce.svg";
+module.exports = __webpack_require__.p + "static/assets/9d7129e7ee8b63ec156aa97f98b54169.svg";
 
 /***/ }),
 
