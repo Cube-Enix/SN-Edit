@@ -1008,10 +1008,6 @@ module.exports = SharedDispatch;
 const SharedDispatch = __webpack_require__(/*! ./shared-dispatch */ "./node_modules/scratch-vm/src/dispatch/shared-dispatch.js");
 
 const log = __webpack_require__(/*! ../util/log */ "./node_modules/scratch-vm/src/util/log.js");
-
-const {
-  centralDispatchService
-} = __webpack_require__(/*! ../extension-support/tw-extension-worker-context */ "./node_modules/scratch-vm/src/extension-support/tw-extension-worker-context.js");
 /**
  * This class provides a Worker with the means to participate in the message dispatch system managed by CentralDispatch.
  * From any context in the messaging system, the dispatcher's "call" method can call any method on any "service"
@@ -1043,7 +1039,7 @@ class WorkerDispatch extends SharedDispatch {
      */
 
     this.services = {};
-    this._onMessage = this._onMessage.bind(this, centralDispatchService);
+    this._onMessage = this._onMessage.bind(this, self);
 
     if (typeof self !== 'undefined') {
       self.onmessage = this._onMessage;
@@ -1077,7 +1073,7 @@ class WorkerDispatch extends SharedDispatch {
     }
 
     this.services[service] = provider;
-    return this.waitForConnection.then(() => this._remoteCall(centralDispatchService, 'dispatch', 'setService', service));
+    return this.waitForConnection.then(() => this._remoteCall(self, 'dispatch', 'setService', service));
   }
   /**
    * Fetch the service provider object for a particular service name.
@@ -1092,7 +1088,7 @@ class WorkerDispatch extends SharedDispatch {
     // if we don't have a local service by this name, contact central dispatch by calling `postMessage` on self
     const provider = this.services[service];
     return {
-      provider: provider || centralDispatchService,
+      provider: provider || self,
       isRemote: !provider
     };
   }
@@ -1266,27 +1262,6 @@ const log = __webpack_require__(/*! ../util/log */ "./node_modules/scratch-vm/sr
 
 const TargetType = __webpack_require__(/*! ../extension-support/target-type */ "./node_modules/scratch-vm/src/extension-support/target-type.js");
 
-const {
-  isWorker
-} = __webpack_require__(/*! ./tw-extension-worker-context */ "./node_modules/scratch-vm/src/extension-support/tw-extension-worker-context.js");
-
-const loadScripts = url => {
-  if (isWorker) {
-    importScripts(url);
-  } else {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-
-      script.onload = () => resolve();
-
-      script.onerror = () => reject(new Error("Error when loading custom extension script: ".concat(url)));
-
-      script.src = url;
-      document.body.appendChild(script);
-    });
-  }
-};
-
 class ExtensionWorker {
   constructor() {
     this.nextExtensionId = 0;
@@ -1295,13 +1270,12 @@ class ExtensionWorker {
       this.firstRegistrationCallback = resolve;
     });
     dispatch.waitForConnection.then(() => {
-      dispatch.call('extensions', 'allocateWorker').then(async x => {
+      dispatch.call('extensions', 'allocateWorker').then(x => {
         const [id, extension] = x;
         this.workerId = id;
 
         try {
-          await loadScripts(extension);
-          await this.firstRegistrationPromise;
+          importScripts(extension);
           const initialRegistrations = this.initialRegistrations;
           this.initialRegistrations = null;
           Promise.all(initialRegistrations).then(() => dispatch.call('extensions', 'onWorkerInit', id));

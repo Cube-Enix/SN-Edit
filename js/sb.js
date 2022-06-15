@@ -201,8 +201,8 @@ Blockly.Msg.OPERATORS_DIVIDE = '%1 / %2';
 Blockly.Msg.OPERATORS_RANDOM = 'pick random %1 to %2';
 Blockly.Msg.OPERATORS_GT = '%1 > %2';
 Blockly.Msg.OPERATORS_LT = '%1 < %2';
-Blockly.Msg.OPERATORS_GTE = '%1 >= %2';
-Blockly.Msg.OPERATORS_LTE = '%1 =< %2';
+Blockly.Msg.OPERATORS_GTE = '%1 > or = %2';
+Blockly.Msg.OPERATORS_LTE = '%1 < or = %2';
 Blockly.Msg.OPERATORS_EQUALS = '%1 = %2';
 Blockly.Msg.OPERATORS_AND = '%1 and %2';
 Blockly.Msg.OPERATORS_OR = '%1 or %2';
@@ -218,6 +218,7 @@ Blockly.Msg.OPERATORS_LENGTH = 'length of %1';
 Blockly.Msg.OPERATORS_CONTAINS = '%1 contains %2?';
 Blockly.Msg.OPERATORS_MOD = '%1 mod %2';
 Blockly.Msg.OPERATORS_ROUND = 'round %1';
+Blockly.Msg.OPERATORS_PIE = 'pi'
 Blockly.Msg.OPERATORS_MATHOP = '%1 of %2';
 Blockly.Msg.OPERATORS_MATHOP_ABS = 'abs';
 Blockly.Msg.OPERATORS_MATHOP_FLOOR = 'floor';
