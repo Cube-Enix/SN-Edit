@@ -33284,8 +33284,8 @@ __webpack_require__.r(__webpack_exports__);
     id: "sn.snap.name"
   }),
   extensionId: 'snap',
-  iconURL: _hc_hc_svg__WEBPACK_IMPORTED_MODULE_31___default.a,
-  insetIconURL: _hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32___default.a,
+  iconURL: _snap_snap_svg__WEBPACK_IMPORTED_MODULE_33___default.a,
+  insetIconURL: _snap_snap_small_svg__WEBPACK_IMPORTED_MODULE_34___default.a,
   description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "SNext Audio Player or SNAP is an extension developed to allow developers to play audio from an external source.",
     id: "sn.snap.description"
