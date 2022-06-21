@@ -33216,8 +33216,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hc_hc_svg__WEBPACK_IMPORTED_MODULE_31___default = /*#__PURE__*/__webpack_require__.n(_hc_hc_svg__WEBPACK_IMPORTED_MODULE_31__);
 /* harmony import */ var _hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./hc/hc-small.svg */ "./src/lib/libraries/extensions/hc/hc-small.svg");
 /* harmony import */ var _hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32___default = /*#__PURE__*/__webpack_require__.n(_hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32__);
-/* harmony import */ var _custom_custom_svg__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./custom/custom.svg */ "./src/lib/libraries/extensions/custom/custom.svg");
-/* harmony import */ var _custom_custom_svg__WEBPACK_IMPORTED_MODULE_33___default = /*#__PURE__*/__webpack_require__.n(_custom_custom_svg__WEBPACK_IMPORTED_MODULE_33__);
+/* harmony import */ var _snap_snap_svg__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./snap/snap.svg */ "./src/lib/libraries/extensions/snap/snap.svg");
+/* harmony import */ var _snap_snap_svg__WEBPACK_IMPORTED_MODULE_33___default = /*#__PURE__*/__webpack_require__.n(_snap_snap_svg__WEBPACK_IMPORTED_MODULE_33__);
+/* harmony import */ var _snap_snap_small_svg__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./snap/snap-small.svg */ "./src/lib/libraries/extensions/snap/snap-small.svg");
+/* harmony import */ var _snap_snap_small_svg__WEBPACK_IMPORTED_MODULE_34___default = /*#__PURE__*/__webpack_require__.n(_snap_snap_small_svg__WEBPACK_IMPORTED_MODULE_34__);
+/* harmony import */ var _custom_custom_svg__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./custom/custom.svg */ "./src/lib/libraries/extensions/custom/custom.svg");
+/* harmony import */ var _custom_custom_svg__WEBPACK_IMPORTED_MODULE_35___default = /*#__PURE__*/__webpack_require__.n(_custom_custom_svg__WEBPACK_IMPORTED_MODULE_35__);
 
 
 
@@ -33258,6 +33262,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ([{
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "HighClass",
@@ -33268,9 +33274,24 @@ __webpack_require__.r(__webpack_exports__);
   insetIconURL: _hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32___default.a,
   description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Special Blocks that make development alot easier. Not backwards compatible.",
-    id: "tw.twExtension.description"
+    id: "sn.hc.description"
   }),
   featured: true,
+  incompatibleWithScratch: true
+}, {
+  name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
+    defaultMessage: "Snap",
+    id: "sn.snap.name"
+  }),
+  extensionId: 'snap',
+  iconURL: _hc_hc_svg__WEBPACK_IMPORTED_MODULE_31___default.a,
+  insetIconURL: _hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32___default.a,
+  description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
+    defaultMessage: "SNext Audio Player or SNAP is an extension developed to allow developers to play audio from an external source.",
+    id: "sn.snap.description"
+  }),
+  featured: true,
+  internetConnectionRequired: true,
   incompatibleWithScratch: true
 }, {
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
@@ -33475,7 +33496,7 @@ __webpack_require__.r(__webpack_exports__);
     id: "tw.customExtension.name"
   }),
   extensionId: '',
-  iconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_33___default.a,
+  iconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_35___default.a,
   description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Load custom extensions from URLs. For developers. Experimental.",
     id: "tw.customExtension.description"
@@ -33581,6 +33602,28 @@ module.exports = __webpack_require__.p + "static/assets/800f6f1573677d59954e8d31
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "static/assets/7679e8aa3b5a6b745823e00a7b950065.png";
+
+/***/ }),
+
+/***/ "./src/lib/libraries/extensions/snap/snap-small.svg":
+/*!**********************************************************!*\
+  !*** ./src/lib/libraries/extensions/snap/snap-small.svg ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "static/assets/09a5d3071b844a8b2fb0dad8a40c6927.svg";
+
+/***/ }),
+
+/***/ "./src/lib/libraries/extensions/snap/snap.svg":
+/*!****************************************************!*\
+  !*** ./src/lib/libraries/extensions/snap/snap.svg ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "static/assets/adeff1f31d03d3686b400682e1fda845.svg";
 
 /***/ }),
 
