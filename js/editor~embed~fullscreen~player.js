@@ -36541,7 +36541,7 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 const messages = Object(react_intl__WEBPACK_IMPORTED_MODULE_3__["defineMessages"])({
   defaultProjectTitle: {
     "id": "tw.gui.defaultProjectTitle",
-    "defaultMessage": "Project"
+    "defaultMessage": "MyGame"
   }
 });
 /* Higher Order Component to get and set the project title
