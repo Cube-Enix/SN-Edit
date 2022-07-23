@@ -920,7 +920,7 @@ const manifest = {
     "default": false
   }],
   "tags": ["beta"],
-  "enabledByDefault": false
+  "enabledByDefault": true
 };
 /* harmony default export */ __webpack_exports__["default"] = (manifest);
 
