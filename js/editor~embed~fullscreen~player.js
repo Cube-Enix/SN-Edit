@@ -8123,7 +8123,7 @@ GreenFlagComponent.propTypes = {
 };
 GreenFlagComponent.defaultProps = {
   active: false,
-  title: 'Go'
+  title: 'Run'
 };
 /* harmony default export */ __webpack_exports__["default"] = (GreenFlagComponent);
 
@@ -8491,10 +8491,10 @@ const GUIComponent = props => {
       draggable: false,
       src: _icon_costumes_svg__WEBPACK_IMPORTED_MODULE_39___default.a
     }), targetIsStage ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_4__["FormattedMessage"], {
-      defaultMessage: "Backdrops",
+      defaultMessage: "Backgrounds",
       id: "gui.gui.backdropsTab"
     }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_4__["FormattedMessage"], {
-      defaultMessage: "Costumes",
+      defaultMessage: "Sprites",
       id: "gui.gui.costumesTab"
     })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_tabs__WEBPACK_IMPORTED_MODULE_7__["Tab"], {
       className: tabClassNames.tab,
@@ -8503,7 +8503,7 @@ const GUIComponent = props => {
       draggable: false,
       src: _icon_sounds_svg__WEBPACK_IMPORTED_MODULE_40___default.a
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_4__["FormattedMessage"], {
-      defaultMessage: "Sounds",
+      defaultMessage: "Audio",
       id: "gui.gui.soundsTab"
     }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_tabs__WEBPACK_IMPORTED_MODULE_7__["TabPanel"], {
       className: tabClassNames.tabPanel
@@ -10643,13 +10643,13 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
 
       case 'Sound':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__["FormattedMessage"], {
-          defaultMessage: "Restore Sound",
+          defaultMessage: "Restore Audio",
           id: "gui.menuBar.restoreSound"
         });
 
       case 'Costume':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__["FormattedMessage"], {
-          defaultMessage: "Restore Costume",
+          defaultMessage: "Restore Sprite Frame",
           id: "gui.menuBar.restoreCostume"
         });
 
@@ -10862,7 +10862,7 @@ class MenuBar extends react__WEBPACK_IMPORTED_MODULE_7___default.a.Component {
       className: className,
       onClick: loadRestorePoint
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__["FormattedMessage"], {
-      defaultMessage: "Load restore point",
+      defaultMessage: "Load autosave",
       id: "tw.menuBar.loadRestorePoint"
     })))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_36___default.a.hoverable, {
@@ -12954,11 +12954,11 @@ __webpack_require__.r(__webpack_exports__);
 const messages = Object(react_intl__WEBPACK_IMPORTED_MODULE_1__["defineMessages"])({
   forAllSpritesMessage: {
     "id": "gui.gui.variableScopeOptionAllSprites",
-    "defaultMessage": "For all sprites"
+    "defaultMessage": "For all sprites (Global)"
   },
   forThisSpriteMessage: {
     "id": "gui.gui.variableScopeOptionSpriteOnly",
-    "defaultMessage": "For this sprite only"
+    "defaultMessage": "For this sprite only (Local)"
   },
   cloudVarOptionMessage: {
     "id": "gui.gui.cloudVariableOption",
@@ -13027,7 +13027,7 @@ const PromptComponent = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3__
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"]
 /* eslint-disable-next-line max-len */
 , {
-  defaultMessage: "Although you can create cloud variables, they won't work unless this project is compiled.",
+  defaultMessage: "Cloud Variables should work in the editor but they will work when compiled.",
   values: {
     packager: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("a", {
       href: "https://packager.turbowarp.org",
@@ -15081,11 +15081,11 @@ const messages = Object(react_intl__WEBPACK_IMPORTED_MODULE_2__["defineMessages"
   },
   addSpriteFromPaint: {
     "id": "gui.spriteSelector.addSpriteFromPaint",
-    "defaultMessage": "Paint"
+    "defaultMessage": "Draw"
   },
   addSpriteFromSurprise: {
     "id": "gui.spriteSelector.addSpriteFromSurprise",
-    "defaultMessage": "Surprise"
+    "defaultMessage": "Random"
   },
   addSpriteFromFile: {
     "id": "gui.spriteSelector.addSpriteFromFile",
@@ -17246,7 +17246,7 @@ BooleanSetting.propTypes = {
 
 const HighQualityPen = props => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(BooleanSetting, _extends({}, props, {
   label: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_0__["FormattedMessage"], {
-    defaultMessage: "High Quality Pen",
+    defaultMessage: "HD Pen",
     id: "tw.settingsModal.highQualityPen"
   }),
   help: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_0__["FormattedMessage"] // eslint-disable-next-line max-len
@@ -20229,23 +20229,23 @@ let messages = Object(react_intl__WEBPACK_IMPORTED_MODULE_3__["defineMessages"])
   },
   addLibraryCostumeMsg: {
     "id": "gui.costumeTab.addCostumeFromLibrary",
-    "defaultMessage": "Choose a Costume"
+    "defaultMessage": "Choose a Sprite Frame"
   },
   addBlankCostumeMsg: {
     "id": "gui.costumeTab.addBlankCostume",
-    "defaultMessage": "Paint"
+    "defaultMessage": "Draw"
   },
   addSurpriseCostumeMsg: {
     "id": "gui.costumeTab.addSurpriseCostume",
-    "defaultMessage": "Surprise"
+    "defaultMessage": "Random"
   },
   addFileBackdropMsg: {
     "id": "gui.costumeTab.addFileBackdrop",
-    "defaultMessage": "Upload Backdrop"
+    "defaultMessage": "Upload Background"
   },
   addFileCostumeMsg: {
     "id": "gui.costumeTab.addFileCostume",
-    "defaultMessage": "Upload Costume"
+    "defaultMessage": "Upload Sprite Frame"
   }
 });
 messages = _objectSpread(_objectSpread({}, messages), _lib_shared_messages__WEBPACK_IMPORTED_MODULE_12__["default"]);
@@ -32118,8 +32118,8 @@ const emptySprite = (name, soundName, costumeName) => ({
     rotationCenterY: 0
   }],
   currentCostumeIndex: 0,
-  scratchX: 36,
-  scratchY: 28,
+  scratchX: 0,
+  scratchY: 0,
   scale: 1,
   direction: 90,
   rotationStyle: 'normal',
