@@ -33296,14 +33296,14 @@ __webpack_require__.r(__webpack_exports__);
 }, {
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Runtime",
-    id: "sn.runtime.name"
+    id: "sn.runt.name"
   }),
-  extensionId: 'runtime',
-  iconURL: _hc_hc_svg__WEBPACK_IMPORTED_MODULE_31___default.a,
-  insetIconURL: _hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32___default.a,
+  extensionId: 'runt',
+  iconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_35___default.a,
+  insetIconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_35___default.a,
   description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Runtime make you life litte easy",
-    id: "sn.runtime.description"
+    id: "sn.runt.description"
   }),
   featured: true,
   incompatibleWithScratch: true
