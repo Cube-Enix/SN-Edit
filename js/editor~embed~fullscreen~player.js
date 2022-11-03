@@ -33295,6 +33295,20 @@ __webpack_require__.r(__webpack_exports__);
   incompatibleWithScratch: true
 }, {
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
+    defaultMessage: "Runtime",
+    id: "sn.runtime.name"
+  }),
+  extensionId: 'runtime',
+  iconURL: _hc_hc_svg__WEBPACK_IMPORTED_MODULE_31___default.a,
+  insetIconURL: _hc_hc_small_svg__WEBPACK_IMPORTED_MODULE_32___default.a,
+  description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
+    defaultMessage: "Runtime make you life litte easy",
+    id: "sn.runtime.description"
+  }),
+  featured: true,
+  incompatibleWithScratch: true
+}, {
+  name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Music",
     id: "gui.extension.music.name"
   }),
