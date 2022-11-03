@@ -33305,6 +33305,7 @@ __webpack_require__.r(__webpack_exports__);
     defaultMessage: "Runtime make you life litte easy",
     id: "sn.runt.description"
   }),
+  //i hate code some time
   featured: true,
   incompatibleWithScratch: true
 }, {
