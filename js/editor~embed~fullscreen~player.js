@@ -33312,14 +33312,14 @@ __webpack_require__.r(__webpack_exports__);
 }, {
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Hash",
-    id: "sn.thash.name"
+    id: "sn.hash.name"
   }),
-  extensionId: 'thash',
+  extensionId: 'hash',
   iconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_35___default.a,
   insetIconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_35___default.a,
   description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Cryptography ",
-    id: "sn.thash.description"
+    id: "sn.hash.description"
   }),
   featured: true,
   incompatibleWithScratch: true
