@@ -33320,7 +33320,6 @@ __webpack_require__.r(__webpack_exports__);
     defaultMessage: "Cryptography ",
     id: "sn.hash.description"
   }),
-  //i hate code some time
   featured: true,
   incompatibleWithScratch: true
 }, {
