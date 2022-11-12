@@ -33311,7 +33311,7 @@ __webpack_require__.r(__webpack_exports__);
   incompatibleWithScratch: true
 }, {
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
-    defaultMessage: "Hash",
+    defaultMessage: "Ten",
     id: "sn.ten.name"
   }),
   extensionId: 'ten',
