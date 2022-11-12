@@ -43486,6 +43486,17 @@ const updateMetrics = function updateMetrics(metrics) {
 /***/ }),
 
 /***/ 6:
+/*!************************!*\
+  !*** crypto (ignored) ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 7:
 /*!********************************!*\
   !*** ./node/self.js (ignored) ***!
   \********************************/
@@ -43496,7 +43507,7 @@ const updateMetrics = function updateMetrics(metrics) {
 
 /***/ }),
 
-/***/ 7:
+/***/ 8:
 /*!**********************************!*\
   !*** ./node/extend.js (ignored) ***!
   \**********************************/
