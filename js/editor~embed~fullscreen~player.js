@@ -43441,6 +43441,17 @@ const updateMetrics = function updateMetrics(metrics) {
 
 /***/ }),
 
+/***/ 10:
+/*!**********************************!*\
+  !*** ./node/extend.js (ignored) ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
 /***/ 2:
 /*!*******************************!*\
   !*** ./lib/locales (ignored) ***!
@@ -43487,7 +43498,7 @@ const updateMetrics = function updateMetrics(metrics) {
 
 /***/ 6:
 /*!************************!*\
-  !*** crypto (ignored) ***!
+  !*** buffer (ignored) ***!
   \************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
@@ -43497,9 +43508,9 @@ const updateMetrics = function updateMetrics(metrics) {
 /***/ }),
 
 /***/ 7:
-/*!********************************!*\
-  !*** ./node/self.js (ignored) ***!
-  \********************************/
+/*!************************!*\
+  !*** crypto (ignored) ***!
+  \************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -43508,9 +43519,20 @@ const updateMetrics = function updateMetrics(metrics) {
 /***/ }),
 
 /***/ 8:
-/*!**********************************!*\
-  !*** ./node/extend.js (ignored) ***!
-  \**********************************/
+/*!************************!*\
+  !*** buffer (ignored) ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 9:
+/*!********************************!*\
+  !*** ./node/self.js (ignored) ***!
+  \********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
