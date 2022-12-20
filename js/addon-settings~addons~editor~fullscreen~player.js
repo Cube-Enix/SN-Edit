@@ -2863,39 +2863,32 @@ const mediaRecorderSupported = typeof MediaRecorder !== 'undefined' && MediaReco
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 // Some browsers have a non-functional EventTarget, so we write our own version that works everywhere.
+
 class EventTargetShim {
   constructor() {
     this._events = {};
   }
-
   addEventListener(event, handler) {
     if (!this._events[event]) {
       this._events[event] = [];
     }
-
     this._events[event].push(handler);
   }
-
   removeEventListener(event, handler) {
     const handlers = this._events[event];
-
     if (handlers) {
       this._events[event] = handlers.filter(i => i !== handler);
     }
   }
-
   dispatchEvent(event) {
     const handlers = this._events[event.type];
-
     if (handlers) {
       for (const fn of handlers) {
         fn(event);
       }
     }
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (EventTargetShim);
 
 /***/ }),
@@ -3110,13 +3103,11 @@ __webpack_require__.r(__webpack_exports__);
 
 const settingStore = new _settings_store__WEBPACK_IMPORTED_MODULE_0__["default"]();
 const urlParameters = new URLSearchParams(location.search);
-
 if (urlParameters.has('addons')) {
   settingStore.parseUrlParameter(urlParameters.get('addons'));
 } else {
   settingStore.readLocalStorage();
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (settingStore);
 
 /***/ }),
@@ -3134,12 +3125,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _generated_upstream_meta_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./generated/upstream-meta.json */ "./src/addons/generated/upstream-meta.json");
 var _generated_upstream_meta_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_require__.t(/*! ./generated/upstream-meta.json */ "./src/addons/generated/upstream-meta.json", 1);
 /* harmony import */ var _event_target__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./event-target */ "./src/addons/event-target.js");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 /**
  * Copyright (C) 2021 Thomas Weber
  *
@@ -3158,29 +3148,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 const SETTINGS_KEY = 'tw:addons';
 const VERSION = 2;
-
 const migrateSettings = settings => {
   const oldVersion = settings._;
-
   if (oldVersion === VERSION || !oldVersion) {
     return settings;
-  } // Migrate 1 -> 2
+  }
+  // Migrate 1 -> 2
   // tw-project-info is now block-count
-
-
   if (oldVersion < 2) {
     const projectInfo = settings['tw-project-info'];
-
     if (projectInfo && projectInfo.enabled) {
       settings['block-count'] = {
         enabled: true
       };
     }
-
     const interfaceCustomization = settings['tw-interface-customization'];
-
     if (interfaceCustomization && interfaceCustomization.enabled) {
       if (interfaceCustomization.removeBackpack) {
         settings['tw-remove-backpack'] = {
@@ -3189,47 +3174,36 @@ const migrateSettings = settings => {
       }
     }
   }
-
   return settings;
 };
-
 class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"] {
   constructor() {
     super();
     this.store = this.createEmptyStore();
     this.remote = false;
   }
+
   /**
    * @private
    */
-
-
   createEmptyStore() {
     const result = {};
-
     for (const addonId of Object.keys(_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"])) {
       result[addonId] = {};
     }
-
     return result;
   }
-
   readLocalStorage() {
     const base = this.store;
-
     try {
       const local = localStorage.getItem(SETTINGS_KEY);
-
       if (local) {
         let result = JSON.parse(local);
-
         if (result && typeof result === 'object') {
           result = migrateSettings(result);
-
           for (const key of Object.keys(result)) {
             if (base.hasOwnProperty(key)) {
               const value = result[key];
-
               if (value && typeof value === 'object') {
                 base[key] = value;
               }
@@ -3237,136 +3211,111 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
           }
         }
       }
-    } catch (e) {// ignore
+    } catch (e) {
+      // ignore
     }
-
     this.store = base;
   }
+
   /**
    * @private
    */
-
-
   saveToLocalStorage() {
     if (this.remote) {
       return;
     }
-
     try {
       const result = {
         _: VERSION
       };
-
       for (const addonId of Object.keys(_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"])) {
         const data = this.getAddonStorage(addonId);
-
         if (Object.keys(data).length > 0) {
           result[addonId] = data;
         }
       }
-
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(result));
-    } catch (e) {// ignore
+    } catch (e) {
+      // ignore
     }
   }
+
   /**
    * @private
    */
-
-
   getAddonStorage(addonId) {
     if (this.store[addonId]) {
       return this.store[addonId];
     }
-
     throw new Error("Unknown addon store: ".concat(addonId));
   }
+
   /**
    * @private
    */
-
-
   getAddonManifest(addonId) {
     if (_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"][addonId]) {
       return _generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"][addonId];
     }
-
     throw new Error("Unknown addon: ".concat(addonId));
   }
+
   /**
    * @private
    */
-
-
   getAddonSettingObject(manifest, settingId) {
     if (!manifest.settings) {
       return null;
     }
-
     for (const setting of manifest.settings) {
       if (setting.id === settingId) {
         return setting;
       }
     }
-
     return null;
   }
-
   getAddonEnabled(addonId) {
     const manifest = this.getAddonManifest(addonId);
-
     if (manifest.unsupported) {
       return false;
     }
-
     const storage = this.getAddonStorage(addonId);
-
     if (storage.hasOwnProperty('enabled')) {
       return storage.enabled;
     }
-
     return !!manifest.enabledByDefault;
   }
-
   getAddonSetting(addonId, settingId) {
     const storage = this.getAddonStorage(addonId);
     const manifest = this.getAddonManifest(addonId);
     const settingObject = this.getAddonSettingObject(manifest, settingId);
-
     if (!settingObject) {
       throw new Error("Unknown setting: ".concat(settingId));
     }
-
     if (storage.hasOwnProperty(settingId)) {
       return storage[settingId];
     }
-
     return settingObject.default;
   }
+
   /**
    * @private
    */
-
-
   getDefaultSettings(addonId) {
     const manifest = this.getAddonManifest(addonId);
     const result = {};
-
     for (const {
       id,
       default: value
     } of manifest.settings) {
       result[id] = value;
     }
-
     return result;
   }
-
   setAddonEnabled(addonId, enabled) {
     const storage = this.getAddonStorage(addonId);
     const manifest = this.getAddonManifest(addonId);
     const oldValue = this.getAddonEnabled(addonId);
-
     if (enabled === null) {
       enabled = !!manifest.enabledByDefault;
       delete storage.enabled;
@@ -3375,9 +3324,7 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
     } else {
       throw new Error('Enabled value is invalid.');
     }
-
     this.saveToLocalStorage();
-
     if (enabled !== oldValue) {
       // Dynamic enable is always supported.
       // Dynamic disable requires addon support.
@@ -3392,13 +3339,11 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
       }));
     }
   }
-
   setAddonSetting(addonId, settingId, value) {
     const storage = this.getAddonStorage(addonId);
     const manifest = this.getAddonManifest(addonId);
     const settingObject = this.getAddonSettingObject(manifest, settingId);
     const oldValue = this.getAddonSetting(addonId, settingId);
-
     if (value === null) {
       value = settingObject.default;
       delete storage[settingId];
@@ -3422,12 +3367,9 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
       } else {
         throw new Error('Setting object is of unknown type');
       }
-
       storage[settingId] = value;
     }
-
     this.saveToLocalStorage();
-
     if (value !== oldValue) {
       this.dispatchEvent(new CustomEvent('setting-changed', {
         detail: {
@@ -3439,10 +3381,8 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
       }));
     }
   }
-
   applyAddonPreset(addonId, presetId) {
     const manifest = this.getAddonManifest(addonId);
-
     for (const {
       id,
       values
@@ -3450,60 +3390,49 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
       if (id !== presetId) {
         continue;
       }
-
       const settings = _objectSpread(_objectSpread({}, this.getDefaultSettings(addonId)), values);
-
       for (const key of Object.keys(settings)) {
         this.setAddonSetting(addonId, key, settings[key]);
       }
-
       return;
     }
-
     throw new Error("Unknown preset: ".concat(presetId));
   }
-
   resetAllAddons() {
     for (const addon of Object.keys(_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"])) {
       this.resetAddon(addon, true);
-    } // In case resetAddon missed some properties, do a hard reset on storage.
-
-
+    }
+    // In case resetAddon missed some properties, do a hard reset on storage.
     this.store = this.createEmptyStore();
     this.saveToLocalStorage();
   }
-
   resetAddon(addonId, resetEverything) {
     const storage = this.getAddonStorage(addonId);
-
     for (const setting of Object.keys(storage)) {
       if (setting === 'enabled') {
         if (resetEverything) {
           this.setAddonEnabled(addonId, null);
         }
-
         continue;
       }
-
       try {
         this.setAddonSetting(addonId, setting, null);
-      } catch (e) {// ignore
+      } catch (e) {
+        // ignore
       }
     }
   }
-
   parseUrlParameter(parameter) {
     this.remote = true;
     const enabled = parameter.split(',');
-
     for (const id of Object.keys(_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"])) {
       this.setAddonEnabled(id, enabled.includes(id));
     }
   }
-
-  export({
-    theme
-  }) {
+  export(_ref) {
+    let {
+      theme
+    } = _ref;
     const result = {
       core: {
         // Upstream property. We don't use this.
@@ -3513,11 +3442,9 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
       },
       addons: {}
     };
-
     for (const [addonId, manifest] of Object.entries(_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"])) {
       const enabled = this.getAddonEnabled(addonId);
       const settings = {};
-
       if (manifest.settings) {
         for (const {
           id
@@ -3525,69 +3452,59 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
           settings[id] = this.getAddonSetting(addonId, id);
         }
       }
-
       result.addons[addonId] = {
         enabled,
         settings
       };
     }
-
     return result;
   }
-
   import(data) {
     for (const [addonId, value] of Object.entries(data.addons)) {
       if (!_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_0__["default"].hasOwnProperty(addonId)) {
         continue;
       }
-
       const {
         enabled,
         settings
       } = value;
-
       if (typeof enabled === 'boolean') {
         this.setAddonEnabled(addonId, enabled);
       }
-
       for (const [settingId, settingValue] of Object.entries(settings)) {
         try {
           this.setAddonSetting(addonId, settingId, settingValue);
-        } catch (e) {// ignore
+        } catch (e) {
+          // ignore
         }
       }
     }
   }
-
-  setStoreWithVersionCheck({
-    version,
-    store
-  }) {
+  setStoreWithVersionCheck(_ref2) {
+    let {
+      version,
+      store
+    } = _ref2;
     if (version !== _generated_upstream_meta_json__WEBPACK_IMPORTED_MODULE_1__.commit) {
       return;
     }
-
     this.setStore(store);
   }
-
   setStore(newStore) {
     const oldStore = this.store;
-
     for (const addonId of Object.keys(oldStore)) {
       const oldSettings = oldStore[addonId];
       const newSettings = newStore[addonId];
-
       if (!newSettings || typeof newSettings !== 'object') {
         continue;
       }
-
       if (JSON.stringify(oldSettings) !== JSON.stringify(newSettings)) {
-        const manifest = this.getAddonManifest(addonId); // Dynamic enable is always supported.
-
-        const dynamicEnable = !oldSettings.enabled && newSettings.enabled; // Dynamic disable requires addon support.
-
-        const dynamicDisable = !!manifest.dynamicDisable && oldSettings.enabled && !newSettings.enabled; // Clone to avoid pass-by-reference issues
-
+        const manifest = this.getAddonManifest(addonId);
+        // Dynamic enable is always supported.
+        const dynamicEnable = !oldSettings.enabled && newSettings.enabled;
+        // Dynamic disable requires addon support.
+        const dynamicDisable = !!manifest.dynamicDisable && oldSettings.enabled && !newSettings.enabled;
+        // Clone to avoid pass-by-reference issues
         this.store[addonId] = JSON.parse(JSON.stringify(newSettings));
         this.dispatchEvent(new CustomEvent('addon-changed', {
           detail: {
@@ -3599,9 +3516,7 @@ class SettingsStore extends _event_target__WEBPACK_IMPORTED_MODULE_2__["default"
       }
     }
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (SettingsStore);
 
 /***/ })

@@ -255,25 +255,22 @@ module.exports = __webpack_require__.p + "static/assets/0e009d6e684951615b31a267
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 const clamp = (i, min, max) => Math.max(min, Math.min(max, i));
-
 const appendSortedElement = (parent, newChild) => {
   const newChildIndex = +newChild.dataset.index;
   let foundSpot = false;
-
   for (const existingChild of parent.children) {
     const existingChildIndex = +existingChild.dataset.index;
-
     if (existingChildIndex > newChildIndex) {
       foundSpot = true;
       parent.insertBefore(newChild, existingChild);
       break;
     }
   }
-
   if (!foundSpot) {
     parent.appendChild(newChild);
   }
 };
+
 /**
  * LogView: A virtualized row viewer.
  * It efficiently manages row rendering and scrolling.
@@ -290,8 +287,6 @@ const appendSortedElement = (parent, newChild) => {
  * 4. Whenever you update .logs without using the helper methods such as append(), call
  *    queueUpdateContent().
  */
-
-
 class LogView {
   constructor() {
     this.rows = [];
@@ -323,74 +318,60 @@ class LogView {
     this.oldLength = -1;
     this.rowToMetadata = new Map();
   }
-
   append(log) {
     this.queueUpdateContent();
-
     this._queueScrollToEnd();
-
     this.rows.push(log);
     const MAX_LOGS = 200000;
-
     while (this.rows.length > MAX_LOGS) {
       this.rows.shift();
     }
   }
-
   clear() {
     this.rows.length = 0;
     this.scrollTop = 0;
     this.isScrolledToEnd = true;
     this.queueUpdateContent();
   }
-
   show() {
     this.visible = true;
     this.height = this.innerElement.offsetHeight;
     this.queueUpdateContent();
-
     if (this.scrollTopWhenHidden === "end") {
       this._queueScrollToEnd();
     } else {
       this.innerElement.scrollTop = this.scrollTopWhenHidden;
     }
   }
-
   hide() {
     this.visible = false;
     this.scrollTopWhenHidden = this.isScrolledToEnd ? "end" : this.scrollTop;
   }
-
   _handleScroll(e) {
     this.scrollTop = e.target.scrollTop;
     this.isScrolledToEnd = e.target.scrollTop + 5 >= e.target.scrollHeight - e.target.clientHeight;
     this.queueUpdateContent();
   }
-
   _handleWheel(e) {
     if (e.deltaY < 0) {
       this.isScrolledToEnd = false;
     }
   }
-
   scrollIntoView(index) {
     const distanceFromTop = index * this.rowHeight;
     const viewportStart = this.scrollTop;
     const viewportEnd = this.scrollTop + this.height;
     const isInView = distanceFromTop > viewportStart && distanceFromTop < viewportEnd;
-
     if (!isInView) {
       this.scrollTop = distanceFromTop;
       this.innerElement.scrollTop = distanceFromTop;
     }
   }
-
   _queueScrollToEnd() {
     if (this.visible && this.canAutoScrollToEnd && this.isScrolledToEnd && !this.scrollToEndQueued) {
       this.scrollToEndQueued = true;
       queueMicrotask(() => {
         this.scrollToEndQueued = false;
-
         if (this.isScrolledToEnd) {
           const scrollEnd = this.innerElement.scrollHeight - this.innerElement.offsetHeight;
           this.innerElement.scrollTop = scrollEnd;
@@ -399,7 +380,6 @@ class LogView {
       });
     }
   }
-
   queueUpdateContent() {
     if (this.visible && !this.updateContentQueued) {
       this.updateContentQueued = true;
@@ -409,37 +389,32 @@ class LogView {
       });
     }
   }
-
-  generateRow(row) {// to be implemented by users
+  generateRow(row) {
+    // to be implemented by users
   }
-
-  renderRow(elements, row) {// to be implemented by users
+  renderRow(elements, row) {
+    // to be implemented by users
   }
-
   updateContent() {
     if (this.rows.length !== this.oldLength) {
       this.oldLength = this.rows.length;
       const totalHeight = this.rows.length * this.rowHeight;
       this.endElement.style.transform = "translateY(".concat(totalHeight, "px)");
-
       if (this.rows.length) {
         this.placeholderElement.remove();
       } else {
         this.innerElement.appendChild(this.placeholderElement);
-
         for (const metadata of this.rowToMetadata.values()) {
           metadata.elements.root.remove();
         }
-
         this.rowToMetadata.clear();
       }
     }
-
     if (this.rows.length === 0) {
       return;
-    } // For better compatibility with asynchronous scrolling, we'll render a few extra rows in either direction.
+    }
 
-
+    // For better compatibility with asynchronous scrolling, we'll render a few extra rows in either direction.
     const EXTRA_ROWS_ABOVE = 5;
     const EXTRA_ROWS_BELOW = 5;
     const scrollStartIndex = Math.floor(this.scrollTop / this.rowHeight);
@@ -448,12 +423,10 @@ class LogView {
     const endIndex = clamp(scrollStartIndex + rowsVisible + EXTRA_ROWS_ABOVE, 0, this.rows.length);
     const allVisibleRows = new Set();
     const newElements = [];
-
     for (let i = startIndex; i < endIndex; i++) {
       const row = this.rows[i];
       allVisibleRows.add(row);
       let metadata = this.rowToMetadata.get(row);
-
       if (!metadata) {
         const elements = this.generateRow(row);
         newElements.push(elements.root);
@@ -463,33 +436,26 @@ class LogView {
         };
         this.rowToMetadata.set(row, metadata);
       }
-
       const currentStringify = JSON.stringify(row);
-
       if (currentStringify !== metadata.stringify) {
         metadata.stringify = currentStringify;
         this.renderRow(metadata.elements, row);
       }
-
       const root = metadata.elements.root;
       root.style.transform = "translateY(".concat(i * this.rowHeight, "px)");
       root.dataset.index = i;
     }
-
     for (const [row, metadata] of this.rowToMetadata.entries()) {
       if (!allVisibleRows.has(row)) {
         metadata.elements.root.remove();
         this.rowToMetadata.delete(row);
       }
     }
-
     for (const root of newElements) {
       appendSortedElement(this.innerElement, root);
     }
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (LogView);
 
 /***/ }),
@@ -533,7 +499,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 const _twGetAsset = path => {
   if (path === "/icons/close.svg") return _url_loader_icons_close_svg__WEBPACK_IMPORTED_MODULE_0__["default"];
   if (path === "/icons/debug-unread.svg") return _url_loader_icons_debug_unread_svg__WEBPACK_IMPORTED_MODULE_1__["default"];
@@ -552,13 +517,13 @@ const _twGetAsset = path => {
 };
 
 
-
-async function createLogsTab({
-  debug,
-  addon,
-  console,
-  msg
-}) {
+async function createLogsTab(_ref) {
+  let {
+    debug,
+    addon,
+    console,
+    msg
+  } = _ref;
   const vm = addon.tab.traps.vm;
   const tab = debug.createHeaderTab({
     text: msg("tab-logs"),
@@ -566,57 +531,43 @@ async function createLogsTab({
   });
   const logView = new _log_view_js__WEBPACK_IMPORTED_MODULE_14__["default"]();
   logView.placeholderElement.textContent = msg("no-logs");
-
   const getInputOfBlock = (targetId, blockId) => {
     var _Object$values$;
-
     const target = vm.runtime.getTargetById(targetId);
     const block = target.blocks.getBlock(blockId);
-
     if (!block) {
       return null;
     }
-
     return (_Object$values$ = Object.values(block.inputs)[0]) === null || _Object$values$ === void 0 ? void 0 : _Object$values$.block;
   };
-
   logView.generateRow = row => {
     const root = document.createElement("div");
     root.className = "sa-debugger-log";
-
     if (row.internal) {
       root.classList.add("sa-debugger-log-internal");
     }
-
     root.dataset.type = row.type;
     const icon = document.createElement("div");
     icon.className = "sa-debugger-log-icon";
-
     if (row.type === "warn" || row.type === "error") {
       icon.title = msg("icon-" + row.type);
     }
-
     root.appendChild(icon);
     const repeats = document.createElement("div");
     repeats.className = "sa-debugger-log-repeats";
     repeats.style.display = "none";
     root.appendChild(repeats);
-
     if (row.preview && row.blockId && row.targetId) {
       const inputBlock = getInputOfBlock(row.targetId, row.blockId);
-
       if (inputBlock) {
         const preview = debug.createBlockPreview(row.targetId, inputBlock);
-
         if (preview) {
           root.appendChild(preview);
         }
       }
     }
-
     const text = document.createElement("div");
     text.className = "sa-debugger-log-text";
-
     if (row.text.length === 0) {
       text.classList.add("sa-debugger-log-text-empty");
       text.textContent = msg("empty-string");
@@ -624,58 +575,53 @@ async function createLogsTab({
       text.textContent = row.text;
       text.title = row.text;
     }
-
     root.appendChild(text);
-
     if (row.targetId && row.blockId) {
       root.appendChild(debug.createBlockLink(row.targetId, row.blockId));
     }
-
     return {
       root,
       repeats
     };
   };
-
   logView.renderRow = (elements, row) => {
     const {
       repeats
     } = elements;
-
     if (row.count > 1) {
       repeats.style.display = "";
       repeats.textContent = row.count;
     }
   };
-
   const exportButton = debug.createHeaderButton({
     text: msg("export"),
     icon: _twGetAsset("/icons/download-white.svg"),
     description: msg("export-desc")
   });
-
   const downloadText = (filename, text) => {
     Object(_libraries_common_cs_download_blob_js__WEBPACK_IMPORTED_MODULE_13__["default"])(filename, new Blob([text], {
       type: "text/plain"
     }));
   };
-
   exportButton.element.addEventListener("click", async e => {
     const defaultFormat = "{sprite}: {content} ({type})";
     const exportFormat = e.shiftKey ? await addon.tab.prompt(msg("export"), msg("enter-format"), defaultFormat, {
       useEditorClasses: true
     }) : defaultFormat;
     if (!exportFormat) return;
-    const file = logView.rows.map(({
-      text,
-      targetId,
-      type,
-      count
-    }) => (exportFormat.replace(/\{(sprite|type|content)\}/g, (_, match) => ({
-      sprite: debug.getTargetInfoById(targetId).name,
-      type,
-      content: text
-    })[match]) + "\n").repeat(count)).join("");
+    const file = logView.rows.map(_ref2 => {
+      let {
+        text,
+        targetId,
+        type,
+        count
+      } = _ref2;
+      return (exportFormat.replace(/\{(sprite|type|content)\}/g, (_, match) => ({
+        sprite: debug.getTargetInfoById(targetId).name,
+        type,
+        content: text
+      })[match]) + "\n").repeat(count);
+    }).join("");
     downloadText("logs.txt", file);
   });
   const trashButton = debug.createHeaderButton({
@@ -685,9 +631,7 @@ async function createLogsTab({
   trashButton.element.addEventListener("click", () => {
     clearLogs();
   });
-
   const areLogsEqual = (a, b) => a.text === b.text && a.type === b.type && a.internal === b.internal && a.blockId === b.blockId && a.targetId === b.targetId;
-
   const addLog = (text, thread, type) => {
     const log = {
       text,
@@ -695,50 +639,40 @@ async function createLogsTab({
       count: 1,
       preview: true
     };
-
     if (thread) {
       log.blockId = thread.peekStack();
       log.targetId = thread.target.id;
     }
-
     if (type === "internal") {
       log.internal = true;
       log.preview = false;
       log.type = "log";
     }
-
     if (type === "internal-warn") {
       log.internal = true;
       log.type = "warn";
     }
-
     const previousLog = logView.rows[logView.rows.length - 1];
-
     if (previousLog && areLogsEqual(log, previousLog)) {
       previousLog.count++;
       logView.queueUpdateContent();
     } else {
       logView.append(log);
     }
-
     if (!logView.visible && !log.internal) {
       debug.setHasUnreadMessage(true);
     }
   };
-
   const clearLogs = () => {
     logView.clear();
   };
-
   const show = () => {
     logView.show();
     debug.setHasUnreadMessage(false);
   };
-
   const hide = () => {
     logView.hide();
   };
-
   return {
     tab,
     content: logView.outerElement,
@@ -791,7 +725,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 const _twGetAsset = path => {
   if (path === "/icons/close.svg") return _url_loader_icons_close_svg__WEBPACK_IMPORTED_MODULE_0__["default"];
   if (path === "/icons/debug-unread.svg") return _url_loader_icons_debug_unread_svg__WEBPACK_IMPORTED_MODULE_1__["default"];
@@ -810,20 +743,18 @@ const _twGetAsset = path => {
 };
 
 
-
-
 const concatInPlace = (copyInto, copyFrom) => {
   for (const i of copyFrom) {
     copyInto.push(i);
   }
 };
-
-async function createThreadsTab({
-  debug,
-  addon,
-  console,
-  msg
-}) {
+async function createThreadsTab(_ref) {
+  let {
+    debug,
+    addon,
+    console,
+    msg
+  } = _ref;
   const vm = addon.tab.traps.vm;
   const tab = debug.createHeaderTab({
     text: msg("tab-threads"),
@@ -833,7 +764,6 @@ async function createThreadsTab({
   logView.canAutoScrollToEnd = false;
   logView.outerElement.classList.add("sa-debugger-threads");
   logView.placeholderElement.textContent = msg("no-threads-running");
-
   logView.generateRow = row => {
     const root = document.createElement("div");
     root.className = "sa-debugger-log";
@@ -842,16 +772,13 @@ async function createThreadsTab({
     indenter.className = "sa-debugger-thread-indent";
     indenter.style.setProperty("--level", isHeader ? row.depth : row.depth + 1);
     root.appendChild(indenter);
-
     if (isHeader) {
       root.classList.add("sa-debugger-thread-title");
-
       if (row.depth > 0) {
         const icon = document.createElement("div");
         icon.className = "sa-debugger-log-icon";
         root.appendChild(icon);
       }
-
       const name = document.createElement("div");
       name.textContent = row.targetName;
       name.className = "sa-debugger-thread-target-name";
@@ -863,68 +790,54 @@ async function createThreadsTab({
       });
       root.appendChild(id);
     }
-
     if (row.type === "thread-stack") {
       const preview = debug.createBlockPreview(row.targetId, row.blockId);
-
       if (preview) {
         root.appendChild(preview);
       }
     }
-
     if (row.type === "compiled") {
       const el = document.createElement('div');
       el.className = "sa-debugger-thread-compiled";
       el.textContent = "Stack information not available for compiled threads.";
       root.appendChild(el);
     }
-
     if (row.targetId && row.blockId) {
       root.appendChild(debug.createBlockLink(row.targetId, row.blockId));
     }
-
     return {
       root
     };
   };
-
   logView.renderRow = (elements, row) => {
     const {
       root
     } = elements;
     root.classList.toggle("sa-debugger-thread-running", !!row.running);
   };
-
   let threadInfoCache = new WeakMap();
   const allThreadIds = new WeakMap();
   let nextThreadId = 1;
-
   const getThreadId = thread => {
     if (!allThreadIds.has(thread)) {
       allThreadIds.set(thread, nextThreadId++);
     }
-
     return allThreadIds.get(thread);
   };
-
   const updateContent = () => {
     if (!logView.visible) {
       return;
     }
-
     const newRows = [];
     const threads = vm.runtime.threads;
     const visitedThreads = new Set();
-
     const createThreadInfo = (thread, depth) => {
       if (visitedThreads.has(thread)) {
         return [];
       }
-
       visitedThreads.add(thread);
       const id = getThreadId(thread);
       const target = thread.target;
-
       if (!threadInfoCache.has(thread)) {
         threadInfoCache.set(thread, {
           headerItem: {
@@ -940,22 +853,17 @@ async function createThreadsTab({
           blockCache: new WeakMap()
         });
       }
-
       const cacheInfo = threadInfoCache.get(thread);
       const runningThread = Object(_module_js__WEBPACK_IMPORTED_MODULE_13__["getRunningThread"])();
-
       const createBlockInfo = (block, stackFrameIdx) => {
         const blockId = block.id;
         if (!block) return;
         const stackFrame = thread.stackFrames[stackFrameIdx];
-
         if (!cacheInfo.blockCache.has(block)) {
           cacheInfo.blockCache.set(block, {});
         }
-
         const blockInfoMap = cacheInfo.blockCache.get(block);
         let blockInfo = blockInfoMap[stackFrameIdx];
-
         if (!blockInfo) {
           blockInfo = blockInfoMap[stackFrameIdx] = {
             type: "thread-stack",
@@ -964,70 +872,54 @@ async function createThreadsTab({
             blockId
           };
         }
-
         blockInfo.running = thread === runningThread && blockId === runningThread.peekStack() && stackFrameIdx === runningThread.stackFrames.length - 1;
         const result = [blockInfo];
-
         if (stackFrame && stackFrame.executionContext && stackFrame.executionContext.startedThreads) {
           for (const thread of stackFrame.executionContext.startedThreads) {
             concatInPlace(result, createThreadInfo(thread, depth + 1));
           }
         }
-
         return result;
       };
-
       const topBlock = thread.target.blocks.getBlock(thread.topBlock);
       const result = [cacheInfo.headerItem];
-
       if (topBlock) {
         concatInPlace(result, createBlockInfo(topBlock, 0));
-
         for (let i = 0; i < thread.stack.length; i++) {
           const blockId = thread.stack[i];
           if (blockId === topBlock.id) continue;
           const block = thread.target.blocks.getBlock(blockId);
-
           if (block) {
             concatInPlace(result, createBlockInfo(block, i));
           }
         }
       }
-
       if (cacheInfo.compiledItem) {
         result.push(cacheInfo.compiledItem);
       }
-
       return result;
     };
-
     for (let i = 0; i < threads.length; i++) {
-      const thread = threads[i]; // Do not display threads used to update variable and list monitors.
-
+      const thread = threads[i];
+      // Do not display threads used to update variable and list monitors.
       if (thread.updateMonitor) {
         continue;
       }
-
       concatInPlace(newRows, createThreadInfo(thread, 0));
     }
-
     logView.rows = newRows;
     logView.queueUpdateContent();
   };
-
   debug.addAfterStepCallback(() => {
     updateContent();
   });
-
   const show = () => {
     logView.show();
     updateContent();
   };
-
   const hide = () => {
     logView.hide();
   };
-
   return {
     tab,
     content: logView.outerElement,
@@ -1079,7 +971,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 const _twGetAsset = path => {
   if (path === "/icons/close.svg") return _url_loader_icons_close_svg__WEBPACK_IMPORTED_MODULE_0__["default"];
   if (path === "/icons/debug-unread.svg") return _url_loader_icons_debug_unread_svg__WEBPACK_IMPORTED_MODULE_1__["default"];
@@ -1100,48 +991,43 @@ const _twGetAsset = path => {
 
 
 
-
-
 const removeAllChildren = element => {
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }
 };
-
-/* harmony default export */ __webpack_exports__["default"] = (async function ({
-  addon,
-  global,
-  console,
-  msg
-}) {
+/* harmony default export */ __webpack_exports__["default"] = (async function (_ref) {
+  let {
+    addon,
+    global,
+    console,
+    msg
+  } = _ref;
   Object(_module_js__WEBPACK_IMPORTED_MODULE_13__["setup"])(addon.tab.traps.vm);
   let logsTab;
   const messagesLoggedBeforeLogsTabLoaded = [];
-
-  const logMessage = (...args) => {
+  const logMessage = function logMessage() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
     if (logsTab) {
       logsTab.addLog(...args);
     } else {
       messagesLoggedBeforeLogsTabLoaded.push(args);
     }
   };
-
   let hasLoggedPauseError = false;
-
   const pause = (_, thread) => {
     if (addon.tab.redux.state.scratchGui.mode.isPlayerOnly) {
       if (!hasLoggedPauseError) {
         logMessage(msg("cannot-pause-player"), thread, "error");
         hasLoggedPauseError = true;
       }
-
       return;
     }
-
     Object(_module_js__WEBPACK_IMPORTED_MODULE_13__["setPaused"])(true);
     setInterfaceVisible(true);
   };
-
   addon.tab.addBlock("\u200B\u200Bbreakpoint\u200B\u200B", {
     args: [],
     displayName: msg("block-breakpoint"),
@@ -1150,27 +1036,30 @@ const removeAllChildren = element => {
   addon.tab.addBlock("\u200B\u200Blog\u200B\u200B %s", {
     args: ["content"],
     displayName: msg("block-log"),
-    callback: ({
-      content
-    }, thread) => {
+    callback: (_ref2, thread) => {
+      let {
+        content
+      } = _ref2;
       logMessage(content, thread, "log");
     }
   });
   addon.tab.addBlock("\u200B\u200Bwarn\u200B\u200B %s", {
     args: ["content"],
     displayName: msg("block-warn"),
-    callback: ({
-      content
-    }, thread) => {
+    callback: (_ref3, thread) => {
+      let {
+        content
+      } = _ref3;
       logMessage(content, thread, "warn");
     }
   });
   addon.tab.addBlock("\u200B\u200Berror\u200B\u200B %s", {
     args: ["content"],
     displayName: msg("block-error"),
-    callback: ({
-      content
-    }, thread) => {
+    callback: (_ref4, thread) => {
+      let {
+        content
+      } = _ref4;
       logMessage(content, thread, "error");
     }
   });
@@ -1194,16 +1083,13 @@ const removeAllChildren = element => {
   debuggerButton.appendChild(debuggerButtonContent);
   debuggerButtonOuter.appendChild(debuggerButton);
   debuggerButton.addEventListener("click", () => setInterfaceVisible(true));
-
   const setHasUnreadMessage = unreadMessage => {
     // setting image.src is slow, only do it when necessary
     const newImage = _twGetAsset(unreadMessage ? "/icons/debug-unread.svg" : "/icons/debug.svg");
-
     if (debuggerButtonImage.src !== newImage) {
       debuggerButtonImage.src = newImage;
     }
   };
-
   const interfaceContainer = Object.assign(document.createElement("div"), {
     className: addon.tab.scratchClass("card_card", {
       others: "sa-debugger-interface"
@@ -1224,23 +1110,19 @@ const removeAllChildren = element => {
     className: "sa-debugger-tab-content"
   });
   let isInterfaceVisible = false;
-
   const setInterfaceVisible = _isVisible => {
     isInterfaceVisible = _isVisible;
     interfaceContainer.style.display = isInterfaceVisible ? "flex" : "";
-
     if (isInterfaceVisible) {
       activeTab.show();
     } else {
       activeTab.hide();
     }
   };
-
   let mouseOffsetX = 0;
   let mouseOffsetY = 0;
   let lastX = 0;
   let lastY = 0;
-
   const handleStartDrag = e => {
     e.preventDefault();
     mouseOffsetX = e.clientX - interfaceContainer.offsetLeft;
@@ -1250,12 +1132,10 @@ const removeAllChildren = element => {
     document.addEventListener("mouseup", handleStopDrag);
     document.addEventListener("mousemove", handleDragInterface);
   };
-
   const handleStopDrag = () => {
     document.removeEventListener("mouseup", handleStopDrag);
     document.removeEventListener("mousemove", handleDragInterface);
   };
-
   const moveInterface = (x, y) => {
     lastX = x;
     lastY = y;
@@ -1266,12 +1146,10 @@ const removeAllChildren = element => {
     interfaceContainer.style.left = clampedX + "px";
     interfaceContainer.style.top = clampedY + "px";
   };
-
   const handleDragInterface = e => {
     e.preventDefault();
     moveInterface(e.clientX, e.clientY);
   };
-
   window.addEventListener("resize", () => {
     moveInterface(lastX, lastY);
   });
@@ -1279,21 +1157,19 @@ const removeAllChildren = element => {
   interfaceHeader.append(tabListElement, buttonContainerElement);
   interfaceContainer.append(interfaceHeader, tabContentContainer);
   document.body.append(interfaceContainer);
-
-  const createHeaderButton = ({
-    text,
-    icon,
-    description
-  }) => {
+  const createHeaderButton = _ref5 => {
+    let {
+      text,
+      icon,
+      description
+    } = _ref5;
     const button = Object.assign(document.createElement("div"), {
       className: addon.tab.scratchClass("card_shrink-expand-button"),
       draggable: false
     });
-
     if (description) {
       button.title = description;
     }
-
     const imageElement = Object.assign(document.createElement("img"), {
       src: icon,
       draggable: false
@@ -1309,11 +1185,11 @@ const removeAllChildren = element => {
       text: textElement
     };
   };
-
-  const createHeaderTab = ({
-    text,
-    icon
-  }) => {
+  const createHeaderTab = _ref6 => {
+    let {
+      text,
+      icon
+    } = _ref6;
     const tab = document.createElement("li");
     const imageElement = Object.assign(document.createElement("img"), {
       src: icon,
@@ -1330,18 +1206,15 @@ const removeAllChildren = element => {
       text: textElement
     };
   };
-
   const unpauseButton = createHeaderButton({
     text: msg("unpause"),
     icon: _twGetAsset("/icons/play.svg")
   });
   unpauseButton.element.classList.add("sa-debugger-unpause");
   unpauseButton.element.addEventListener("click", () => Object(_module_js__WEBPACK_IMPORTED_MODULE_13__["setPaused"])(false));
-
   const updateUnpauseVisibility = paused => {
     unpauseButton.element.style.display = paused ? "" : "none";
   };
-
   updateUnpauseVisibility(Object(_module_js__WEBPACK_IMPORTED_MODULE_13__["isPaused"])());
   Object(_module_js__WEBPACK_IMPORTED_MODULE_13__["onPauseChanged"])(updateUnpauseVisibility);
   const closeButton = createHeaderButton({
@@ -1351,49 +1224,42 @@ const removeAllChildren = element => {
   closeButton.element.addEventListener("click", () => setInterfaceVisible(false));
   const originalStep = vm.runtime._step;
   const afterStepCallbacks = [];
-
-  vm.runtime._step = function (...args) {
+  vm.runtime._step = function () {
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
     const ret = originalStep.call(this, ...args);
-
     for (const cb of afterStepCallbacks) {
       cb();
     }
-
     return ret;
   };
-
   const addAfterStepCallback = cb => {
     afterStepCallbacks.push(cb);
   };
-
   const getTargetInfoById = id => {
     const target = vm.runtime.getTargetById(id);
-
     if (target) {
       let name = target.getName();
       let original = target;
-
       if (!target.isOriginal) {
         name = msg("clone-of", {
           sprite: name
         });
         original = target.sprite.clones[0];
       }
-
       return {
         exists: true,
         originalId: original.id,
         name
       };
     }
-
     return {
       exists: false,
       original: null,
       name: msg("unknown-sprite")
     };
   };
-
   const createBlockLink = (targetId, blockId) => {
     const link = document.createElement("a");
     link.className = "sa-debugger-log-link";
@@ -1403,7 +1269,6 @@ const removeAllChildren = element => {
       originalId
     } = getTargetInfoById(targetId);
     link.textContent = name;
-
     if (exists) {
       // We use mousedown instead of click so that you can still go to blocks when logs are rapidly scrolling
       link.addEventListener("mousedown", () => {
@@ -1414,10 +1279,8 @@ const removeAllChildren = element => {
     } else {
       link.classList.add("sa-debugger-log-link-unknown");
     }
-
     return link;
   };
-
   const switchToSprite = targetId => {
     if (targetId !== vm.editingTarget.id) {
       if (vm.runtime.getTargetById(targetId)) {
@@ -1425,10 +1288,8 @@ const removeAllChildren = element => {
       }
     }
   };
-
   const activateCodeTab = () => {
     const redux = addon.tab.redux;
-
     if (redux.state.scratchGui.editorTab.activeTabIndex !== 0) {
       redux.dispatch({
         type: "scratch-gui/navigation/ACTIVATE_TAB",
@@ -1436,46 +1297,42 @@ const removeAllChildren = element => {
       });
     }
   };
-
   const goToBlock = blockId => {
     const workspace = Blockly.getMainWorkspace();
     const block = workspace.getBlockById(blockId);
-    if (!block) return; // Don't scroll to blocks in the flyout
+    if (!block) return;
 
+    // Don't scroll to blocks in the flyout
     if (block.workspace.isFlyout) return;
     new _editor_devtools_blockly_Utils_js__WEBPACK_IMPORTED_MODULE_16__["default"](addon).scrollBlockIntoView(blockId);
-  }; // May be slightly incorrect in some edge cases.
+  };
 
+  // May be slightly incorrect in some edge cases.
+  const formatProcedureCode = proccode => proccode.replace(/%[nbs]/g, "()");
 
-  const formatProcedureCode = proccode => proccode.replace(/%[nbs]/g, "()"); // May be slightly incorrect in some edge cases.
-
-
+  // May be slightly incorrect in some edge cases.
   const formatBlocklyBlockData = jsonData => {
     // For sample jsonData, see:
     // https://github.com/LLK/scratch-blocks/blob/0bd1a17e66a779ec5d11f4a00c43784e3ac7a7b8/blocks_vertical/motion.js
     // https://github.com/LLK/scratch-blocks/blob/0bd1a17e66a779ec5d11f4a00c43784e3ac7a7b8/blocks_vertical/control.js
+
     const processSegment = index => {
       const message = jsonData["message".concat(index)];
       const args = jsonData["args".concat(index)];
-
       if (!message) {
         return null;
       }
-
       const parts = message.split(/%\d+/g);
       let formattedMessage = "";
-
       for (let i = 0; i < parts.length; i++) {
         formattedMessage += parts[i];
         const argInfo = args && args[i];
-
         if (argInfo) {
           const type = argInfo.type;
-
-          if (type === "field_vertical_separator") {// no-op
+          if (type === "field_vertical_separator") {
+            // no-op
           } else if (type === "field_image") {
             const src = argInfo.src;
-
             if (src.endsWith("rotate-left.svg")) {
               formattedMessage += "↩";
             } else if (src.endsWith("rotate-right.svg")) {
@@ -1486,50 +1343,38 @@ const removeAllChildren = element => {
           }
         }
       }
-
       return formattedMessage;
     };
-
     const parts = [];
-    let i = 0; // The jsonData doesn't directly tell us how many segments it has, so we have to
+    let i = 0;
+    // The jsonData doesn't directly tell us how many segments it has, so we have to
     // just keep looping until one doesn't exist.
-
     while (true) {
       const nextSegment = processSegment(i);
-
       if (nextSegment) {
         parts.push(nextSegment);
       } else {
         break;
       }
-
       i++;
     }
-
     return parts.join(" ");
   };
-
   const createBlockPreview = (targetId, blockId) => {
     const target = vm.runtime.getTargetById(targetId);
-
     if (!target) {
       return null;
     }
-
     const block = target.blocks.getBlock(blockId);
-
     if (!block || block.opcode === "text") {
       return null;
     }
-
     let text;
     let category;
     let shape;
     let color;
-
     if (block.opcode === "data_variable" || block.opcode === "data_listcontents" || block.opcode === "argument_reporter_string_number" || block.opcode === "argument_reporter_boolean") {
       text = Object.values(block.fields)[0].value;
-
       if (block.opcode === "data_variable") {
         category = "data";
       } else if (block.opcode === "data_listcontents") {
@@ -1537,13 +1382,11 @@ const removeAllChildren = element => {
       } else {
         category = "more";
       }
-
       shape = "round";
     } else if (block.opcode === "procedures_call") {
       const proccode = block.mutation.proccode;
       text = formatProcedureCode(proccode);
       const customBlock = addon.tab.getCustomBlock(proccode);
-
       if (customBlock) {
         category = "addon-custom-block";
         color = customBlock.color;
@@ -1563,36 +1406,29 @@ const removeAllChildren = element => {
         jsonInit(data) {
           jsonData = data;
         }
-
       };
       const blockConstructor = ScratchBlocks.Blocks[block.opcode];
-
       if (blockConstructor) {
         try {
           blockConstructor.init.call(fakeBlock);
-        } catch (e) {// ignore
+        } catch (e) {
+          // ignore
         }
       }
-
       if (!jsonData) {
         return null;
       }
-
       text = formatBlocklyBlockData(jsonData);
-
       if (!text) {
         return null;
       }
-
       category = jsonData.category;
       const isStatement = jsonData.extensions && (jsonData.extensions.includes("shape_statement") || jsonData.extensions.includes("shape_hat") || jsonData.extensions.includes("shape_end")) || "previousStatement" in jsonData || "nextStatement" in jsonData;
       shape = isStatement ? "stacked" : "round";
     }
-
     if (!text || !category) {
       return null;
     }
-
     if (!color) {
       const blocklyCategoryMap = {
         "data-lists": "data_lists",
@@ -1600,7 +1436,6 @@ const removeAllChildren = element => {
         events: "event"
       };
       const blocklyColor = ScratchBlocks.Colours[blocklyCategoryMap[category] || category];
-
       if (blocklyColor) {
         color = blocklyColor.primary;
       } else {
@@ -1608,13 +1443,13 @@ const removeAllChildren = element => {
         color = ScratchBlocks.Colours.pen.primary;
       }
     }
-
     const element = document.createElement("span");
     element.className = "sa-debugger-block-preview";
     element.textContent = text;
     element.style.backgroundColor = color;
-    element.dataset.shape = shape; // data-category is used for editor-theme3 compatibility
+    element.dataset.shape = shape;
 
+    // data-category is used for editor-theme3 compatibility
     const colorCategoryMap = {
       list: "data-lists",
       more: "custom"
@@ -1622,7 +1457,6 @@ const removeAllChildren = element => {
     element.dataset.category = colorCategoryMap[category] || category;
     return element;
   };
-
   const api = {
     debug: {
       createHeaderButton,
@@ -1640,54 +1474,42 @@ const removeAllChildren = element => {
   logsTab = await Object(_logs_js__WEBPACK_IMPORTED_MODULE_14__["default"])(api);
   const threadsTab = await Object(_threads_js__WEBPACK_IMPORTED_MODULE_15__["default"])(api);
   const allTabs = [logsTab, threadsTab];
-
   for (const message of messagesLoggedBeforeLogsTabLoaded) {
     logsTab.addLog(...message);
   }
-
   messagesLoggedBeforeLogsTabLoaded.length = 0;
   let activeTab;
-
   const setActiveTab = tab => {
     if (tab === activeTab) return;
     const selectedClass = "sa-debugger-tab-selected";
-
     if (activeTab) {
       activeTab.hide();
       activeTab.tab.element.classList.remove(selectedClass);
     }
-
     tab.tab.element.classList.add(selectedClass);
     activeTab = tab;
     removeAllChildren(tabContentContainer);
     tabContentContainer.appendChild(tab.content);
     removeAllChildren(buttonContainerElement);
     buttonContainerElement.appendChild(unpauseButton.element);
-
     for (const button of tab.buttons) {
       buttonContainerElement.appendChild(button.element);
     }
-
     buttonContainerElement.appendChild(closeButton.element);
-
     if (isInterfaceVisible) {
       activeTab.show();
     }
   };
-
   for (const tab of allTabs) {
     tab.tab.element.addEventListener("click", () => {
       setActiveTab(tab);
     });
     tabListElement.appendChild(tab.tab.element);
   }
-
   setActiveTab(allTabs[0]);
-
   if (addon.tab.redux.state && addon.tab.redux.state.scratchGui.stageSize.stageSize === "small") {
     document.body.classList.add("sa-debugger-small");
   }
-
   document.addEventListener("click", e => {
     if (e.target.closest("[class*='stage-header_stage-button-first']")) {
       document.body.classList.add("sa-debugger-small");
@@ -1698,57 +1520,53 @@ const removeAllChildren = element => {
     capture: true
   });
   const ogGreenFlag = vm.runtime.greenFlag;
-
-  vm.runtime.greenFlag = function (...args) {
+  vm.runtime.greenFlag = function () {
     if (addon.settings.get("log_clear_greenflag")) {
       logsTab.clearLogs();
     }
-
     if (addon.settings.get("log_greenflag")) {
       logsTab.addLog(msg("log-msg-flag-clicked"), null, "internal");
     }
-
+    for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      args[_key3] = arguments[_key3];
+    }
     return ogGreenFlag.call(this, ...args);
   };
-
   const ogMakeClone = vm.runtime.targets[0].constructor.prototype.makeClone;
-
-  vm.runtime.targets[0].constructor.prototype.makeClone = function (...args) {
+  vm.runtime.targets[0].constructor.prototype.makeClone = function () {
     if (addon.settings.get("log_failed_clone_creation") && !vm.runtime.clonesAvailable()) {
       logsTab.addLog(msg("log-msg-clone-cap", {
         sprite: this.getName()
       }), vm.runtime.sequencer.activeThread, "internal-warn");
     }
-
+    for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+      args[_key4] = arguments[_key4];
+    }
     var clone = ogMakeClone.call(this, ...args);
-
     if (addon.settings.get("log_clone_create") && clone) {
       logsTab.addLog(msg("log-msg-clone-created", {
         sprite: this.getName()
       }), vm.runtime.sequencer.activeThread, "internal");
     }
-
     return clone;
   };
-
   const ogStartHats = vm.runtime.startHats;
-
-  vm.runtime.startHats = function (hat, optMatchFields, ...args) {
+  vm.runtime.startHats = function (hat, optMatchFields) {
     if (addon.settings.get("log_broadcasts") && hat === "event_whenbroadcastreceived") {
       logsTab.addLog(msg("log-msg-broadcasted", {
         broadcast: optMatchFields.BROADCAST_OPTION
       }), vm.runtime.sequencer.activeThread, "internal");
     }
-
+    for (var _len5 = arguments.length, args = new Array(_len5 > 2 ? _len5 - 2 : 0), _key5 = 2; _key5 < _len5; _key5++) {
+      args[_key5 - 2] = arguments[_key5];
+    }
     return ogStartHats.call(this, hat, optMatchFields, ...args);
   };
-
   while (true) {
     await addon.tab.waitForElement('[class*="stage-header_stage-size-row"]', {
       markAsSeen: true,
       reduxEvents: ["scratch-gui/mode/SET_PLAYER", "scratch-gui/mode/SET_FULL_SCREEN", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"]
     });
-
     if (addon.tab.editorMode === "editor") {
       addon.tab.appendToSharedSpace({
         space: "stageHeader",
@@ -1781,7 +1599,6 @@ class BlockInstance {
     this.targetId = target.id;
     this.id = block.id;
   }
-
 }
 
 /***/ }),
@@ -1807,28 +1624,24 @@ class BlockFlasher {
   static flash(block) {
     if (myFlash.timerID > 0) {
       clearTimeout(myFlash.timerID);
-
       if (myFlash.block.svgPath_) {
         myFlash.block.svgPath_.style.fill = "";
       }
     }
-
     let count = 4;
     let flashOn = true;
     myFlash.block = block;
+
     /**
      * Internal method to switch the colour of a block between light yellow and it's original colour
      * @private
      */
-
     function _flash() {
       if (myFlash.block.svgPath_) {
         myFlash.block.svgPath_.style.fill = flashOn ? "#ffff80" : "";
       }
-
       flashOn = !flashOn;
       count--;
-
       if (count > 0) {
         myFlash.timerID = setTimeout(_flash, 200);
       } else {
@@ -1836,10 +1649,8 @@ class BlockFlasher {
         myFlash.block = null;
       }
     }
-
     _flash();
   }
-
 }
 const myFlash = {
   block: null,
@@ -1861,7 +1672,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _BlockInstance_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../BlockInstance.js */ "./src/addons/addons/editor-devtools/BlockInstance.js");
 /* harmony import */ var _BlockFlasher_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BlockFlasher.js */ "./src/addons/addons/editor-devtools/blockly/BlockFlasher.js");
 
- // A file to split Editor Devtools by features.
+
+
+// A file to split Editor Devtools by features.
 
 class Utils {
   constructor(addon) {
@@ -1873,178 +1686,154 @@ class Utils {
      * Scratch Virtual Machine
      * @type {null|*}
      */
-
-    this.vm = this.addon.tab.traps.vm; // this._myFlash = { block: null, timerID: null, colour: null };
-
+    this.vm = this.addon.tab.traps.vm;
+    // this._myFlash = { block: null, timerID: null, colour: null };
     this.offsetX = 32;
     this.offsetY = 32;
     this.navigationHistory = new NavigationHistory(this);
     /**
      * The workspace
      */
-
     this._workspace = null;
   }
+
   /**
    * Get the Scratch Editing Target
    * @returns {?Target} the scratch editing target
    */
-
-
   getEditingTarget() {
     return this.vm.runtime.getEditingTarget();
   }
+
   /**
    * Set the current workspace (switches sprites)
    * @param targetID {string}
    */
-
-
   setEditingTarget(targetID) {
     if (this.getEditingTarget().id !== targetID) {
       this.vm.setEditingTarget(targetID);
     }
   }
+
   /**
    * Returns the main workspace
    * @returns !Blockly.Workspace
    */
-
-
   getWorkspace() {
     const currentWorkspace = Blockly.getMainWorkspace();
-
     if (currentWorkspace.getToolbox()) {
       // Sadly get get workspace does not always return the 'real' workspace... Not sure how to get that at the moment,
       //  but we can work out whether it's the right one by whether it has a toolbox.
       this._workspace = currentWorkspace;
     }
-
     return this._workspace;
   }
+
   /**
    * Based on wksp.centerOnBlock(li.data.labelID);
    * @param blockOrId {Blockly.Block|{id}|BlockInstance} A Blockly Block, a block id, or a BlockInstance
    */
-
-
   scrollBlockIntoView(blockOrId) {
     var _this$blockly;
-
     let workspace = this.getWorkspace();
     /** @type {Blockly.Block} */
-
     let block; // or is it really a Blockly.BlockSvg?
 
     if (blockOrId instanceof _BlockInstance_js__WEBPACK_IMPORTED_MODULE_0__["default"]) {
       // Switch to sprite
-      this.setEditingTarget(blockOrId.targetId); // Highlight the block!
-
+      this.setEditingTarget(blockOrId.targetId);
+      // Highlight the block!
       block = workspace.getBlockById(blockOrId.id);
     } else {
       block = blockOrId && blockOrId.id ? blockOrId : workspace.getBlockById(blockOrId);
     }
-
     if (!block) {
       return;
     }
+
     /**
      * !Blockly.Block
      */
-
-
     let root = block.getRootBlock();
     let base = this.getTopOfStackFor(block);
     let ePos = base.getRelativeToSurfaceXY(),
-        // Align with the top of the block
-    rPos = root.getRelativeToSurfaceXY(),
-        // Align with the left of the block 'stack'
-    scale = workspace.scale,
-        x = rPos.x * scale,
-        y = ePos.y * scale,
-        xx = block.width + x,
-        // Turns out they have their x & y stored locally, and they are the actual size rather than scaled or including children...
-    yy = block.height + y,
-        s = workspace.getMetrics();
-
+      // Align with the top of the block
+      rPos = root.getRelativeToSurfaceXY(),
+      // Align with the left of the block 'stack'
+      scale = workspace.scale,
+      x = rPos.x * scale,
+      y = ePos.y * scale,
+      xx = block.width + x,
+      // Turns out they have their x & y stored locally, and they are the actual size rather than scaled or including children...
+      yy = block.height + y,
+      s = workspace.getMetrics();
     if (x < s.viewLeft + this.offsetX - 4 || xx > s.viewLeft + s.viewWidth || y < s.viewTop + this.offsetY - 4 || yy > s.viewTop + s.viewHeight) {
       // sx = s.contentLeft + s.viewWidth / 2 - x,
       let sx = x - s.contentLeft - this.offsetX,
-          // sy = s.contentTop - y + Math.max(Math.min(32, 32 * scale), (s.viewHeight - yh) / 2);
-      sy = y - s.contentTop - this.offsetY;
-      this.navigationHistory.storeView(this.navigationHistory.peek(), 64); // workspace.hideChaff(),
+        // sy = s.contentTop - y + Math.max(Math.min(32, 32 * scale), (s.viewHeight - yh) / 2);
+        sy = y - s.contentTop - this.offsetY;
+      this.navigationHistory.storeView(this.navigationHistory.peek(), 64);
 
+      // workspace.hideChaff(),
       workspace.scrollbar.set(sx, sy);
       this.navigationHistory.storeView({
         left: sx,
         top: sy
       }, 64);
     }
-
     (_this$blockly = this.blockly) === null || _this$blockly === void 0 ? void 0 : _this$blockly.hideChaff();
     _BlockFlasher_js__WEBPACK_IMPORTED_MODULE_1__["default"].flash(block);
   }
+
   /**
    * Find the top stack block of a stack
    * @param block a block in a stack
    * @returns {*} a block that is the top of the stack of blocks
    */
-
-
   getTopOfStackFor(block) {
     let base = block;
-
     while (base.getOutputShape() && base.getSurroundParent()) {
       base = base.getSurroundParent();
     }
-
     return base;
   }
-
 }
-
 class NavigationHistory {
   constructor(utils) {
     this.utils = utils;
     this.views = [];
     this.forward = [];
   }
+
   /**
    * Keep a record of the scroll and zoom position
    */
-
-
   storeView(next, dist) {
     this.forward = [];
     let workspace = this.utils.getWorkspace(),
-        s = workspace.getMetrics();
+      s = workspace.getMetrics();
     let pos = {
       left: s.viewLeft,
       top: s.viewTop
     };
-
     if (!next || distance(pos, next) > dist) {
       this.views.push(pos);
     }
   }
-
   peek() {
     return this.views.length > 0 ? this.views[this.views.length - 1] : null;
   }
-
   goBack() {
     const workspace = this.utils.getWorkspace(),
-          s = workspace.getMetrics();
+      s = workspace.getMetrics();
     let pos = {
       left: s.viewLeft,
       top: s.viewTop
     };
     let view = this.peek();
-
     if (!view) {
       return;
     }
-
     if (distance(pos, view) < 64) {
       // Go back to current if we are already far away from it
       if (this.views.length > 1) {
@@ -2052,17 +1841,17 @@ class NavigationHistory {
         this.forward.push(view);
       }
     }
-
     view = this.peek();
-
     if (!view) {
       return;
     }
-
     let sx = view.left - s.contentLeft,
-        sy = view.top - s.contentTop; // transform.setTranslate(-600,0);
+      sy = view.top - s.contentTop;
+
+    // transform.setTranslate(-600,0);
 
     workspace.scrollbar.set(sx, sy);
+
     /*
               let blocklySvg = document.getElementsByClassName('blocklySvg')[0];
               let blocklyBlockCanvas = blocklySvg.getElementsByClassName('blocklyBlockCanvas')[0];
@@ -2080,21 +1869,17 @@ class NavigationHistory {
 
   goForward() {
     let view = this.forward.pop();
-
     if (!view) {
       return;
     }
-
     this.views.push(view);
     let workspace = this.utils.getWorkspace(),
-        s = workspace.getMetrics();
+      s = workspace.getMetrics();
     let sx = view.left - s.contentLeft,
-        sy = view.top - s.contentTop;
+      sy = view.top - s.contentTop;
     workspace.scrollbar.set(sx, sy);
   }
-
 }
-
 function distance(pos, next) {
   return Math.sqrt(Math.pow(pos.left - next.left, 2) + Math.pow(pos.top - next.top, 2));
 }
@@ -2113,20 +1898,20 @@ __webpack_require__.r(__webpack_exports__);
 // From https://github.com/LLK/scratch-gui/blob/develop/src/lib/download-blob.js
 /* harmony default export */ __webpack_exports__["default"] = ((filename, blob) => {
   const downloadLink = document.createElement("a");
-  document.body.appendChild(downloadLink); // Use special ms version if available to get it working on Edge.
+  document.body.appendChild(downloadLink);
 
+  // Use special ms version if available to get it working on Edge.
   if (navigator.msSaveOrOpenBlob) {
     navigator.msSaveOrOpenBlob(blob, filename);
     return;
   }
-
   if ("download" in HTMLAnchorElement.prototype) {
     const url = window.URL.createObjectURL(blob);
     downloadLink.href = url;
     downloadLink.download = filename;
     downloadLink.type = blob.type;
-    downloadLink.click(); // remove the link after a timeout to prevent a crash on iOS 13 Safari
-
+    downloadLink.click();
+    // remove the link after a timeout to prevent a crash on iOS 13 Safari
     window.setTimeout(() => {
       document.body.removeChild(downloadLink);
       window.URL.revokeObjectURL(url);
@@ -2135,12 +1920,10 @@ __webpack_require__.r(__webpack_exports__);
     // iOS 12 Safari, open a new page and set href to data-uri
     let popup = window.open("", "_blank");
     const reader = new FileReader();
-
     reader.onloadend = function () {
       popup.location.href = reader.result;
       popup = null;
     };
-
     reader.readAsDataURL(blob);
   }
 });

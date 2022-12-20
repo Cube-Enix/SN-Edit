@@ -94,7 +94,6 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const context = __webpack_require__(/*! ./tw-extension-worker-context */ "./node_modules/scratch-vm/src/extension-support/tw-extension-worker-context.js");
-
 const id = window.__WRAPPED_IFRAME_ID__;
 context.isWorker = false;
 context.centralDispatchService = {
@@ -103,18 +102,14 @@ context.centralDispatchService = {
       vmIframeId: id,
       message
     };
-
     if (transfer) {
       window.parent.postMessage(data, '*', transfer);
     } else {
       window.parent.postMessage(data, '*');
     }
   }
-
 };
-
 __webpack_require__(/*! ./extension-worker */ "./node_modules/scratch-vm/src/extension-support/extension-worker.js");
-
 window.parent.postMessage({
   vmIframeId: id,
   ready: true
@@ -725,6 +720,7 @@ module.exports = logger;
 /***/ (function(module, exports, __webpack_require__) {
 
 const log = __webpack_require__(/*! ../util/log */ "./node_modules/scratch-vm/src/util/log.js");
+
 /**
  * @typedef {object} DispatchCallMessage - a message to the dispatch system representing a service method call
  * @property {*} responseId - send a response message with this response ID. See {@link DispatchResponseMessage}
@@ -749,8 +745,6 @@ const log = __webpack_require__(/*! ../util/log */ "./node_modules/scratch-vm/sr
  * The SharedDispatch class is responsible for dispatch features shared by
  * {@link CentralDispatch} and {@link WorkerDispatch}.
  */
-
-
 class SharedDispatch {
   constructor() {
     /**
@@ -760,13 +754,14 @@ class SharedDispatch {
      * @type {Array.<Function[]>}
      */
     this.callbacks = [];
+
     /**
      * The next response ID to be used.
      * @type {int}
      */
-
     this.nextResponseId = 0;
   }
+
   /**
    * Call a particular method on a particular service, regardless of whether that service is provided locally or on
    * a worker. If the service is provided by a worker, the `args` will be copied using the Structured Clone
@@ -781,11 +776,13 @@ class SharedDispatch {
    * @param {*} [args] - the arguments to be copied to the method, if any.
    * @returns {Promise} - a promise for the return value of the service method.
    */
-
-
-  call(service, method, ...args) {
+  call(service, method) {
+    for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      args[_key - 2] = arguments[_key];
+    }
     return this.transferCall(service, method, null, ...args);
   }
+
   /**
    * Call a particular method on a particular service, regardless of whether that service is provided locally or on
    * a worker. If the service is provided by a worker, the `args` will be copied using the Structured Clone
@@ -801,40 +798,38 @@ class SharedDispatch {
    * @param {*} [args] - the arguments to be copied to the method, if any.
    * @returns {Promise} - a promise for the return value of the service method.
    */
-
-
-  transferCall(service, method, transfer, ...args) {
+  transferCall(service, method, transfer) {
     try {
       const {
         provider,
         isRemote
       } = this._getServiceProvider(service);
-
       if (provider) {
+        for (var _len2 = arguments.length, args = new Array(_len2 > 3 ? _len2 - 3 : 0), _key2 = 3; _key2 < _len2; _key2++) {
+          args[_key2 - 3] = arguments[_key2];
+        }
         if (isRemote) {
           return this._remoteTransferCall(provider, service, method, transfer, ...args);
         }
-
         const result = provider[method].apply(provider, args);
         return Promise.resolve(result);
       }
-
       return Promise.reject(new Error("Service not found: ".concat(service)));
     } catch (e) {
       return Promise.reject(e);
     }
   }
+
   /**
    * Check if a particular service lives on another worker.
    * @param {string} service - the service to check.
    * @returns {boolean} - true if the service is remote (calls must cross a Worker boundary), false otherwise.
    * @private
    */
-
-
   _isRemoteService(service) {
     return this._getServiceProvider(service).isRemote;
   }
+
   /**
    * Like {@link call}, but force the call to be posted through a particular communication channel.
    * @param {object} provider - send the call through this object's `postMessage` function.
@@ -843,11 +838,13 @@ class SharedDispatch {
    * @param {*} [args] - the arguments to be copied to the method, if any.
    * @returns {Promise} - a promise for the return value of the service method.
    */
-
-
-  _remoteCall(provider, service, method, ...args) {
+  _remoteCall(provider, service, method) {
+    for (var _len3 = arguments.length, args = new Array(_len3 > 3 ? _len3 - 3 : 0), _key3 = 3; _key3 < _len3; _key3++) {
+      args[_key3 - 3] = arguments[_key3];
+    }
     return this._remoteTransferCall(provider, service, method, null, ...args);
   }
+
   /**
    * Like {@link transferCall}, but force the call to be posted through a particular communication channel.
    * @param {object} provider - send the call through this object's `postMessage` function.
@@ -857,22 +854,21 @@ class SharedDispatch {
    * @param {*} [args] - the arguments to be copied to the method, if any.
    * @returns {Promise} - a promise for the return value of the service method.
    */
-
-
-  _remoteTransferCall(provider, service, method, transfer, ...args) {
+  _remoteTransferCall(provider, service, method, transfer) {
+    for (var _len4 = arguments.length, args = new Array(_len4 > 4 ? _len4 - 4 : 0), _key4 = 4; _key4 < _len4; _key4++) {
+      args[_key4 - 4] = arguments[_key4];
+    }
     return new Promise((resolve, reject) => {
       const responseId = this._storeCallbacks(resolve, reject);
+
       /** @TODO: remove this hack! this is just here so we don't try to send `util` to a worker */
       // tw: upstream's logic is broken
       // Args is actually a 3 length list of [args, util, real block info]
       // We only want to send args. The others will throw errors when they try to be cloned
-
-
       if (args.length > 0 && typeof args[args.length - 1].func === 'function') {
         args.pop();
         args.pop();
       }
-
       if (transfer) {
         provider.postMessage({
           service,
@@ -890,6 +886,7 @@ class SharedDispatch {
       }
     });
   }
+
   /**
    * Store callback functions pending a response message.
    * @param {Function} resolve - function to call if the service method returns.
@@ -897,26 +894,22 @@ class SharedDispatch {
    * @returns {*} - a unique response ID for this set of callbacks. See {@link _deliverResponse}.
    * @protected
    */
-
-
   _storeCallbacks(resolve, reject) {
     const responseId = this.nextResponseId++;
     this.callbacks[responseId] = [resolve, reject];
     return responseId;
   }
+
   /**
    * Deliver call response from a worker. This should only be called as the result of a message from a worker.
    * @param {int} responseId - the response ID of the callback set to call.
    * @param {DispatchResponseMessage} message - the message containing the response value(s).
    * @protected
    */
-
-
   _deliverResponse(responseId, message) {
     try {
       const [resolve, reject] = this.callbacks[responseId];
       delete this.callbacks[responseId];
-
       if (message.error) {
         reject(message.error);
       } else {
@@ -926,20 +919,18 @@ class SharedDispatch {
       log.error("Dispatch callback failed: ".concat(e));
     }
   }
+
   /**
    * Handle a message event received from a connected worker.
    * @param {Worker} worker - the worker which sent the message, or the global object if running in a worker.
    * @param {MessageEvent} event - the message event to be handled.
    * @protected
    */
-
-
   _onMessage(worker, event) {
     /** @type {DispatchMessage} */
     const message = event.data;
     message.args = message.args || [];
     let promise;
-
     if (message.service) {
       if (message.service === 'dispatch') {
         promise = this._onDispatchMessage(worker, message);
@@ -951,7 +942,6 @@ class SharedDispatch {
     } else {
       this._deliverResponse(message.responseId, message);
     }
-
     if (promise) {
       if (typeof message.responseId === 'undefined') {
         log.error("Dispatch message missing required response ID: ".concat(JSON.stringify(event)));
@@ -966,6 +956,7 @@ class SharedDispatch {
       }
     }
   }
+
   /**
    * Fetch the service provider object for a particular service name.
    * @abstract
@@ -973,11 +964,10 @@ class SharedDispatch {
    * @returns {{provider:(object|Worker), isRemote:boolean}} - the means to contact the service, if found
    * @protected
    */
-
-
   _getServiceProvider(service) {
     throw new Error("Could not get provider for ".concat(service, ": _getServiceProvider not implemented"));
   }
+
   /**
    * Handle a call message sent to the dispatch service itself
    * @abstract
@@ -986,14 +976,10 @@ class SharedDispatch {
    * @returns {Promise|undefined} - a promise for the results of this operation, if appropriate
    * @private
    */
-
-
   _onDispatchMessage(worker, message) {
     throw new Error("Unimplemented dispatch message handler cannot handle ".concat(message.method, " method"));
   }
-
 }
-
 module.exports = SharedDispatch;
 
 /***/ }),
@@ -1006,8 +992,8 @@ module.exports = SharedDispatch;
 /***/ (function(module, exports, __webpack_require__) {
 
 const SharedDispatch = __webpack_require__(/*! ./shared-dispatch */ "./node_modules/scratch-vm/src/dispatch/shared-dispatch.js");
-
 const log = __webpack_require__(/*! ../util/log */ "./node_modules/scratch-vm/src/util/log.js");
+
 /**
  * This class provides a Worker with the means to participate in the message dispatch system managed by CentralDispatch.
  * From any context in the messaging system, the dispatcher's "call" method can call any method on any "service"
@@ -1015,21 +1001,20 @@ const log = __webpack_require__(/*! ../util/log */ "./node_modules/scratch-vm/sr
  * worker boundaries as needed.
  * @see {CentralDispatch}
  */
-
-
 class WorkerDispatch extends SharedDispatch {
   constructor() {
     super();
+
     /**
      * This promise will be resolved when we have successfully connected to central dispatch.
      * @type {Promise}
      * @see {waitForConnection}
      * @private
      */
-
     this._connectionPromise = new Promise(resolve => {
       this._onConnect = resolve;
     });
+
     /**
      * Map of service name to local service provider.
      * If a service is not listed here, it is assumed to be provided by another context (another Worker or the main
@@ -1037,14 +1022,13 @@ class WorkerDispatch extends SharedDispatch {
      * @see {setService}
      * @type {object}
      */
-
     this.services = {};
     this._onMessage = this._onMessage.bind(this, self);
-
     if (typeof self !== 'undefined') {
       self.onmessage = this._onMessage;
     }
   }
+
   /**
    * @returns {Promise} a promise which will resolve upon connection to central dispatch. If you need to make a call
    * immediately on "startup" you can attach a 'then' to this promise.
@@ -1053,11 +1037,10 @@ class WorkerDispatch extends SharedDispatch {
    *          dispatch.call('myService', 'hello');
    *      })
    */
-
-
   get waitForConnection() {
     return this._connectionPromise;
   }
+
   /**
    * Set a local object as the global provider of the specified service.
    * WARNING: Any method on the provider can be called from any worker within the dispatch system.
@@ -1065,16 +1048,14 @@ class WorkerDispatch extends SharedDispatch {
    * @param {object} provider - a local object which provides this service.
    * @returns {Promise} - a promise which will resolve once the service is registered.
    */
-
-
   setService(service, provider) {
     if (this.services.hasOwnProperty(service)) {
       log.warn("Worker dispatch replacing existing service provider for ".concat(service));
     }
-
     this.services[service] = provider;
     return this.waitForConnection.then(() => this._remoteCall(self, 'dispatch', 'setService', service));
   }
+
   /**
    * Fetch the service provider object for a particular service name.
    * @override
@@ -1082,8 +1063,6 @@ class WorkerDispatch extends SharedDispatch {
    * @returns {{provider:(object|Worker), isRemote:boolean}} - the means to contact the service, if found
    * @protected
    */
-
-
   _getServiceProvider(service) {
     // if we don't have a local service by this name, contact central dispatch by calling `postMessage` on self
     const provider = this.services[service];
@@ -1092,6 +1071,7 @@ class WorkerDispatch extends SharedDispatch {
       isRemote: !provider
     };
   }
+
   /**
    * Handle a call message sent to the dispatch service itself
    * @override
@@ -1100,31 +1080,23 @@ class WorkerDispatch extends SharedDispatch {
    * @returns {Promise|undefined} - a promise for the results of this operation, if appropriate
    * @protected
    */
-
-
   _onDispatchMessage(worker, message) {
     let promise;
-
     switch (message.method) {
       case 'handshake':
         promise = this._onConnect();
         break;
-
       case 'terminate':
         // Don't close until next tick, after sending confirmation back
         setTimeout(() => self.close(), 0);
         promise = Promise.resolve();
         break;
-
       default:
         log.error("Worker dispatch received message for unknown method: ".concat(message.method));
     }
-
     return promise;
   }
-
 }
-
 module.exports = new WorkerDispatch();
 
 /***/ }),
@@ -1145,37 +1117,30 @@ const ArgumentType = {
    * Numeric value with angle picker
    */
   ANGLE: 'angle',
-
   /**
    * Boolean value with hexagonal placeholder
    */
   BOOLEAN: 'Boolean',
-
   /**
    * Numeric value with color picker
    */
   COLOR: 'color',
-
   /**
    * Numeric value with text field
    */
   NUMBER: 'number',
-
   /**
    * String value with text field
    */
   STRING: 'string',
-
   /**
    * String value with matrix field
    */
   MATRIX: 'matrix',
-
   /**
    * MIDI note number with note picker (piano) field
    */
   NOTE: 'note',
-
   /**
    * Inline image on block (as part of the label)
    */
@@ -1201,40 +1166,33 @@ const BlockType = {
    * Boolean reporter with hexagonal shape
    */
   BOOLEAN: 'Boolean',
-
   /**
    * A button (not an actual block) for some special action, like making a variable
    */
   BUTTON: 'button',
-
   /**
    * Command block
    */
   COMMAND: 'command',
-
   /**
    * Specialized command block which may or may not run a child branch
    * The thread continues with the next block whether or not a child branch ran.
    */
   CONDITIONAL: 'conditional',
-
   /**
    * Specialized hat block with no implementation function
    * This stack only runs if the corresponding event is emitted by other code.
    */
   EVENT: 'event',
-
   /**
    * Hat block which conditionally starts a block stack
    */
   HAT: 'hat',
-
   /**
    * Specialized command block which may or may not run a child branch
    * If a child branch runs, the thread evaluates the loop block again.
    */
   LOOP: 'loop',
-
   /**
    * General reporter with numeric or string value
    */
@@ -1252,16 +1210,12 @@ module.exports = BlockType;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/* eslint-env worker */
+
 const ArgumentType = __webpack_require__(/*! ../extension-support/argument-type */ "./node_modules/scratch-vm/src/extension-support/argument-type.js");
-
 const BlockType = __webpack_require__(/*! ../extension-support/block-type */ "./node_modules/scratch-vm/src/extension-support/block-type.js");
-
 const dispatch = __webpack_require__(/*! ../dispatch/worker-dispatch */ "./node_modules/scratch-vm/src/dispatch/worker-dispatch.js");
-
 const log = __webpack_require__(/*! ../util/log */ "./node_modules/scratch-vm/src/util/log.js");
-
 const TargetType = __webpack_require__(/*! ../extension-support/target-type */ "./node_modules/scratch-vm/src/extension-support/target-type.js");
-
 class ExtensionWorker {
   constructor() {
     this.nextExtensionId = 0;
@@ -1273,7 +1227,6 @@ class ExtensionWorker {
       dispatch.call('extensions', 'allocateWorker').then(x => {
         const [id, extension] = x;
         this.workerId = id;
-
         try {
           importScripts(extension);
           const initialRegistrations = this.initialRegistrations;
@@ -1287,31 +1240,26 @@ class ExtensionWorker {
     });
     this.extensions = [];
   }
-
   register(extensionObject) {
     const extensionId = this.nextExtensionId++;
     this.extensions.push(extensionObject);
     const serviceName = "extension.".concat(this.workerId, ".").concat(extensionId);
     const promise = dispatch.setService(serviceName, extensionObject).then(() => dispatch.call('extensions', 'registerExtensionService', serviceName));
-
     if (this.initialRegistrations) {
       this.firstRegistrationCallback();
       this.initialRegistrations.push(promise);
     }
-
     return promise;
   }
-
 }
-
 global.Scratch = global.Scratch || {};
 global.Scratch.ArgumentType = ArgumentType;
 global.Scratch.BlockType = BlockType;
 global.Scratch.TargetType = TargetType;
+
 /**
  * Expose only specific parts of the worker to extensions.
  */
-
 const extensionWorker = new ExtensionWorker();
 global.Scratch.extensions = {
   register: extensionWorker.register.bind(extensionWorker)
@@ -1336,7 +1284,6 @@ const TargetType = {
    * Rendered target which can move, change costumes, etc.
    */
   SPRITE: 'sprite',
-
   /**
    * Rendered target which cannot move but can change backdrops
    */
@@ -1369,7 +1316,6 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 const minilog = __webpack_require__(/*! minilog */ "./node_modules/minilog/lib/web/index.js");
-
 minilog.enable();
 module.exports = minilog('vm');
 

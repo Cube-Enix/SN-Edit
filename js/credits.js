@@ -211,8 +211,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _raw_loader_tw_theme_dark_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! raw-loader!./tw-theme-dark.css */ "./node_modules/raw-loader/index.js!./src/lib/tw-theme-dark.css");
 /* harmony import */ var _raw_loader_tw_theme_dark_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_raw_loader_tw_theme_dark_css__WEBPACK_IMPORTED_MODULE_1__);
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 
 const THEME_KEY = 'tw:theme';
@@ -220,18 +219,16 @@ const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 const getInitialDarkMode = () => {
   try {
     const item = localStorage.getItem(THEME_KEY);
-
     if (item !== null) {
       return item === 'dark';
     }
-  } catch (e) {// ignore
+  } catch (e) {
+    // ignore
   }
-
   return darkMediaQuery.matches;
 };
 const darkModeStylesheet = document.createElement('style');
 darkModeStylesheet.textContent = _raw_loader_tw_theme_dark_css__WEBPACK_IMPORTED_MODULE_1___default.a;
-
 const ThemeHOC = function ThemeHOC(WrappedComponent) {
   class ThemeComponent extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
     constructor(props) {
@@ -242,67 +239,55 @@ const ThemeHOC = function ThemeHOC(WrappedComponent) {
         dark: getInitialDarkMode()
       };
     }
-
     componentDidMount() {
       // media query does not have listeners in legacy edge
       if (darkMediaQuery.addEventListener) {
         darkMediaQuery.addEventListener('change', this.handleQueryChange);
       }
-
       this.updateDark();
     }
-
     componentDidUpdate() {
       try {
         localStorage.setItem(THEME_KEY, this.state.dark ? 'dark' : 'light');
-      } catch (e) {// ignore
+      } catch (e) {
+        // ignore
       }
-
       this.updateDark();
     }
-
     componentWillUnmount() {
       // media query does not have listeners in legacy edge
       if (darkMediaQuery.removeEventListener) {
         darkMediaQuery.removeEventListener('change', this.handleQueryChange);
       }
     }
-
     updateDark() {
       const dark = this.state.dark;
       document.body.setAttribute('theme', dark ? 'dark' : 'light');
-
       if (dark && !darkModeStylesheet.parentNode) {
         document.body.insertBefore(darkModeStylesheet, document.body.firstChild);
       } else if (!dark && darkModeStylesheet.parentNode) {
         darkModeStylesheet.parentNode.removeChild(darkModeStylesheet);
       }
     }
-
     handleQueryChange() {
       this.setState({
         dark: darkMediaQuery.matches
       });
     }
-
     handleClickTheme() {
       this.setState(state => ({
         dark: !state.dark
       }));
     }
-
     render() {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WrappedComponent, _extends({
         onClickTheme: this.handleClickTheme,
         isDark: this.state.dark
       }, this.props));
     }
-
   }
-
   return ThemeComponent;
 };
-
 
 
 /***/ }),
@@ -316,12 +301,12 @@ const ThemeHOC = function ThemeHOC(WrappedComponent) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const appTarget = document.getElementById('app'); // Remove everything from the target to fix macOS Safari "Save Page As",
+const appTarget = document.getElementById('app');
 
+// Remove everything from the target to fix macOS Safari "Save Page As",
 while (appTarget.firstChild) {
   appTarget.removeChild(appTarget.firstChild);
 }
-
 document.body.classList.add('tw-loaded');
 /* harmony default export */ __webpack_exports__["default"] = (appTarget);
 
@@ -379,7 +364,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fosshost_light_png__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./fosshost-light.png */ "./src/playground/credits/fosshost-light.png");
 /* harmony import */ var _fosshost_light_png__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_fosshost_light_png__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _users__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./users */ "./src/playground/credits/users.js");
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 
 
@@ -391,42 +376,44 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 /* eslint-disable react/jsx-no-literals */
 
-const User = ({
-  image,
-  text,
-  href
-}) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-  href: href,
-  target: "_blank",
-  rel: "noreferrer",
-  className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.user
-}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-  className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.userImage,
-  src: image,
-  width: "60",
-  height: "60"
-}), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-  className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.userInfo
-}, text));
-
+const User = _ref => {
+  let {
+    image,
+    text,
+    href
+  } = _ref;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    href: href,
+    target: "_blank",
+    rel: "noreferrer",
+    className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.user
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.userImage,
+    src: image,
+    width: "60",
+    height: "60"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.userInfo
+  }, text));
+};
 User.propTypes = {
   image: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string.isRequired,
   text: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string.isRequired,
   href: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string
 };
-
-const UserList = ({
-  users
-}) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-  className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.users
-}, users.map((data, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(User, _extends({
-  key: index
-}, data))));
-
+const UserList = _ref2 => {
+  let {
+    users
+  } = _ref2;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.users
+  }, users.map((data, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(User, _extends({
+    key: index
+  }, data))));
+};
 UserList.propTypes = {
   users: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.arrayOf(prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.object)
 };
-
 const Credits = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", {
   className: _credits_css__WEBPACK_IMPORTED_MODULE_4___default.a.main
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("header", {
@@ -450,7 +437,6 @@ const Credits = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.
 }, "accepts donations"), " to support their work.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("section", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, 'Addons'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(UserList, {
   users: _users__WEBPACK_IMPORTED_MODULE_7__["default"].addonDevelopers
 })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("section", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Individual contributors are listed in no particular order.")));
-
 document.body.setAttribute('theme', Object(_lib_tw_theme_hoc_jsx__WEBPACK_IMPORTED_MODULE_5__["getInitialDarkMode"])() ? 'dark' : 'light');
 react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Credits, null), _app_target__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
@@ -483,20 +469,20 @@ const shuffle = list => {
     list[i] = list[random];
     list[random] = tmp;
   }
-
   return list;
 };
-
-const fromHardcoded = ({
-  userId,
-  username,
-  name
-}) => ({
-  image: "https://cdn2.scratch.mit.edu/get_image/user/".concat(userId, "_60x60.png"),
-  href: "https://scratch.mit.edu/users/".concat(username, "/"),
-  text: name || username
-});
-
+const fromHardcoded = _ref => {
+  let {
+    userId,
+    username,
+    name
+  } = _ref;
+  return {
+    image: "https://cdn2.scratch.mit.edu/get_image/user/".concat(userId, "_60x60.png"),
+    href: "https://scratch.mit.edu/users/".concat(username, "/"),
+    text: name || username
+  };
+};
 const addonDevelopers = [{
   userId: '34018398',
   username: 'Jeffalo'
@@ -539,7 +525,8 @@ const addonDevelopers = [{
 }, {
   userId: '5354974',
   username: 'Chrome_Cat'
-} // TODO: summerscar if this is their Scratch account: https://scratch.mit.edu/users/summerscar/
+}
+// TODO: summerscar if this is their Scratch account: https://scratch.mit.edu/users/summerscar/
 ].map(fromHardcoded);
 /* harmony default export */ __webpack_exports__["default"] = ({
   addonDevelopers: shuffle(addonDevelopers)

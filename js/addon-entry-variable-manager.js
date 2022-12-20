@@ -94,19 +94,18 @@ __webpack_require__.r(__webpack_exports__);
 /* inserted by pull.js */
 
 
-
 const _twGetAsset = path => {
   if (path === "/icon.svg") return _url_loader_icon_svg__WEBPACK_IMPORTED_MODULE_0__["default"];
   if (path === "/search.svg") return _url_loader_search_svg__WEBPACK_IMPORTED_MODULE_1__["default"];
   throw new Error("Unknown asset: ".concat(path));
 };
-
-/* harmony default export */ __webpack_exports__["default"] = (async function ({
-  addon,
-  global,
-  console,
-  msg
-}) {
+/* harmony default export */ __webpack_exports__["default"] = (async function (_ref) {
+  let {
+    addon,
+    global,
+    console,
+    msg
+  } = _ref;
   const vm = addon.tab.traps.vm;
   let localVariables = [];
   let globalVariables = [];
@@ -122,11 +121,9 @@ const _twGetAsset = path => {
     for (const variable of localVariables) {
       variable.handleSearch(searchBox.value);
     }
-
     for (const variable of globalVariables) {
       variable.handleSearch(searchBox.value);
     }
-
     updateHeadingVisibility();
   });
   manager.appendChild(searchBox);
@@ -150,8 +147,8 @@ const _twGetAsset = path => {
   addon.tab.displayNoneWhileDisabled(varTab, {
     display: "flex"
   });
-  varTab.classList.add(addon.tab.scratchClass("react-tabs_react-tabs__tab"), addon.tab.scratchClass("gui_tab")); // Cannot use number due to conflict after leaving and re-entering editor
-
+  varTab.classList.add(addon.tab.scratchClass("react-tabs_react-tabs__tab"), addon.tab.scratchClass("gui_tab"));
+  // Cannot use number due to conflict after leaving and re-entering editor
   varTab.id = "react-tabs-sa-variable-manager";
   const varTabIcon = document.createElement("img");
   varTabIcon.draggable = false;
@@ -160,7 +157,6 @@ const _twGetAsset = path => {
   varTabText.innerText = msg("variables");
   varTab.appendChild(varTabIcon);
   varTab.appendChild(varTabText);
-
   function updateHeadingVisibility() {
     // used to hide the headings if there are no variables
     let filteredLocals = localVariables.filter(v => v.row.style.display !== "none");
@@ -168,7 +164,6 @@ const _twGetAsset = path => {
     localHeading.style.display = filteredLocals.length === 0 ? "none" : "";
     globalHeading.style.display = filteredGlobals.length === 0 ? "none" : "";
   }
-
   const rowToVariableMap = new WeakMap();
   const observer = new IntersectionObserver(changes => {
     for (const change of changes) {
@@ -178,7 +173,6 @@ const _twGetAsset = path => {
   }, {
     rootMargin: "100px"
   });
-
   class WrappedVariable {
     constructor(scratchVariable, target) {
       this.scratchVariable = scratchVariable;
@@ -186,28 +180,23 @@ const _twGetAsset = path => {
       this.visible = false;
       this.buildDOM();
     }
-
     updateValue(force) {
       if (!this.visible && !force) return;
       let newValue;
-
       if (this.scratchVariable.type === "list") {
         newValue = this.scratchVariable.value.join("\n");
       } else {
         newValue = this.scratchVariable.value;
       }
-
       if (newValue !== this.input.value) {
         this.input.value = newValue;
       }
     }
-
     handleSearch(search) {
       // this doesn't check if this.visible is true or whatever. maybe that would improve performance while typing into the search box but it's probably fine™
       if (this.scratchVariable.name.toLowerCase().includes(search.toLowerCase()) || !search) {
         // fuzzy searches are lame we are too cool for fuzzy searches (& i doubt they're even the right thing to use here, this should work fine enough)
         this.row.style.display = ""; // make the row normal
-
         this.updateValue(true); // force it to update because its hidden and it wouldnt be able to otherwise
       } else {
         this.row.style.display = "none"; // set the entire row as hidden
@@ -218,22 +207,18 @@ const _twGetAsset = path => {
       if (this.scratchVariable.type === "list") {
         this.input.style.height = "auto";
         const height = Math.min(1000, this.input.scrollHeight);
-
         if (height > 0) {
           this.input.style.height = height + "px";
         }
       }
     }
-
     setVisible(visible) {
       if (this.visible === visible) return;
       this.visible = visible;
-
       if (visible) {
         this.updateValue();
       }
     }
-
     buildDOM() {
       const id = "sa-variable-manager-".concat(this.scratchVariable.id);
       const row = document.createElement("tr");
@@ -243,21 +228,17 @@ const _twGetAsset = path => {
       const label = document.createElement("input");
       label.value = this.scratchVariable.name;
       label.htmlFor = id;
-
       const onLabelOut = e => {
         e.preventDefault();
         const workspace = Blockly.getMainWorkspace();
         const existingVariableWithNewName = workspace.getVariable(label.value, this.scratchVariable.type);
-
         if (existingVariableWithNewName) {
           label.value = this.scratchVariable.name;
         } else {
           workspace.renameVariableById(this.scratchVariable.id, label.value);
         }
-
         label.blur();
       };
-
       label.addEventListener("keydown", e => {
         if (e.key === "Enter" && !e.shiftKey) e.target.blur();
       });
@@ -276,33 +257,26 @@ const _twGetAsset = path => {
       const valueCell = document.createElement("td");
       valueCell.className = "sa-var-manager-value";
       let input;
-
       if (this.scratchVariable.type === "list") {
         input = document.createElement("textarea");
       } else {
         input = document.createElement("input");
       }
-
       input.id = id;
       this.input = input;
       this.updateValue(true);
-
       if (this.scratchVariable.type === "list") {
         this.input.addEventListener("input", () => this.resizeInputIfList(), false);
       }
-
       const onInputOut = e => {
         e.preventDefault();
-
         if (this.scratchVariable.type === "list") {
           vm.setVariableValue(this.target.id, this.scratchVariable.id, input.value.split("\n"));
         } else {
           vm.setVariableValue(this.target.id, this.scratchVariable.id, input.value);
         }
-
         input.blur();
       };
-
       input.addEventListener("keydown", e => {
         if (e.key === "Enter" && !e.shiftKey) e.target.blur();
       });
@@ -320,64 +294,50 @@ const _twGetAsset = path => {
       row.appendChild(valueCell);
       this.handleSearch(searchBox.value);
     }
-
   }
-
   function fullReload() {
     var _addon$tab$redux$stat, _addon$tab$redux$stat2, _addon$tab$redux$stat3;
-
     if (((_addon$tab$redux$stat = addon.tab.redux.state) === null || _addon$tab$redux$stat === void 0 ? void 0 : (_addon$tab$redux$stat2 = _addon$tab$redux$stat.scratchGui) === null || _addon$tab$redux$stat2 === void 0 ? void 0 : (_addon$tab$redux$stat3 = _addon$tab$redux$stat2.editorTab) === null || _addon$tab$redux$stat3 === void 0 ? void 0 : _addon$tab$redux$stat3.activeTabIndex) !== 3 || preventUpdate) return;
     const editingTarget = vm.runtime.getEditingTarget();
     const stage = vm.runtime.getTargetForStage();
     localVariables = editingTarget.isStage ? [] : Object.values(editingTarget.variables).filter(i => i.type === "" || i.type === "list").map(i => new WrappedVariable(i, editingTarget));
     globalVariables = Object.values(stage.variables).filter(i => i.type === "" || i.type === "list").map(i => new WrappedVariable(i, stage));
     updateHeadingVisibility();
-
     while (localList.firstChild) {
       localList.removeChild(localList.firstChild);
     }
-
     while (globalList.firstChild) {
       globalList.removeChild(globalList.firstChild);
     }
-
     for (const variable of localVariables) {
       localList.appendChild(variable.row);
       variable.resizeInputIfList();
     }
-
     for (const variable of globalVariables) {
       globalList.appendChild(variable.row);
       variable.resizeInputIfList();
     }
   }
-
   function quickReload() {
     var _addon$tab$redux$stat4, _addon$tab$redux$stat5, _addon$tab$redux$stat6;
-
     if (((_addon$tab$redux$stat4 = addon.tab.redux.state) === null || _addon$tab$redux$stat4 === void 0 ? void 0 : (_addon$tab$redux$stat5 = _addon$tab$redux$stat4.scratchGui) === null || _addon$tab$redux$stat5 === void 0 ? void 0 : (_addon$tab$redux$stat6 = _addon$tab$redux$stat5.editorTab) === null || _addon$tab$redux$stat6 === void 0 ? void 0 : _addon$tab$redux$stat6.activeTabIndex) !== 3 || preventUpdate) return;
-
     for (const variable of localVariables) {
       variable.updateValue();
     }
-
     for (const variable of globalVariables) {
       variable.updateValue();
     }
   }
-
   function cleanup() {
     localVariables = [];
     globalVariables = [];
   }
-
   varTab.addEventListener("click", e => {
     addon.tab.redux.dispatch({
       type: "scratch-gui/navigation/ACTIVATE_TAB",
       activeTabIndex: 3
     });
   });
-
   function setVisible(visible) {
     if (visible) {
       varTab.classList.add(addon.tab.scratchClass("react-tabs_react-tabs__tab--selected"), addon.tab.scratchClass("gui_is-selected"));
@@ -390,11 +350,11 @@ const _twGetAsset = path => {
       cleanup();
     }
   }
-
   addon.tab.redux.initialize();
-  addon.tab.redux.addEventListener("statechanged", ({
-    detail
-  }) => {
+  addon.tab.redux.addEventListener("statechanged", _ref2 => {
+    let {
+      detail
+    } = _ref2;
     if (detail.action.type === "scratch-gui/navigation/ACTIVATE_TAB") {
       setVisible(detail.action.activeTabIndex === 3);
     } else if (detail.action.type === "scratch-gui/mode/SET_PLAYER") {
@@ -419,19 +379,18 @@ const _twGetAsset = path => {
     }
   });
   const oldStep = vm.runtime._step;
-
-  vm.runtime._step = function (...args) {
+  vm.runtime._step = function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
     const ret = oldStep.call(this, ...args);
-
     try {
       quickReload();
     } catch (e) {
       console.error(e);
     }
-
     return ret;
   };
-
   addon.self.addEventListener("disabled", () => {
     if (addon.tab.redux.state.scratchGui.editorTab.activeTabIndex === 3) {
       addon.tab.redux.dispatch({
@@ -440,7 +399,6 @@ const _twGetAsset = path => {
       });
     }
   });
-
   while (true) {
     await addon.tab.waitForElement("[class^='react-tabs_react-tabs__tab-list']", {
       markAsSeen: true,

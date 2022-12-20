@@ -82,18 +82,17 @@ __webpack_require__.r(__webpack_exports__);
 /* inserted by pull.js */
 
 
-
 const _twGetAsset = path => {
   if (path === "/lock.svg") return _url_loader_lock_svg__WEBPACK_IMPORTED_MODULE_0__["default"];
   if (path === "/unlock.svg") return _url_loader_unlock_svg__WEBPACK_IMPORTED_MODULE_1__["default"];
   throw new Error("Unknown asset: ".concat(path));
 };
-
-/* harmony default export */ __webpack_exports__["default"] = (async function ({
-  addon,
-  global,
-  console
-}) {
+/* harmony default export */ __webpack_exports__["default"] = (async function (_ref) {
+  let {
+    addon,
+    global,
+    console
+  } = _ref;
   let placeHolderDiv = null;
   let lockDisplay = null;
   let flyOut = null;
@@ -102,7 +101,6 @@ const _twGetAsset = path => {
   let selectedCategory = null;
   let toggleSetting = addon.settings.get("toggle");
   let flyoutLock = false;
-
   function getSpeedValue() {
     let data = {
       none: "0",
@@ -112,8 +110,8 @@ const _twGetAsset = path => {
     };
     return data[addon.settings.get("speed")];
   }
-
-  function onmouseenter(e, speed = {}) {
+  function onmouseenter(e) {
+    let speed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     // If a mouse event was passed, only open flyout if the workspace isn't being dragged
     if (!e || e.buttons === 0 || document.querySelector(".blocklyToolboxDiv").className.includes("blocklyToolboxDelete")) {
       speed = typeof speed === "object" ? getSpeedValue() : speed;
@@ -126,8 +124,8 @@ const _twGetAsset = path => {
       setTimeout(() => Blockly.getMainWorkspace().recordCachedAreas(), speed * 1000);
     }
   }
-
-  function onmouseleave(e, speed = getSpeedValue()) {
+  function onmouseleave(e) {
+    let speed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getSpeedValue();
     // If we go behind the flyout or the user has locked it, let's return
     if (toggleSetting !== "cathover" && e && e.clientX <= scrollBar.getBoundingClientRect().left || flyoutLock) return;
     flyOut.classList.add("sa-flyoutClose");
@@ -138,14 +136,11 @@ const _twGetAsset = path => {
     lockDisplay.style.transitionDuration = "".concat(speed, "s");
     setTimeout(() => Blockly.getMainWorkspace().recordCachedAreas(), speed * 1000);
   }
-
   let didOneTimeSetup = false;
-
   function doOneTimeSetup() {
     if (didOneTimeSetup) {
       return;
     }
-
     didOneTimeSetup = true;
     addon.tab.redux.initialize();
     addon.tab.redux.addEventListener("statechanged", e => {
@@ -155,15 +150,12 @@ const _twGetAsset = path => {
           // always 0, 1, 2
           lockDisplay.style.display = e.detail.action.activeTabIndex === 0 ? "block" : "none";
           placeHolderDiv.style.display = e.detail.action.activeTabIndex === 0 ? "block" : "none";
-
           if (e.detail.action.activeTabIndex === 0) {
             onmouseenter(null, 0);
             toggle = true;
           }
-
           break;
         // Event casted when you switch between tabs
-
         case "scratch-gui/mode/SET_PLAYER":
           // always true or false
           lockDisplay.style.display = e.detail.action.isPlayerOnly ? "none" : "block";
@@ -171,7 +163,6 @@ const _twGetAsset = path => {
           break;
       }
     });
-
     if (toggleSetting === "category" || toggleSetting === "cathover") {
       (async () => {
         while (true) {
@@ -179,7 +170,6 @@ const _twGetAsset = path => {
             markAsSeen: true,
             condition: () => !addon.tab.redux.state.scratchGui.mode.isPlayerOnly
           });
-
           category.onclick = () => {
             if (toggle && selectedCategory === category && toggleSetting === "category") {
               onmouseleave();
@@ -191,14 +181,12 @@ const _twGetAsset = path => {
               selectedCategory = category;
               return;
             }
-
             if (toggleSetting === "category") toggle = !toggle;
           };
         }
       })();
     }
   }
-
   while (true) {
     flyOut = await addon.tab.waitForElement(".blocklyFlyout", {
       markAsSeen: true,
@@ -206,48 +194,41 @@ const _twGetAsset = path => {
     });
     let blocklySvg = document.querySelector(".blocklySvg");
     scrollBar = document.querySelector(".blocklyFlyoutScrollbar");
-    const tabs = document.querySelector('[class^="gui_tabs"]'); // Placeholder Div
+    const tabs = document.querySelector('[class^="gui_tabs"]');
 
+    // Placeholder Div
     if (placeHolderDiv) placeHolderDiv.remove();
     placeHolderDiv = document.createElement("div");
     if (toggleSetting === "hover") tabs.appendChild(placeHolderDiv);
-    placeHolderDiv.className = "sa-flyout-placeHolder"; // Lock Img
+    placeHolderDiv.className = "sa-flyout-placeHolder";
 
+    // Lock Img
     if (lockDisplay) lockDisplay.remove();
     lockDisplay = document.createElement("img");
     lockDisplay.src = _twGetAsset("/".concat(flyoutLock ? "" : "un", "lock.svg"));
     lockDisplay.className = "sa-lock-image";
-
     lockDisplay.onclick = () => {
       flyoutLock = !flyoutLock;
       lockDisplay.src = _twGetAsset("/".concat(flyoutLock ? "" : "un", "lock.svg"));
-    }; // Only append if we don't have "categoryclick" on
+    };
 
-
+    // Only append if we don't have "categoryclick" on
     if (toggleSetting === "hover") tabs.appendChild(lockDisplay);
-
     if (toggleSetting === "hover") {
       placeHolderDiv.onmouseenter = e => onmouseenter(e);
-
       placeHolderDiv.onmouseup = e => onmouseenter();
-
       document.querySelector(".blocklyToolboxDiv").onmouseenter = e => onmouseenter(e); // for columns
-
-
       blocklySvg.onmouseenter = e => onmouseleave(e);
     }
-
     if (toggleSetting === "cathover") {
       onmouseleave(null, 0);
       const toolbox = document.querySelector(".blocklyToolboxDiv");
       const addExtensionButton = document.querySelector("[class^=gui_extension-button-container_]");
-
       for (let e of [toolbox, addExtensionButton, flyOut, scrollBar]) {
         e.onmouseenter = onmouseenter;
         e.onmouseleave = onmouseleave;
       }
     }
-
     doOneTimeSetup();
   }
 });

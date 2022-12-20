@@ -127,10 +127,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "singleStep", function() { return singleStep; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setup", function() { return setup; });
 /* harmony import */ var _event_target_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../event-target.js */ "./src/addons/event-target.js");
+ /* inserted by pull.js */
 
-/* inserted by pull.js */
 // https://github.com/LLK/scratch-vm/blob/bb352913b57991713a5ccf0b611fda91056e14ec/src/engine/thread.js#L198
-
 const STATUS_RUNNING = 0;
 const STATUS_PROMISE_WAIT = 1;
 const STATUS_YIELD = 2;
@@ -146,72 +145,59 @@ let steppingThread = null;
 let steppingThreadIndex = -1;
 let eventTarget = new _event_target_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
 const isPaused = () => paused;
-
 const pauseThread = thread => {
   if (!thread.updateMonitor && !pausedThreadState.has(thread)) {
     pausedThreadState.set(thread, {
       time: vm.runtime.currentMSecs
     });
-
     if (thread === vm.runtime.sequencer.activeThread) {
       // If we are the active thread, we hit paused in the middle of executing a block
       if (vm.runtime.sequencer.activeThread) {
         const thread = vm.runtime.sequencer.activeThread;
-        pausedThreadState.get(thread).status = thread.status; // Force the block to exit immediately
+        pausedThreadState.get(thread).status = thread.status;
 
+        // Force the block to exit immediately
         Object.defineProperty(thread, "status", {
           get() {
             return STATUS_PROMISE_WAIT;
           },
-
           set(status) {
             pausedThreadState.get(this).status = status;
           }
-
         });
       }
     }
   }
 };
-
 const setSteppingThred = thread => {
   steppingThread = thread;
   steppingThreadIndex = vm.runtime.threads.indexOf(steppingThread);
 };
-
 const setPaused = _paused => {
   if (_paused) {
     vm.runtime.audioEngine.audioContext.suspend();
-
     if (!vm.runtime.ioDevices.clock._paused) {
       vm.runtime.ioDevices.clock.pause();
     }
-
     vm.runtime.threads.forEach(pauseThread);
   } else {
     vm.runtime.audioEngine.audioContext.resume();
     vm.runtime.ioDevices.clock.resume();
-
     for (const thread of vm.runtime.threads) {
       const pauseState = pausedThreadState.get(thread);
-
       if (pauseState) {
         // TW: Compiler state is stored differently
         if (thread.timer) {
           thread.timer.startTime += vm.runtime.currentMSecs - pauseState.time;
         }
-
         const stackFrame = thread.peekStackFrame();
-
         if (stackFrame && stackFrame.executionContext && stackFrame.executionContext.timer) {
           stackFrame.executionContext.timer.startTime += vm.runtime.currentMSecs - pauseState.time;
         }
       }
     }
-
     pausedThreadState = new WeakMap();
   }
-
   if (paused !== _paused) {
     paused = _paused;
     eventTarget.dispatchEvent(new CustomEvent("change"));
@@ -225,25 +211,22 @@ const onSingleStep = listener => {
 };
 const getRunningThread = () => {
   return steppingThread;
-}; // A modified version of this function
+};
+
+// A modified version of this function
 // https://github.com/LLK/scratch-vm/blob/0e86a78a00db41af114df64255e2cd7dd881329f/src/engine/sequencer.js#L179
 // Returns if we should continue executing this thread.
-
 const singleStepThread = thread => {
   let currentBlockId = thread.peekStack();
-
   if (!currentBlockId) {
     thread.popStack();
-
     if (thread.stack.length === 0) {
       thread.status = STATUS_DONE;
       return false;
     }
   }
-
   vm.runtime.sequencer.activeThread = thread;
   pauseNewThreads = true;
-
   if (!thread.target) {
     vm.runtime.sequencer.retireThread(thread);
   } else {
@@ -261,15 +244,12 @@ const singleStepThread = thread => {
       set(block) {
         throw throwMsg;
       }
-
     });
-
     try {
       sequencerStepThread.call(vm.runtime.sequencer, thread);
     } catch (err) {
       if (err !== throwMsg) throw err;
     }
-
     Object.defineProperty(thread, "blockGlowInFrame", {
       value: null,
       configurable: true,
@@ -277,32 +257,25 @@ const singleStepThread = thread => {
       writable: true
     });
   }
-
   vm.runtime.sequencer.activeThread = null;
   pauseNewThreads = false;
   thread.blockGlowInFrame = currentBlockId;
-
   if (thread.status === STATUS_YIELD) {
     thread.status = STATUS_RUNNING;
     return false;
   } else if (thread.status === STATUS_PROMISE_WAIT || thread.status === STATUS_YIELD_TICK) {
     return false;
   }
-
   if (thread.peekStack() === currentBlockId) {
     thread.goToNextBlock();
   }
-
   while (!thread.peekStack()) {
     thread.popStack();
-
     if (thread.stack.length === 0) {
       thread.status = STATUS_DONE;
       return false;
     }
-
     const stackFrame = thread.peekStackFrame();
-
     if (stackFrame.isLoop) {
       if (!thread.isWarpMode) {
         return false;
@@ -312,114 +285,94 @@ const singleStepThread = thread => {
     } else if (stackFrame.waitingReporter) {
       return false;
     }
-
     thread.goToNextBlock();
   }
-
   return true;
 };
-
 const findNewSteppingThread = startIndex => {
   for (var i = startIndex; i < vm.runtime.threads.length; i++) {
     const newThread = vm.runtime.threads[i];
-
     if (newThread.status === STATUS_YIELD_TICK) {
       newThread.status = STATUS_RUNNING;
     }
-
     if (newThread.status === STATUS_RUNNING || newThread.status === STATUS_YIELD) {
       return newThread;
     }
   }
-
   return null;
 };
-
 const singleStep = () => {
   const pauseState = pausedThreadState.get(steppingThread);
-
   if (steppingThread) {
     // Make it look like no time has passed
     const stackFrame = steppingThread.peekStackFrame();
-
     if (stackFrame && stackFrame.executionContext && stackFrame.executionContext.timer) {
       stackFrame.executionContext.timer.startTime += vm.runtime.currentMSecs - pauseState.time;
     }
+    pauseState.time = vm.runtime.currentMSecs;
 
-    pauseState.time = vm.runtime.currentMSecs; // Execute the block
-
+    // Execute the block
     const continueExecuting = singleStepThread(steppingThread);
-
     if (!continueExecuting) {
       // Try to move onto the next thread
       steppingThread = findNewSteppingThread(steppingThreadIndex + 1);
     }
-  } // If we don't have a thread, than we are between VM steps and should search for a new thread
+  }
 
-
+  // If we don't have a thread, than we are between VM steps and should search for a new thread
   if (!steppingThread) {
-    setSteppingThred(findNewSteppingThread(0)); // End of VM step, emulate one frame of time passing.
+    setSteppingThred(findNewSteppingThread(0));
 
-    vm.runtime.ioDevices.clock._pausedTime += vm.runtime.currentStepTime; // Skip all sounds forward by vm.runtime.currentStepTime milliseconds so it's as
+    // End of VM step, emulate one frame of time passing.
+    vm.runtime.ioDevices.clock._pausedTime += vm.runtime.currentStepTime;
+    // Skip all sounds forward by vm.runtime.currentStepTime milliseconds so it's as
     //  if they where playing for one frame.
-
     const audioContext = vm.runtime.audioEngine.audioContext;
-
     for (const target of vm.runtime.targets) {
       for (const soundId of Object.keys(target.sprite.soundBank.soundPlayers)) {
         const soundPlayer = target.sprite.soundBank.soundPlayers[soundId];
-
         if (soundPlayer.outputNode) {
           soundPlayer.outputNode.stop(audioContext.currentTime);
-
           soundPlayer._createSource();
-
           soundPlayer.outputNode.start(audioContext.currentTime, audioContext.currentTime - soundPlayer.startingUntil + vm.runtime.currentStepTime / 1000);
           soundPlayer.startingUntil -= vm.runtime.currentStepTime / 1000;
         }
       }
-    } // Move all threads forward one frame in time. For blocks like `wait () seconds`
-
-
+    }
+    // Move all threads forward one frame in time. For blocks like `wait () seconds`
     for (const thread of vm.runtime.threads) {
       if (pausedThreadState.has(thread)) {
         pausedThreadState.get(thread).time += vm.runtime.currentStepTime;
       }
-    } // Try to run edge activated hats
+    }
 
-
+    // Try to run edge activated hats
     pauseNewThreads = true;
     const hats = vm.runtime._hats;
-
     for (const hatType in hats) {
       if (!Object.prototype.hasOwnProperty.call(hats, hatType)) continue;
       const hat = hats[hatType];
-
       if (hat.edgeActivated) {
         vm.runtime.startHats(hatType);
       }
     }
-
     pauseNewThreads = false;
   }
-
   eventTarget.dispatchEvent(new CustomEvent("step"));
 };
 const setup = _vm => {
   if (vm) {
     return;
   }
-
   vm = _vm;
   sequencerStepThread = vm.runtime.sequencer.stepThread;
-
   vm.runtime.sequencer.stepThread = function (thread) {
     if (pausedThreadState.has(thread)) {
       return;
     }
+    sequencerStepThread.call(this, thread);
 
-    sequencerStepThread.call(this, thread); // Thread was paused in the middle of execution
-
+    // Thread was paused in the middle of execution
     if (pausedThreadState.has(thread)) {
       const threadPauseState = pausedThreadState.get(thread);
       setSteppingThred(thread);
@@ -433,60 +386,50 @@ const setup = _vm => {
       eventTarget.dispatchEvent(new CustomEvent("step"));
     }
   };
-
   const ogStepThreads = vm.runtime.sequencer.stepThreads;
-
   vm.runtime.sequencer.stepThreads = function () {
     // If we where half way through a vm step and have unpaused, pick up were we left off.
     if (steppingThread && !paused) {
       const threads = vm.runtime.threads;
-
       if (steppingThreadIndex !== -1) {
         for (let i = steppingThreadIndex; i < threads.length; i++) {
           const thread = threads[i];
-
           if (thread.status === STATUS_YIELD_TICK) {
             thread.status = STATUS_RUNNING;
           }
-
           if (thread.status === STATUS_RUNNING || thread.status === STATUS_YIELD) {
             vm.runtime.sequencer.activeThread = thread;
             vm.runtime.sequencer.stepThread(thread);
           }
         }
       }
-
       steppingThread = null;
     }
-
     return ogStepThreads.call(this);
-  }; // Unpause when green flag
+  };
 
-
+  // Unpause when green flag
   const originalGreenFlag = vm.runtime.greenFlag;
-
   vm.runtime.greenFlag = function () {
     setPaused(false);
     return originalGreenFlag.call(this);
-  }; // Disable edge-activated hats and hats like "when key pressed" while paused.
+  };
 
-
+  // Disable edge-activated hats and hats like "when key pressed" while paused.
   const originalStartHats = vm.runtime.startHats;
-
-  vm.runtime.startHats = function (...args) {
+  vm.runtime.startHats = function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
     const hat = args[0];
-
     if (pauseNewThreads) {
       if (hat !== "event_whenbroadcastreceived" && hat !== "control_start_as_clone" && !this.getIsEdgeActivatedHat(hat)) {
         return [];
       }
-
       const newThreads = originalStartHats.apply(this, args);
-
       for (const thread of newThreads) {
         pauseThread(thread);
       }
-
       return newThreads;
     } else {
       if (paused) {
@@ -496,17 +439,14 @@ const setup = _vm => {
           return [];
         }
       }
-
       return originalStartHats.apply(this, args);
     }
-  }; // Paused threads should not be counted as running when updating GUI state.
+  };
 
-
+  // Paused threads should not be counted as running when updating GUI state.
   const originalGetMonitorThreadCount = vm.runtime._getMonitorThreadCount;
-
   vm.runtime._getMonitorThreadCount = function (threads) {
     let count = originalGetMonitorThreadCount.call(this, threads);
-
     if (paused) {
       for (const thread of threads) {
         if (pausedThreadState.has(thread)) {
@@ -514,7 +454,6 @@ const setup = _vm => {
         }
       }
     }
-
     return count;
   };
 };
@@ -553,31 +492,27 @@ const resources = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (async function ({
-  addon,
-  global,
-  console
-}) {
+/* harmony default export */ __webpack_exports__["default"] = (async function (_ref) {
+  let {
+    addon,
+    global,
+    console
+  } = _ref;
   const DRAG_OVER_CLASS = "sa-dragged-over";
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-
   const reactAwareSetValue = (el, value) => {
     nativeInputValueSetter.call(el, value);
     el.dispatchEvent(new Event("change", {
       bubbles: true
     }));
   };
-
   const globalHandleDragOver = e => {
     if (addon.self.disabled) return;
-
     if (!e.dataTransfer.types.includes("Files")) {
       return;
     }
-
     let el;
     let callback;
-
     if ((el = e.target.closest('div[class*="sprite-selector_sprite-selector"]')) || (el = e.target.closest('div[class*="stage-selector_stage-selector"]')) || (el = e.target.closest('div[class*="selector_wrapper"]'))) {
       callback = files => {
         const hdFilter = addon.settings.get("use-hd-upload") ? "" : ":not(.sa-better-img-uploads-input)";
@@ -589,34 +524,31 @@ __webpack_require__.r(__webpack_exports__);
       };
     } else if (el = e.target.closest('div[class*="monitor_list-monitor"]')) {
       callback = files => {
-        const contextMenuBefore = document.querySelector("body > .react-contextmenu.react-contextmenu--visible"); // Simulate a right click on the list monitor
-
+        const contextMenuBefore = document.querySelector("body > .react-contextmenu.react-contextmenu--visible");
+        // Simulate a right click on the list monitor
         el.dispatchEvent(new MouseEvent("contextmenu", {
           bubbles: true
-        })); // Get the right click menu that opened (monitor context menus are
+        }));
+        // Get the right click menu that opened (monitor context menus are
         // children of <body>)
-
-        const contextMenuAfter = document.querySelector("body > .react-contextmenu.react-contextmenu--visible"); // `contextMenuAfter` is only null if the context menu was already open
+        const contextMenuAfter = document.querySelector("body > .react-contextmenu.react-contextmenu--visible");
+        // `contextMenuAfter` is only null if the context menu was already open
         // for the list monitor, in which case we can use the context menu from
         // before the simulated right click
-
-        const contextMenu = contextMenuAfter === null ? contextMenuBefore : contextMenuAfter; // Sometimes the menu flashes open, so force hide it.
-
-        contextMenu.style.display = "none"; // Override DOM methods to import the text file directly
+        const contextMenu = contextMenuAfter === null ? contextMenuBefore : contextMenuAfter;
+        // Sometimes the menu flashes open, so force hide it.
+        contextMenu.style.display = "none";
+        // Override DOM methods to import the text file directly
         // See: https://github.com/LLK/scratch-gui/blob/develop/src/lib/import-csv.js#L21-L22
-
         const appendChild = document.body.appendChild;
-
         document.body.appendChild = fileInput => {
           // Restore appendChild to <body>
           document.body.appendChild = appendChild;
-
           if (fileInput instanceof HTMLInputElement) {
-            document.body.appendChild(fileInput); // Prevent Scratch from opening the file input dialog
-
-            fileInput.click = () => {}; // Insert files from the drop event into the file input
-
-
+            document.body.appendChild(fileInput);
+            // Prevent Scratch from opening the file input dialog
+            fileInput.click = () => {};
+            // Insert files from the drop event into the file input
             fileInput.files = files;
             fileInput.dispatchEvent(new Event("change"));
             window.requestAnimationFrame(() => {
@@ -632,66 +564,54 @@ __webpack_require__.r(__webpack_exports__);
             console.error('File input was not immediately given to appendChild upon clicking "Import"!');
             return appendChild(fileInput);
           }
-        }; // Simulate clicking on the "Import" option
-
-
+        };
+        // Simulate clicking on the "Import" option
         contextMenu.children[0].click();
       };
     } else if (el = e.target.closest('div[class*="question_question-input"] > input[class*="input_input-form_l9eYg"]')) {
       callback = async files => {
-        const text = (await Promise.all(Array.from(files, file => file.text()))).join("") // Match pasting behaviour: remove all newline characters at the end
+        const text = (await Promise.all(Array.from(files, file => file.text()))).join("")
+        // Match pasting behaviour: remove all newline characters at the end
         .replace(/[\r\n]+$/, "").replace(/\r?\n|\r/g, " ");
         const selectionStart = el.selectionStart;
         reactAwareSetValue(el, el.value.slice(0, selectionStart) + text + el.value.slice(el.selectionEnd));
         el.setSelectionRange(selectionStart, selectionStart + text.length);
       };
     }
-
     if (!el) {
       return;
     }
-
     e.preventDefault();
-
     if (el.classList.contains(DRAG_OVER_CLASS)) {
       return;
     }
-
     el.classList.add(DRAG_OVER_CLASS);
-
     const handleDrop = e => {
       e.preventDefault();
       cleanup();
-
       if (e.dataTransfer.types.includes("Files") && e.dataTransfer.files.length > 0) {
         callback(e.dataTransfer.files);
       }
     };
-
     const handleDragOver = e => {
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
     };
-
     e.dataTransfer.dropEffect = "copy";
-
     const handleDragLeave = e => {
       e.preventDefault();
       cleanup();
     };
-
     const cleanup = () => {
       el.classList.remove(DRAG_OVER_CLASS);
       el.removeEventListener("dragover", handleDragOver);
       el.removeEventListener("dragleave", handleDragLeave);
       el.removeEventListener("drop", handleDrop);
     };
-
     el.addEventListener("dragover", handleDragOver);
     el.addEventListener("dragleave", handleDragLeave);
     el.addEventListener("drop", handleDrop);
   };
-
   document.addEventListener("dragover", globalHandleDragOver, {
     useCapture: true
   });
@@ -730,30 +650,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _url_loader_icon_mute_svg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! url-loader!./icon--mute.svg */ "./node_modules/url-loader/dist/cjs.js!./src/addons/addons/mute-project/icon--mute.svg");
 /* inserted by pull.js */
 
-
 const _twGetAsset = path => {
   if (path === "/icon--mute.svg") return _url_loader_icon_mute_svg__WEBPACK_IMPORTED_MODULE_0__["default"];
   throw new Error("Unknown asset: ".concat(path));
 };
-
-/* harmony default export */ __webpack_exports__["default"] = (async function ({
-  addon,
-  global,
-  console
-}) {
+/* harmony default export */ __webpack_exports__["default"] = (async function (_ref) {
+  let {
+    addon,
+    global,
+    console
+  } = _ref;
   const vm = addon.tab.traps.vm;
   let muted = false;
   let icon = document.createElement("img");
   icon.loading = "lazy";
   icon.src = _twGetAsset("/icon--mute.svg");
   icon.style.display = "none";
-
   const toggleMute = e => {
     if (e.ctrlKey || e.metaKey) {
       e.cancelBubble = true;
       e.preventDefault();
       muted = !muted;
-
       if (muted) {
         vm.runtime.audioEngine.inputNode.gain.value = 0;
         icon.style.display = "block";
@@ -763,7 +680,6 @@ const _twGetAsset = path => {
       }
     }
   };
-
   while (true) {
     let button = await addon.tab.waitForElement("[class^='green-flag_green-flag']", {
       markAsSeen: true,
@@ -819,34 +735,30 @@ __webpack_require__.r(__webpack_exports__);
 /* inserted by pull.js */
 
 
-
 const _twGetAsset = path => {
   if (path === "/pause.svg") return _url_loader_pause_svg__WEBPACK_IMPORTED_MODULE_0__["default"];
   if (path === "/play.svg") return _url_loader_play_svg__WEBPACK_IMPORTED_MODULE_1__["default"];
   throw new Error("Unknown asset: ".concat(path));
 };
 
-
-/* harmony default export */ __webpack_exports__["default"] = (async function ({
-  addon,
-  global,
-  console,
-  msg
-}) {
+/* harmony default export */ __webpack_exports__["default"] = (async function (_ref) {
+  let {
+    addon,
+    global,
+    console,
+    msg
+  } = _ref;
   Object(_debugger_module_js__WEBPACK_IMPORTED_MODULE_2__["setup"])(addon.tab.traps.vm);
   const img = document.createElement("img");
   img.className = "pause-btn";
   img.draggable = false;
   img.title = msg("pause");
-
   const setSrc = () => img.src = _twGetAsset(Object(_debugger_module_js__WEBPACK_IMPORTED_MODULE_2__["isPaused"])() ? "/play.svg" : "/pause.svg");
-
   img.addEventListener("click", () => Object(_debugger_module_js__WEBPACK_IMPORTED_MODULE_2__["setPaused"])(!Object(_debugger_module_js__WEBPACK_IMPORTED_MODULE_2__["isPaused"])()));
   addon.tab.displayNoneWhileDisabled(img);
   addon.self.addEventListener("disabled", () => Object(_debugger_module_js__WEBPACK_IMPORTED_MODULE_2__["setPaused"])(false));
   setSrc();
   Object(_debugger_module_js__WEBPACK_IMPORTED_MODULE_2__["onPauseChanged"])(setSrc);
-
   while (true) {
     await addon.tab.waitForElement("[class^='green-flag']", {
       markAsSeen: true,
@@ -913,26 +825,24 @@ var _addons_l10n_en_json__WEBPACK_IMPORTED_MODULE_6___namespace = /*#__PURE__*/_
 
 
 
+
+
 /* eslint-disable no-console */
 
 const escapeHTML = str => str.replace(/([<>'"&])/g, (_, l) => "&#".concat(l.charCodeAt(0), ";"));
-
 const kebabCaseToCamelCase = str => str.replace(/-([a-z])/g, g => g[1].toUpperCase());
-
 const createStylesheet = css => {
   const style = document.createElement('style');
   style.textContent = css;
   return style;
 };
-
 let _scratchClassNames = null;
-
 const getScratchClassNames = () => {
   if (_scratchClassNames) {
     return _scratchClassNames;
   }
-
-  const cssRules = Array.from(document.styleSheets) // Ignore some scratch-paint stylesheets
+  const cssRules = Array.from(document.styleSheets)
+  // Ignore some scratch-paint stylesheets
   .filter(styleSheet => !(styleSheet.ownerNode.textContent.startsWith('/* DO NOT EDIT\n@todo This file is copied from GUI and should be pulled out into a shared library.') && (styleSheet.ownerNode.textContent.includes('input_input-form') || styleSheet.ownerNode.textContent.includes('label_input-group_')))).map(e => {
     try {
       return [...e.cssRules];
@@ -958,11 +868,8 @@ const getScratchClassNames = () => {
   });
   return _scratchClassNames;
 };
-
 let _mutationObserver;
-
 let _mutationObserverCallbacks = [];
-
 const addMutationObserverCallback = newCallback => {
   if (!_mutationObserver) {
     _mutationObserver = new MutationObserver(() => {
@@ -970,21 +877,17 @@ const addMutationObserverCallback = newCallback => {
         cb();
       }
     });
-
     _mutationObserver.observe(document.documentElement, {
       attributes: false,
       childList: true,
       subtree: true
     });
   }
-
   _mutationObserverCallbacks.push(newCallback);
 };
-
 const removeMutationObserverCallback = callback => {
   _mutationObserverCallbacks = _mutationObserverCallbacks.filter(i => i !== callback);
 };
-
 class Redux extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
   constructor() {
     super();
@@ -992,7 +895,6 @@ class Redux extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
     this._initialized = false;
     this._nextState = null;
   }
-
   initialize() {
     if (!this._initialized) {
       _hooks__WEBPACK_IMPORTED_MODULE_4__["default"].appStateReducer = (action, prev, next) => {
@@ -1008,11 +910,9 @@ class Redux extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
         this._nextState = null;
         this._isInReducer = false;
       };
-
       this._initialized = true;
     }
   }
-
   dispatch(m) {
     if (this._isInReducer) {
       queueMicrotask(() => _hooks__WEBPACK_IMPORTED_MODULE_4__["default"].appStateStore.dispatch(m));
@@ -1020,14 +920,11 @@ class Redux extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
       _hooks__WEBPACK_IMPORTED_MODULE_4__["default"].appStateStore.dispatch(m);
     }
   }
-
   get state() {
     if (this._nextState) return this._nextState;
     return _hooks__WEBPACK_IMPORTED_MODULE_4__["default"].appStateStore.getState();
   }
-
 }
-
 const getEditorMode = () => {
   // eslint-disable-next-line no-use-before-define
   const mode = tabReduxInstance.state.scratchGui.mode;
@@ -1036,24 +933,19 @@ const getEditorMode = () => {
   if (mode.isPlayerOnly) return 'projectpage';
   return 'editor';
 };
-
 const tabReduxInstance = new Redux();
 const language = tabReduxInstance.state.locales.locale.split('-')[0];
-
 const getTranslations = async () => {
   if (_generated_l10n_entries__WEBPACK_IMPORTED_MODULE_7__["default"][language]) {
     const localeMessages = await _generated_l10n_entries__WEBPACK_IMPORTED_MODULE_7__["default"][language]();
     Object.assign(_addons_l10n_en_json__WEBPACK_IMPORTED_MODULE_6__, localeMessages);
   }
 };
-
 const addonMessagesPromise = getTranslations();
-
 const untilInEditor = () => {
   if (!tabReduxInstance.state.scratchGui.mode.isPlayerOnly) {
     return;
   }
-
   return new Promise(resolve => {
     const handler = () => {
       if (!tabReduxInstance.state.scratchGui.mode.isPlayerOnly) {
@@ -1061,67 +953,53 @@ const untilInEditor = () => {
         tabReduxInstance.removeEventListener('statechanged', handler);
       }
     };
-
     tabReduxInstance.initialize();
     tabReduxInstance.addEventListener('statechanged', handler);
   });
 };
-
 const getDisplayNoneWhileDisabledClass = id => "addons-display-none-".concat(id);
-
 const parseArguments = code => code.split(/(?=[^\\]%[nbs])/g).map(i => i.trim()).filter(i => i.charAt(0) === '%').map(i => i.substring(0, 2));
-
 const fixDisplayName = displayName => displayName.replace(/([^\s])(%[nbs])/g, (_, before, arg) => "".concat(before, " ").concat(arg));
-
 const compareArrays = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-
 let _firstAddBlockRan = false;
 const contextMenuCallbacks = [];
 const CONTEXT_MENU_ORDER = ['editor-devtools', 'block-switching', 'blocks2image', 'swap-local-global'];
 let createdAnyBlockContextMenus = false;
+const getInternalKey = element => Object.keys(element).find(key => key.startsWith('__reactInternalInstance$'));
 
-const getInternalKey = element => Object.keys(element).find(key => key.startsWith('__reactInternalInstance$')); // Stylesheets are added at the start of <body> so that they have higher precedence
+// Stylesheets are added at the start of <body> so that they have higher precedence
 // than those in <head>
-
-
 const stylesheetContainer = document.createElement('div');
 document.body.insertBefore(stylesheetContainer, document.body.firstChild);
-
 const getStylesheetPrecedence = styleElement => {
   // columns must have higher precedence than hide-flyout
   if (styleElement.dataset.addonId === 'columns') return 1;
   return 0;
 };
-
 const addStylesheet = styleElement => {
   const priority = getStylesheetPrecedence(styleElement);
-
   for (const child of stylesheetContainer.children) {
     if (getStylesheetPrecedence(child) >= priority) {
       stylesheetContainer.insertBefore(styleElement, child);
       return;
     }
   }
-
   stylesheetContainer.appendChild(styleElement);
 };
-
 class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
   constructor(id) {
     super();
     this._id = id;
-    this._seenElements = new WeakSet(); // traps is public API
-
+    this._seenElements = new WeakSet();
+    // traps is public API
     this.traps = {
       get vm() {
         return tabReduxInstance.state.scratchGui.vm;
       },
-
       getBlockly: () => {
         if (_hooks__WEBPACK_IMPORTED_MODULE_4__["default"].blockly) {
           return Promise.resolve(_hooks__WEBPACK_IMPORTED_MODULE_4__["default"].blockly);
         }
-
         return new Promise(resolve => {
           _hooks__WEBPACK_IMPORTED_MODULE_4__["default"].blocklyCallbacks.push(() => resolve(_hooks__WEBPACK_IMPORTED_MODULE_4__["default"].blockly));
         });
@@ -1131,119 +1009,100 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
           reduxCondition: state => state.scratchGui.editorTab.activeTabIndex === 1 && !state.scratchGui.mode.isPlayerOnly
         });
         const reactInternalKey = Object.keys(modeSelector).find(key => key.startsWith('__reactInternalInstance$'));
-        const internalState = modeSelector[reactInternalKey].child; // .tool or .blob.tool only exists on the selected tool
-
+        const internalState = modeSelector[reactInternalKey].child;
+        // .tool or .blob.tool only exists on the selected tool
         let toolState = internalState;
         let tool;
-
         while (toolState) {
           const toolInstance = toolState.child.stateNode;
-
           if (toolInstance.tool) {
             tool = toolInstance.tool;
             break;
           }
-
           if (toolInstance.blob && toolInstance.blob.tool) {
             tool = toolInstance.blob.tool;
             break;
           }
-
           toolState = toolState.sibling;
         }
-
         if (tool) {
           const paperScope = tool._scope;
           return paperScope;
         }
-
         throw new Error('cannot find paper :(');
       },
       getInternalKey
     };
   }
-
   get redux() {
     return tabReduxInstance;
   }
-
-  waitForElement(selector, {
-    markAsSeen = false,
-    condition,
-    reduxCondition,
-    reduxEvents
-  } = {}) {
+  waitForElement(selector) {
+    let {
+      markAsSeen = false,
+      condition,
+      reduxCondition,
+      reduxEvents
+    } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     let externalEventSatisfied = true;
-
     const evaluateCondition = () => {
       if (!externalEventSatisfied) return false;
       if (condition && !condition()) return false;
       if (reduxCondition && !reduxCondition(tabReduxInstance.state)) return false;
       return true;
     };
-
     if (evaluateCondition()) {
       const firstQuery = document.querySelectorAll(selector);
-
       for (const element of firstQuery) {
         if (this._seenElements.has(element)) continue;
         if (markAsSeen) this._seenElements.add(element);
         return Promise.resolve(element);
       }
     }
-
     let reduxListener;
-
     if (reduxEvents) {
       externalEventSatisfied = false;
-
-      reduxListener = ({
-        detail
-      }) => {
-        const type = detail.action.type; // As addons can't run before DOM exists here, ignore fontsLoaded/SET_FONTS_LOADED
+      reduxListener = _ref => {
+        let {
+          detail
+        } = _ref;
+        const type = detail.action.type;
+        // As addons can't run before DOM exists here, ignore fontsLoaded/SET_FONTS_LOADED
         // Otherwise, as our font loading is very async, we could activate more often than required.
-
         if (reduxEvents.includes(type) && type !== 'fontsLoaded/SET_FONTS_LOADED') {
           externalEventSatisfied = true;
         }
       };
-
       this.redux.initialize();
       this.redux.addEventListener('statechanged', reduxListener);
     }
-
     return new Promise(resolve => {
       const callback = () => {
         if (!evaluateCondition()) {
           return;
         }
-
         const elements = document.querySelectorAll(selector);
-
         for (const element of elements) {
           if (this._seenElements.has(element)) continue;
           resolve(element);
           removeMutationObserverCallback(callback);
           if (markAsSeen) this._seenElements.add(element);
-
           if (reduxListener) {
             this.redux.removeEventListener('statechanged', reduxListener);
           }
-
           break;
         }
       };
-
       addMutationObserverCallback(callback);
     });
   }
-
-  appendToSharedSpace({
-    space,
-    element,
-    order,
-    scope
-  }) {
+  appendToSharedSpace(_ref2) {
+    let {
+      space,
+      element,
+      order,
+      scope
+    } = _ref2;
     const SHARED_SPACES = {
       stageHeader: {
         element: () => document.querySelector("[class^='stage-header_stage-size-row']"),
@@ -1254,14 +1113,12 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
         element: () => document.querySelector("[class^='stage-header_stage-menu-wrapper']"),
         from: function from() {
           let emptyDiv = this.element().querySelector('.addon-spacer');
-
           if (!emptyDiv) {
             emptyDiv = document.createElement('div');
             emptyDiv.style.marginLeft = 'auto';
             emptyDiv.className = 'addon-spacer';
             this.element().insertBefore(emptyDiv, this.element().lastChild);
           }
-
           return [emptyDiv];
         },
         until: () => [document.querySelector("[class^='stage-header_stage-menu-wrapper']").lastChild]
@@ -1299,26 +1156,27 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
     const until = spaceInfo.until();
     element.dataset.saSharedSpaceOrder = order;
     let foundFrom = false;
-    if (from.length === 0) foundFrom = true; // insertAfter = element whose nextSibling will be the new element
+    if (from.length === 0) foundFrom = true;
+
+    // insertAfter = element whose nextSibling will be the new element
     // -1 means append at beginning of space (prepend)
     // This will stay null if we need to append at the end of space
-
     let insertAfter = null;
     const children = Array.from(spaceElement.children);
-
     for (const indexString of children.keys()) {
       const child = children[indexString];
-      const i = Number(indexString); // Find either element from "from" before doing anything
+      const i = Number(indexString);
 
+      // Find either element from "from" before doing anything
       if (!foundFrom) {
         if (from.includes(child)) {
-          foundFrom = true; // If this is the last child, insertAfter will stay null
+          foundFrom = true;
+          // If this is the last child, insertAfter will stay null
           // and the element will be appended at the end of space
         }
 
         continue;
       }
-
       if (until.includes(child)) {
         // This is the first SA element appended to this space
         // If from = [] then prepend, otherwise append after
@@ -1326,7 +1184,6 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
         if (i === 0) insertAfter = -1;else insertAfter = children[i - 1];
         break;
       }
-
       if (child.dataset.addonSharedSpaceOrder) {
         if (Number(child.dataset.addonSharedSpaceOrder) > order) {
           // We found another SA element with higher order number
@@ -1337,8 +1194,8 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
         }
       }
     }
-
-    if (!foundFrom) return false; // It doesn't matter if we didn't find an "until"
+    if (!foundFrom) return false;
+    // It doesn't matter if we didn't find an "until"
 
     if (insertAfter === null) {
       // This might happen with until = []
@@ -1352,25 +1209,21 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
       // is always set to children[i-1], so it must exist
       spaceElement.insertBefore(element, insertAfter.nextSibling);
     }
-
     return true;
   }
-
-  addBlock(procedureCode, {
-    args,
-    displayName,
-    callback
-  }) {
+  addBlock(procedureCode, _ref3) {
+    let {
+      args,
+      displayName,
+      callback
+    } = _ref3;
     const procCodeArguments = parseArguments(procedureCode);
-
     if (args.length !== procCodeArguments.length) {
       throw new Error('Procedure code and argument list do not match');
     }
-
     if (displayName) {
       displayName = fixDisplayName(displayName);
       const displayNameArguments = parseArguments(displayName);
-
       if (!compareArrays(procCodeArguments, displayNameArguments)) {
         console.warn("displayName ".concat(displayName, " for ").concat(procedureCode, " has invalid arguments, ignoring it."));
         displayName = procedureCode;
@@ -1378,7 +1231,6 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
     } else {
       displayName = procedureCode;
     }
-
     const vm = this.traps.vm;
     vm.addAddonBlock({
       procedureCode,
@@ -1388,18 +1240,15 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
       secondaryColor: '#3aa8a4',
       displayName
     });
-
     if (!_firstAddBlockRan) {
       _firstAddBlockRan = true;
       this.traps.getBlockly().then(ScratchBlocks => {
         const BlockSvg = ScratchBlocks.BlockSvg;
         const oldUpdateColour = BlockSvg.prototype.updateColour;
-
-        BlockSvg.prototype.updateColour = function (...args2) {
+        BlockSvg.prototype.updateColour = function () {
           // procedures_prototype also has a procedure code but we do not want to color them.
           if (this.type === 'procedures_call') {
             const block = this.procCode_ && vm.runtime.getAddonBlock(this.procCode_);
-
             if (block) {
               this.colour_ = '#29beb8';
               this.colourSecondary_ = '#3aa8a4';
@@ -1407,15 +1256,17 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
               this.customContextMenu = null;
             }
           }
-
+          for (var _len = arguments.length, args2 = new Array(_len), _key = 0; _key < _len; _key++) {
+            args2[_key] = arguments[_key];
+          }
           return oldUpdateColour.call(this, ...args2);
         };
-
         const originalCreateAllInputs = ScratchBlocks.Blocks.procedures_call.createAllInputs_;
-
-        ScratchBlocks.Blocks.procedures_call.createAllInputs_ = function (...args2) {
+        ScratchBlocks.Blocks.procedures_call.createAllInputs_ = function () {
           const block = this.procCode_ && vm.runtime.getAddonBlock(this.procCode_);
-
+          for (var _len2 = arguments.length, args2 = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args2[_key2] = arguments[_key2];
+          }
           if (block && block.displayName) {
             const originalProcCode = this.procCode_;
             this.procCode_ = block.displayName;
@@ -1423,28 +1274,25 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
             this.procCode_ = originalProcCode;
             return ret;
           }
-
           return originalCreateAllInputs.call(this, ...args2);
         };
-
         if (vm.editingTarget) {
           vm.emitWorkspaceUpdate();
         }
       });
     }
   }
-
   getCustomBlock(procedureCode) {
     const vm = this.traps.vm;
     return vm.getAddonBlock(procedureCode);
   }
-
-  createBlockContextMenu(callback, {
-    workspace = false,
-    blocks = false,
-    flyout = false,
-    comments = false
-  } = {}) {
+  createBlockContextMenu(callback) {
+    let {
+      workspace = false,
+      blocks = false,
+      flyout = false,
+      comments = false
+    } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     contextMenuCallbacks.push({
       addonId: this._id,
       callback,
@@ -1458,11 +1306,11 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
     createdAnyBlockContextMenus = true;
     this.traps.getBlockly().then(ScratchBlocks => {
       const oldShow = ScratchBlocks.ContextMenu.show;
-
       ScratchBlocks.ContextMenu.show = function (event, items, rtl) {
         const gesture = ScratchBlocks.mainWorkspace.currentGesture_;
-        const block = gesture.targetBlock_; // eslint-disable-next-line no-shadow
+        const block = gesture.targetBlock_;
 
+        // eslint-disable-next-line no-shadow
         for (const {
           callback,
           workspace,
@@ -1470,9 +1318,15 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
           flyout,
           comments
         } of contextMenuCallbacks) {
-          const injectMenu = // Workspace
-          workspace && !block && !gesture.flyout_ && !gesture.startBubble_ || blocks && block && !gesture.flyout_ || flyout && gesture.flyout_ || comments && gesture.startBubble_;
-
+          const injectMenu =
+          // Workspace
+          workspace && !block && !gesture.flyout_ && !gesture.startBubble_ ||
+          // Block in workspace
+          blocks && block && !gesture.flyout_ ||
+          // Block in flyout
+          flyout && gesture.flyout_ ||
+          // Comments
+          comments && gesture.startBubble_;
           if (injectMenu) {
             try {
               items = callback(items, block);
@@ -1481,7 +1335,6 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
             }
           }
         }
-
         oldShow.call(this, event, items, rtl);
         const blocklyContextMenu = ScratchBlocks.WidgetDiv.DIV.firstChild;
         items.forEach((item, i) => {
@@ -1495,31 +1348,29 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
       };
     });
   }
-
   createEditorContextMenu(callback, options) {
     Object(_contextmenu__WEBPACK_IMPORTED_MODULE_9__["addContextMenu"])(this, callback, options);
   }
-
   copyImage(dataURL) {
     if (!navigator.clipboard.write) {
       return Promise.reject(new Error('Clipboard API not supported'));
     }
-
-    const items = [// eslint-disable-next-line no-undef
+    const items = [
+    // eslint-disable-next-line no-undef
     new ClipboardItem({
       'image/png': Object(_lib_data_uri_to_blob__WEBPACK_IMPORTED_MODULE_2__["default"])(dataURL)
     })];
     return navigator.clipboard.write(items);
   }
-
   scratchMessage(id) {
     return tabReduxInstance.state.locales.messages[id];
   }
-
-  scratchClass(...args) {
+  scratchClass() {
     const scratchClasses = getScratchClassNames();
     const classes = [];
-
+    for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      args[_key3] = arguments[_key3];
+    }
     for (const arg of args) {
       if (typeof arg === 'string') {
         for (const scratchClass of scratchClasses) {
@@ -1530,81 +1381,69 @@ class Tab extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
         }
       }
     }
-
     const options = args[args.length - 1];
-
     if (typeof options === 'object') {
       const others = Array.isArray(options.others) ? options.others : [options.others];
-
       for (const className of others) {
         classes.push(className);
       }
     }
-
     return classes.join(' ');
   }
-
   get editorMode() {
     return getEditorMode();
   }
-
   displayNoneWhileDisabled(el) {
     el.classList.add(getDisplayNoneWhileDisabledClass(this._id));
   }
-
   get direction() {
     return this.redux.state.locales.isRtl ? 'rtl' : 'ltr';
   }
-
-  createModal(title, {
-    isOpen = false
-  } = {}) {
+  createModal(title) {
+    let {
+      isOpen = false
+    } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     return _modal__WEBPACK_IMPORTED_MODULE_10__["createEditorModal"](this, title, {
       isOpen
     });
   }
-
-  confirm(...args) {
+  confirm() {
+    for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+      args[_key4] = arguments[_key4];
+    }
     return _modal__WEBPACK_IMPORTED_MODULE_10__["confirm"](this, ...args);
   }
-
-  prompt(...args) {
+  prompt() {
+    for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+      args[_key5] = arguments[_key5];
+    }
     return _modal__WEBPACK_IMPORTED_MODULE_10__["prompt"](this, ...args);
   }
-
 }
-
 class Settings extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
   constructor(addonId, manifest) {
     super();
     this._addonId = addonId;
     this._manifest = manifest;
   }
-
   get(id) {
     return _settings_store_singleton__WEBPACK_IMPORTED_MODULE_1__["default"].getAddonSetting(this._addonId, id);
   }
-
 }
-
 class Self extends _event_target__WEBPACK_IMPORTED_MODULE_3__["default"] {
   constructor(id) {
     super();
     this.id = id;
     this.disabled = false;
-  } // These are removed at build-time by pull.js. Throw if attempting to access them at runtime.
-
-
+  }
+  // These are removed at build-time by pull.js. Throw if attempting to access them at runtime.
   get dir() {
     throw new Error("Addon tried to access addon.self.dir");
   }
-
   get lib() {
     throw new Error("Addon tried to access addon.self.lib");
   }
-
 }
-
 class AddonRunner {
   constructor(id) {
     AddonRunner.instances.push(this);
@@ -1627,46 +1466,35 @@ class AddonRunner {
       safeMsg: this.safeMsg.bind(this)
     };
   }
-
   _msg(key, vars, handler) {
     const namespacedKey = "".concat(this.id, "/").concat(key);
-
     if (this.messageCache[namespacedKey]) {
       return this.messageCache[namespacedKey].format(vars);
     }
-
     let translation = _addons_l10n_en_json__WEBPACK_IMPORTED_MODULE_6__[namespacedKey];
-
     if (!translation) {
       return namespacedKey;
     }
-
     if (handler) {
       translation = handler(translation);
     }
-
     const messageFormat = new intl_messageformat__WEBPACK_IMPORTED_MODULE_0___default.a(translation, language);
     this.messageCache[namespacedKey] = messageFormat;
     return messageFormat.format(vars);
   }
-
   msg(key, vars) {
     return this._msg(key, vars, null);
   }
-
   safeMsg(key, vars) {
     return this._msg(key, vars, escapeHTML);
   }
-
   settingsChanged() {
     this.publicAPI.addon.settings.dispatchEvent(new CustomEvent('change'));
     this.updateCSSVariables();
   }
-
   updateCSSVariables() {
     if (this.manifest.settings) {
       const kebabCaseId = kebabCaseToCamelCase(this.id);
-
       for (const setting of this.manifest.settings) {
         const settingId = setting.id;
         const variable = "--".concat(kebabCaseId, "-").concat(kebabCaseToCamelCase(settingId));
@@ -1675,13 +1503,11 @@ class AddonRunner {
       }
     }
   }
-
   meetsCondition(condition) {
     if (!condition) {
       // No condition, so always active.
       return true;
     }
-
     if (condition.settings) {
       for (const [settingId, expectedValue] of Object.entries(condition.settings)) {
         if (this.publicAPI.addon.settings.get(settingId) !== expectedValue) {
@@ -1689,31 +1515,24 @@ class AddonRunner {
         }
       }
     }
-
     return true;
   }
-
   dynamicEnable() {
     if (this.loading) {
       return;
     }
-
     this.appendStylesheets();
-
     if (this.disabledStylesheet) {
       this.disabledStylesheet.remove();
       this.disabledStylesheet = null;
     }
-
     this.publicAPI.addon.self.disabled = false;
     this.publicAPI.addon.self.dispatchEvent(new CustomEvent('reenabled'));
   }
-
   dynamicDisable() {
     if (this.loading) {
       return;
     }
-
     this.removeStylesheets();
     const disabledCSS = ".".concat(getDisplayNoneWhileDisabledClass(this.id), "{display:none !important;}");
     this.disabledStylesheet = createStylesheet(disabledCSS);
@@ -1721,40 +1540,32 @@ class AddonRunner {
     this.publicAPI.addon.self.disabled = true;
     this.publicAPI.addon.self.dispatchEvent(new CustomEvent('disabled'));
   }
-
   removeStylesheets() {
     for (const style of this.stylesheets) {
       style.remove();
     }
   }
-
   appendStylesheets() {
     for (const style of this.stylesheets) {
       addStylesheet(style);
     }
   }
-
   async run() {
     if (this.manifest.editorOnly) {
       await untilInEditor();
     }
-
     const {
       resources
     } = await _generated_addon_entries__WEBPACK_IMPORTED_MODULE_8__["default"][this.id]();
-
     if (!this.manifest.noTranslations) {
       await addonMessagesPromise;
     }
-
     this.updateCSSVariables();
-
     if (this.manifest.userstyles) {
       for (const userstyle of this.manifest.userstyles) {
         if (!this.meetsCondition(userstyle.if)) {
           continue;
         }
-
         const m = resources[userstyle.url];
         const source = m[0][1];
         const style = createStylesheet(source);
@@ -1763,40 +1574,30 @@ class AddonRunner {
         this.stylesheets.push(style);
       }
     }
-
     this.appendStylesheets();
-
     if (this.manifest.userscripts) {
       for (const userscript of this.manifest.userscripts) {
         if (!this.meetsCondition(userscript.if)) {
           continue;
         }
-
         const fn = resources[userscript.url];
         fn(this.publicAPI);
       }
     }
-
     this.loading = false;
   }
-
 }
-
 AddonRunner.instances = [];
-
 const runAddon = addonId => {
   const runner = new AddonRunner(addonId);
   runner.run();
 };
-
 let oldMode = getEditorMode();
-
 const emitUrlChange = () => {
   // In Scratch, URL changes usually mean someone went from editor to fullscreen or something like that.
   // This is not the case in TW -- the URL can change for many other reasons that addons probably aren't prepared
   // to handle.
   const newMode = getEditorMode();
-
   if (newMode !== oldMode) {
     oldMode = newMode;
     setTimeout(() => {
@@ -1806,29 +1607,28 @@ const emitUrlChange = () => {
     });
   }
 };
-
 const originalReplaceState = history.replaceState;
-
-history.replaceState = function (...args) {
+history.replaceState = function () {
+  for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+    args[_key6] = arguments[_key6];
+  }
   originalReplaceState.apply(this, args);
   emitUrlChange();
 };
-
 const originalPushState = history.pushState;
-
-history.pushState = function (...args) {
+history.pushState = function () {
+  for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+    args[_key7] = arguments[_key7];
+  }
   originalPushState.apply(this, args);
   emitUrlChange();
 };
-
 _settings_store_singleton__WEBPACK_IMPORTED_MODULE_1__["default"].addEventListener('addon-changed', e => {
   const addonId = e.detail.addonId;
   const runner = AddonRunner.instances.find(i => i.id === addonId);
-
   if (runner) {
     runner.settingsChanged();
   }
-
   if (e.detail.dynamicEnable) {
     if (runner) {
       runner.dynamicEnable();
@@ -1841,12 +1641,10 @@ _settings_store_singleton__WEBPACK_IMPORTED_MODULE_1__["default"].addEventListen
     }
   }
 });
-
 for (const id of Object.keys(_generated_addon_manifests__WEBPACK_IMPORTED_MODULE_5__["default"])) {
   if (!_settings_store_singleton__WEBPACK_IMPORTED_MODULE_1__["default"].getAddonEnabled(id)) {
     continue;
   }
-
   runAddon(id);
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
@@ -1863,30 +1661,27 @@ for (const id of Object.keys(_generated_addon_manifests__WEBPACK_IMPORTED_MODULE
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addContextMenu", function() { return addContextMenu; });
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 // This file is imported from
 // https://github.com/ScratchAddons/ScratchAddons/blob/master/addon-api/content-script/contextmenu.js
 
 /* eslint-disable */
+
 let initialized = false;
 let hasDynamicContextMenu = false;
 let contextMenus = [];
-
 const onReactContextMenu = function onReactContextMenu(e) {
   var _ctxTarget$this$traps10, _ctxTarget$this$traps11, _ctxTarget$this$traps12, _ctxTarget$this$traps13, _ctxTarget$this$traps14, _ctxTarget$this$traps15;
-
   if (!e.target) return;
   const ctxTarget = e.target.closest(".react-contextmenu-wrapper");
   if (!ctxTarget) return;
   let ctxMenu = ctxTarget.querySelector("nav.react-contextmenu");
   let type;
   const extra = {};
-
   if (false) { var _ctxTarget$this$traps, _ctxTarget$this$traps2, _ctxTarget$this$traps3, _ctxTarget$this$traps4, _ctxTarget$this$traps5, _ctxTarget$this$traps6, _ctxTarget$this$traps7, _ctxTarget$this$traps8, _ctxTarget$this$traps9; } else if ((_ctxTarget$this$traps10 = ctxTarget[this.traps.getInternalKey(ctxTarget)]) !== null && _ctxTarget$this$traps10 !== void 0 && (_ctxTarget$this$traps11 = _ctxTarget$this$traps10.return) !== null && _ctxTarget$this$traps11 !== void 0 && (_ctxTarget$this$traps12 = _ctxTarget$this$traps11.return) !== null && _ctxTarget$this$traps12 !== void 0 && (_ctxTarget$this$traps13 = _ctxTarget$this$traps12.return) !== null && _ctxTarget$this$traps13 !== void 0 && (_ctxTarget$this$traps14 = _ctxTarget$this$traps13.stateNode) !== null && _ctxTarget$this$traps14 !== void 0 && (_ctxTarget$this$traps15 = _ctxTarget$this$traps14.props) !== null && _ctxTarget$this$traps15 !== void 0 && _ctxTarget$this$traps15.dragType) {
     // SpriteSelectorItem which despite its name is used for costumes, sounds, backpacked script etc
     const props = ctxTarget[this.traps.getInternalKey(ctxTarget)].return.return.return.stateNode.props;
@@ -1897,17 +1692,14 @@ const onReactContextMenu = function onReactContextMenu(e) {
   } else {
     return;
   }
-
   const ctx = _objectSpread({
     menuItem: ctxMenu,
     target: ctxTarget,
     type
   }, extra);
-
   Array.from(ctxMenu.children).forEach(existing => {
     if (existing.classList.contains("sa-ctx-menu")) existing.remove();
   });
-
   for (const item of hasDynamicContextMenu ? contextMenus.flatMap(menu => typeof menu === "function" ? menu(type, ctx) : menu) : contextMenus) {
     if (!item) continue;
     if (item.types && !item.types.some(itemType => type === itemType)) continue;
@@ -1941,10 +1733,8 @@ const onReactContextMenu = function onReactContextMenu(e) {
       element: itemElem
     });
   }
-
   return;
 };
-
 const initialize = tab => {
   if (initialized) return;
   initialized = true;
@@ -1952,7 +1742,6 @@ const initialize = tab => {
     capture: true
   });
 };
-
 const addContextMenu = (tab, callback, opts) => {
   if (typeof opts === "undefined") {
     contextMenus.push(callback);
@@ -1962,7 +1751,6 @@ const addContextMenu = (tab, callback, opts) => {
       callback
     }));
   }
-
   initialize(tab);
 };
 
@@ -2119,9 +1907,11 @@ __webpack_require__.r(__webpack_exports__);
 // https://github.com/ScratchAddons/ScratchAddons/blob/master/addon-api/content-script/modal.js
 
 
-const createEditorModal = (tab, title, {
-  isOpen = false
-} = {}) => {
+
+const createEditorModal = function createEditorModal(tab, title) {
+  let {
+    isOpen = false
+  } = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   const container = Object.assign(document.createElement('div'), {
     className: tab.scratchClass('modal_modal-overlay'),
     dir: tab.direction
@@ -2171,7 +1961,6 @@ const createEditorModal = (tab, title, {
     remove: container.remove.bind(container)
   };
 };
-
 const createButtonRow = tab => {
   const buttonRow = Object.assign(document.createElement('div'), {
     className: tab.scratchClass('prompt_button-row')
@@ -2192,10 +1981,10 @@ const createButtonRow = tab => {
     okButton
   };
 };
-
-const confirm = (tab, title, message, {
-  useEditorClasses = false
-} = {}) => {
+const confirm = function confirm(tab, title, message) {
+  let {
+    useEditorClasses = false
+  } = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
   const {
     remove,
     container,
@@ -2208,12 +1997,10 @@ const confirm = (tab, title, message, {
     useSizesClass: true
   });
   const mode = tab.editorMode !== null && useEditorClasses ? 'editor' : tab.clientVersion;
-
   if (mode === 'editor') {
     container.classList.add(tab.scratchClass('prompt_modal-content'));
     content.classList.add(tab.scratchClass('prompt_body'));
   }
-
   content.appendChild(Object.assign(document.createElement('div'), {
     className: tab.scratchClass('prompt_label'),
     innerText: message
@@ -2230,12 +2017,10 @@ const confirm = (tab, title, message, {
       remove();
       resolve(false);
     };
-
     const ok = () => {
       remove();
       resolve(true);
     };
-
     backdrop.addEventListener('click', cancel);
     closeButton.addEventListener('click', cancel);
     cancelButton.addEventListener('click', cancel);
@@ -2246,9 +2031,11 @@ const confirm = (tab, title, message, {
     });
   });
 };
-const prompt = (tab, title, message, defaultValue = '', {
-  useEditorClasses = false
-} = {}) => {
+const prompt = function prompt(tab, title, message) {
+  let defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
+  let {
+    useEditorClasses = false
+  } = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
   const {
     remove,
     container,
@@ -2284,12 +2071,10 @@ const prompt = (tab, title, message, defaultValue = '', {
       remove();
       resolve(null);
     };
-
     const ok = () => {
       remove();
       resolve(input.value);
     };
-
     backdrop.addEventListener('click', cancel);
     closeButton.addEventListener('click', cancel);
     cancelButton.addEventListener('click', cancel);
@@ -2311,24 +2096,21 @@ const prompt = (tab, title, message, defaultValue = '', {
 /***/ (function(module, exports) {
 
 /* eslint-disable no-extend-native */
+
 if (!Blob.prototype.text) {
   Blob.prototype.text = function () {
     return new Promise((resolve, reject) => {
       const fr = new FileReader();
-
       fr.onload = () => resolve(fr.result);
-
       fr.onerror = () => reject(new Error('Cannot read blob as text'));
-
       fr.readAsText(this);
     });
   };
 }
-
 if (!Array.prototype.flat) {
-  Array.prototype.flat = function (depth = 1) {
+  Array.prototype.flat = function () {
+    let depth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     const result = [];
-
     for (const i of this) {
       if (Array.isArray(i)) {
         if (depth < 1) {
@@ -2342,11 +2124,9 @@ if (!Array.prototype.flat) {
         result.push(i);
       }
     }
-
     return result;
   };
 }
-
 if (typeof queueMicrotask !== 'function') {
   window.queueMicrotask = callback => {
     Promise.resolve().then(callback);
