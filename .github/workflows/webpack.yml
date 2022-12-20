@@ -16,19 +16,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: webfactory/ssh-agent@v0.7.0
-      with: 
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
+    - name: Install
       run: |
         npm install --force
+      
+    - name: Build
+      run: |
         npm run build
-        git config --global user.email cubeenixdevs@gmail.com
-        git config --global user.name Cube Enix
-        npm run deploy
+        
+    - name: deploy
+    - uses: ad-m/github-push-action@gh-pages
+      with: 
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        branch: "gh-pages"
