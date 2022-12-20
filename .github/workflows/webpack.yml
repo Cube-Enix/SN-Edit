@@ -16,6 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: webfactory/ssh-agent@v0.7.0
+      with: 
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -26,6 +29,6 @@ jobs:
       run: |
         npm install --force
         npm run build
-        git config --global user.email silverteamroblox@gmail.com
-        git config --global user.name ShipmasterKyle
+        git config --global user.email cubeenixdevs@gmail.com
+        git config --global user.name Cube Enix
         npm run deploy
