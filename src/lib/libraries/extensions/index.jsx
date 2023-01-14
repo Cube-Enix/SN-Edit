@@ -115,7 +115,7 @@ export default [
                 id="sn.runt.name"
             />
         ),
-        extensionId: 'snrun',
+        extensionId: 'runt',
         collaborator: 'PenguinMod',
         iconURL: runtimeIconURL,
         insetIconURL: runtimeInsetIconURL,
