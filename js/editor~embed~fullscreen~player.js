@@ -31520,7 +31520,7 @@ __webpack_require__.r(__webpack_exports__);
     defaultMessage: "Runtime",
     id: "sn.runt.name"
   }),
-  extensionId: 'snrun',
+  extensionId: 'runt',
   collaborator: 'PenguinMod',
   iconURL: _runtime_runtime_svg__WEBPACK_IMPORTED_MODULE_35___default.a,
   insetIconURL: _runtime_runtime_small_svg__WEBPACK_IMPORTED_MODULE_36___default.a,
