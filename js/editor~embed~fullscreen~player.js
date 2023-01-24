@@ -31584,19 +31584,6 @@ __webpack_require__.r(__webpack_exports__);
   featured: true
 }, {
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
-    defaultMessage: "Pen++",
-    id: "gui.extension.penplus.name"
-  }),
-  extensionId: 'penplusplus',
-  iconURL: _penplus_penplus_png__WEBPACK_IMPORTED_MODULE_39___default.a,
-  insetIconURL: _penplus_penplus_small_svg__WEBPACK_IMPORTED_MODULE_40___default.a,
-  description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
-    defaultMessage: "The Pen Extension but rendered on the top layer.",
-    id: "gui.extension.penplus.description"
-  }),
-  featured: true
-}, {
-  name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
     defaultMessage: "Pen",
     id: "gui.extension.pen.name"
   }),
