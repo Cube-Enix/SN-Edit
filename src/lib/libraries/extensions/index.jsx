@@ -197,26 +197,6 @@ export default [
     {
         name: (
             <FormattedMessage
-                defaultMessage="Pen++"
-                description="Name for the 'Pen++' extension"
-                id="gui.extension.penplus.name"
-            />
-        ),
-        extensionId: 'penplusplus',
-        iconURL: penplusIconURL,
-        insetIconURL: penplusInsetIconURL,
-        description: (
-            <FormattedMessage
-                defaultMessage="The Pen Extension but rendered on the top layer."
-                description="Description for the 'Pen++' extension"
-                id="gui.extension.penplus.description"
-            />
-        ),
-        featured: true
-    },
-    {
-        name: (
-            <FormattedMessage
                 defaultMessage="Pen"
                 description="Name for the 'Pen' extension"
                 id="gui.extension.pen.name"
