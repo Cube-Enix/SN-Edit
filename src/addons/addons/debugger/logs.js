@@ -1,31 +1,29 @@
 /* inserted by pull.js */
 import _twAsset0 from "!url-loader!./icons/close.svg";
-import _twAsset1 from "!url-loader!./icons/debug-unread.svg";
-import _twAsset2 from "!url-loader!./icons/debug.svg";
-import _twAsset3 from "!url-loader!./icons/delete.svg";
-import _twAsset4 from "!url-loader!./icons/download-white.svg";
-import _twAsset5 from "!url-loader!./icons/error.svg";
-import _twAsset6 from "!url-loader!./icons/logs.svg";
-import _twAsset7 from "!url-loader!./icons/performance.svg";
-import _twAsset8 from "!url-loader!./icons/play.svg";
-import _twAsset9 from "!url-loader!./icons/step.svg";
-import _twAsset10 from "!url-loader!./icons/subthread.svg";
-import _twAsset11 from "!url-loader!./icons/threads.svg";
-import _twAsset12 from "!url-loader!./icons/warning.svg";
+import _twAsset1 from "!url-loader!./icons/debug.svg";
+import _twAsset2 from "!url-loader!./icons/delete.svg";
+import _twAsset3 from "!url-loader!./icons/download-white.svg";
+import _twAsset4 from "!url-loader!./icons/error.svg";
+import _twAsset5 from "!url-loader!./icons/logs.svg";
+import _twAsset6 from "!url-loader!./icons/performance.svg";
+import _twAsset7 from "!url-loader!./icons/play.svg";
+import _twAsset8 from "!url-loader!./icons/step.svg";
+import _twAsset9 from "!url-loader!./icons/subthread.svg";
+import _twAsset10 from "!url-loader!./icons/threads.svg";
+import _twAsset11 from "!url-loader!./icons/warning.svg";
 const _twGetAsset = (path) => {
   if (path === "/icons/close.svg") return _twAsset0;
-  if (path === "/icons/debug-unread.svg") return _twAsset1;
-  if (path === "/icons/debug.svg") return _twAsset2;
-  if (path === "/icons/delete.svg") return _twAsset3;
-  if (path === "/icons/download-white.svg") return _twAsset4;
-  if (path === "/icons/error.svg") return _twAsset5;
-  if (path === "/icons/logs.svg") return _twAsset6;
-  if (path === "/icons/performance.svg") return _twAsset7;
-  if (path === "/icons/play.svg") return _twAsset8;
-  if (path === "/icons/step.svg") return _twAsset9;
-  if (path === "/icons/subthread.svg") return _twAsset10;
-  if (path === "/icons/threads.svg") return _twAsset11;
-  if (path === "/icons/warning.svg") return _twAsset12;
+  if (path === "/icons/debug.svg") return _twAsset1;
+  if (path === "/icons/delete.svg") return _twAsset2;
+  if (path === "/icons/download-white.svg") return _twAsset3;
+  if (path === "/icons/error.svg") return _twAsset4;
+  if (path === "/icons/logs.svg") return _twAsset5;
+  if (path === "/icons/performance.svg") return _twAsset6;
+  if (path === "/icons/play.svg") return _twAsset7;
+  if (path === "/icons/step.svg") return _twAsset8;
+  if (path === "/icons/subthread.svg") return _twAsset9;
+  if (path === "/icons/threads.svg") return _twAsset10;
+  if (path === "/icons/warning.svg") return _twAsset11;
   throw new Error(`Unknown asset: ${path}`);
 };
 
@@ -45,7 +43,10 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
 
   const getInputOfBlock = (targetId, blockId) => {
     const target = vm.runtime.getTargetById(targetId);
-    const block = target.blocks.getBlock(blockId);
+    if (!target) {
+      return null;
+    }
+    const block = debug.getBlock(target, blockId);
     if (!block) {
       return null;
     }
@@ -72,10 +73,11 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
     repeats.style.display = "none";
     root.appendChild(repeats);
 
-    if (row.preview && row.blockId && row.targetId) {
-      const inputBlock = getInputOfBlock(row.targetId, row.blockId);
+    if (row.preview && row.blockId && row.targetInfo) {
+      const originalId = row.targetInfo.originalId;
+      const inputBlock = getInputOfBlock(originalId, row.blockId);
       if (inputBlock) {
-        const preview = debug.createBlockPreview(row.targetId, inputBlock);
+        const preview = debug.createBlockPreview(originalId, inputBlock);
         if (preview) {
           root.appendChild(preview);
         }
@@ -93,8 +95,8 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
     }
     root.appendChild(text);
 
-    if (row.targetId && row.blockId) {
-      root.appendChild(debug.createBlockLink(row.targetId, row.blockId));
+    if (row.targetInfo && row.blockId) {
+      root.appendChild(debug.createBlockLink(row.targetInfo, row.blockId));
     }
 
     return {
@@ -126,13 +128,13 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
       : defaultFormat;
     if (!exportFormat) return;
     const file = logView.rows
-      .map(({ text, targetId, type, count }) =>
+      .map(({ text, targetInfo, type, count }) =>
         (
           exportFormat.replace(
             /\{(sprite|type|content)\}/g,
             (_, match) =>
               ({
-                sprite: debug.getTargetInfoById(targetId).name,
+                sprite: targetInfo ? targetInfo.name : msg("unknown-sprite"),
                 type,
                 content: text,
               }[match])
@@ -167,7 +169,9 @@ export default async function createLogsTab({ debug, addon, console, msg }) {
     };
     if (thread) {
       log.blockId = thread.peekStack();
-      log.targetId = thread.target.id;
+      const targetId = thread.target.id;
+      log.targetId = targetId;
+      log.targetInfo = debug.getTargetInfoById(targetId);
     }
     if (type === "internal") {
       log.internal = true;

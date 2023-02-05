@@ -14,14 +14,15 @@ const manifest = {
     },
     {
       "name": "lisa_wolfgang",
-      "link": "https://scratch.mit.edu/users/lisa_wolfgang"
+      "link": "https://scratch.mit.edu/users/lisa_wolfgang/"
     },
     {
       "name": "GarboMuffin",
-      "link": "https://scratch.mit.edu/users/GarboMuffin"
+      "link": "https://scratch.mit.edu/users/GarboMuffin/"
     }
   ],
   "enabledByDefault": false,
+  "dynamicDisable": true,
   "userscripts": [
     {
       "url": "userscript.js"
@@ -29,7 +30,7 @@ const manifest = {
   ],
   "info": [
     {
-      "type": "warning",
+      "type": "notice",
       "text": "Decreasing the padding size is only visible to you, so when your projects are viewed by other users, your scripts may overlap.",
       "id": "paddingWarning"
     }

@@ -9,7 +9,7 @@ const manifest = {
     },
     {
       "name": "pufferfish101007",
-      "link": "https://scratch.mit.edu/users/pufferfish101007"
+      "link": "https://scratch.mit.edu/users/pufferfish101007/"
     }
   ],
   "dynamicDisable": true,
@@ -22,20 +22,6 @@ const manifest = {
     "recommended"
   ],
   "settings": [
-    {
-      "dynamic": true,
-      "name": "Show option to change block to self",
-      "id": "noop",
-      "type": "boolean",
-      "default": true
-    },
-    {
-      "dynamic": true,
-      "name": "Add border",
-      "id": "border",
-      "type": "boolean",
-      "default": true
-    },
     {
       "dynamic": true,
       "name": "Motion blocks",
@@ -139,6 +125,13 @@ const manifest = {
           "customargs": true
         }
       }
+    },
+    {
+      "dynamic": true,
+      "name": "Show option to change block to self",
+      "id": "noop",
+      "type": "boolean",
+      "default": true
     }
   ],
   "enabledByDefault": true

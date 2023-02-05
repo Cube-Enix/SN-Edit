@@ -1,36 +1,35 @@
 /* inserted by pull.js */
 import _twAsset0 from "!url-loader!./icons/close.svg";
-import _twAsset1 from "!url-loader!./icons/debug-unread.svg";
-import _twAsset2 from "!url-loader!./icons/debug.svg";
-import _twAsset3 from "!url-loader!./icons/delete.svg";
-import _twAsset4 from "!url-loader!./icons/download-white.svg";
-import _twAsset5 from "!url-loader!./icons/error.svg";
-import _twAsset6 from "!url-loader!./icons/logs.svg";
-import _twAsset7 from "!url-loader!./icons/performance.svg";
-import _twAsset8 from "!url-loader!./icons/play.svg";
-import _twAsset9 from "!url-loader!./icons/step.svg";
-import _twAsset10 from "!url-loader!./icons/subthread.svg";
-import _twAsset11 from "!url-loader!./icons/threads.svg";
-import _twAsset12 from "!url-loader!./icons/warning.svg";
+import _twAsset1 from "!url-loader!./icons/debug.svg";
+import _twAsset2 from "!url-loader!./icons/delete.svg";
+import _twAsset3 from "!url-loader!./icons/download-white.svg";
+import _twAsset4 from "!url-loader!./icons/error.svg";
+import _twAsset5 from "!url-loader!./icons/logs.svg";
+import _twAsset6 from "!url-loader!./icons/performance.svg";
+import _twAsset7 from "!url-loader!./icons/play.svg";
+import _twAsset8 from "!url-loader!./icons/step.svg";
+import _twAsset9 from "!url-loader!./icons/subthread.svg";
+import _twAsset10 from "!url-loader!./icons/threads.svg";
+import _twAsset11 from "!url-loader!./icons/warning.svg";
 const _twGetAsset = (path) => {
   if (path === "/icons/close.svg") return _twAsset0;
-  if (path === "/icons/debug-unread.svg") return _twAsset1;
-  if (path === "/icons/debug.svg") return _twAsset2;
-  if (path === "/icons/delete.svg") return _twAsset3;
-  if (path === "/icons/download-white.svg") return _twAsset4;
-  if (path === "/icons/error.svg") return _twAsset5;
-  if (path === "/icons/logs.svg") return _twAsset6;
-  if (path === "/icons/performance.svg") return _twAsset7;
-  if (path === "/icons/play.svg") return _twAsset8;
-  if (path === "/icons/step.svg") return _twAsset9;
-  if (path === "/icons/subthread.svg") return _twAsset10;
-  if (path === "/icons/threads.svg") return _twAsset11;
-  if (path === "/icons/warning.svg") return _twAsset12;
+  if (path === "/icons/debug.svg") return _twAsset1;
+  if (path === "/icons/delete.svg") return _twAsset2;
+  if (path === "/icons/download-white.svg") return _twAsset3;
+  if (path === "/icons/error.svg") return _twAsset4;
+  if (path === "/icons/logs.svg") return _twAsset5;
+  if (path === "/icons/performance.svg") return _twAsset6;
+  if (path === "/icons/play.svg") return _twAsset7;
+  if (path === "/icons/step.svg") return _twAsset8;
+  if (path === "/icons/subthread.svg") return _twAsset9;
+  if (path === "/icons/threads.svg") return _twAsset10;
+  if (path === "/icons/warning.svg") return _twAsset11;
   throw new Error(`Unknown asset: ${path}`);
 };
 
-import { getRunningThread } from "./module.js";
+import { onPauseChanged, isPaused, singleStep, onSingleStep, getRunningThread } from "./module.js";
 import LogView from "./log-view.js";
+import Highlighter from "../editor-stepping/highlighter.js";
 
 const concatInPlace = (copyInto, copyFrom) => {
   for (const i of copyFrom) {
@@ -50,6 +49,8 @@ export default async function createThreadsTab({ debug, addon, console, msg }) {
   logView.canAutoScrollToEnd = false;
   logView.outerElement.classList.add("sa-debugger-threads");
   logView.placeholderElement.textContent = msg("no-threads-running");
+
+  const highlighter = new Highlighter(10, "#ff0000");
 
   logView.generateRow = (row) => {
     const root = document.createElement("div");
@@ -93,12 +94,12 @@ export default async function createThreadsTab({ debug, addon, console, msg }) {
     if (row.type === "compiled") {
       const el = document.createElement('div');
       el.className = "sa-debugger-thread-compiled";
-      el.textContent = "Stack information not available for compiled threads.";
+      el.textContent = "Compiled threads can't be stepped and have no stack information.";
       root.appendChild(el);
     }
 
     if (row.targetId && row.blockId) {
-      root.appendChild(debug.createBlockLink(row.targetId, row.blockId));
+      root.appendChild(debug.createBlockLink(debug.getTargetInfoById(row.targetId), row.blockId));
     }
 
     return {
@@ -150,7 +151,7 @@ export default async function createThreadsTab({ debug, addon, console, msg }) {
           },
           compiledItem: thread.isCompiled ? {
             type: "compiled",
-            depth: 2,
+            depth: 1,
           } : null,
           blockCache: new WeakMap(),
         });
@@ -181,9 +182,12 @@ export default async function createThreadsTab({ debug, addon, console, msg }) {
         }
 
         blockInfo.running =
-          thread === runningThread &&
-          blockId === runningThread.peekStack() &&
-          stackFrameIdx === runningThread.stackFrames.length - 1;
+          thread === runningThread && (
+            thread.isCompiled || (
+              blockId === runningThread.peekStack() &&
+              stackFrameIdx === runningThread.stackFrames.length - 1
+            )
+          );
 
         const result = [blockInfo];
         if (stackFrame && stackFrame.executionContext && stackFrame.executionContext.startedThreads) {
@@ -195,14 +199,14 @@ export default async function createThreadsTab({ debug, addon, console, msg }) {
         return result;
       };
 
-      const topBlock = thread.target.blocks.getBlock(thread.topBlock);
+      const topBlock = debug.getBlock(thread.target, thread.topBlock);
       const result = [cacheInfo.headerItem];
       if (topBlock) {
         concatInPlace(result, createBlockInfo(topBlock, 0));
         for (let i = 0; i < thread.stack.length; i++) {
           const blockId = thread.stack[i];
           if (blockId === topBlock.id) continue;
-          const block = thread.target.blocks.getBlock(blockId);
+          const block = debug.getBlock(thread.target, blockId);
           if (block) {
             concatInPlace(result, createBlockInfo(block, i));
           }
@@ -231,7 +235,32 @@ export default async function createThreadsTab({ debug, addon, console, msg }) {
 
   debug.addAfterStepCallback(() => {
     updateContent();
+
+    const runningThread = getRunningThread();
+    if (runningThread) {
+      highlighter.setGlowingThreads([runningThread]);
+    } else {
+      highlighter.setGlowingThreads([]);
+    }
   });
+
+  const stepButton = debug.createHeaderButton({
+    text: msg("step"),
+    icon: _twGetAsset("/icons/step.svg"),
+    description: msg("step-desc"),
+  });
+  stepButton.element.addEventListener("click", () => {
+    singleStep();
+  });
+
+  const handlePauseChanged = (paused) => {
+    stepButton.element.style.display = paused ? "" : "none";
+    updateContent();
+  };
+  handlePauseChanged(isPaused());
+  onPauseChanged(handlePauseChanged);
+
+  onSingleStep(updateContent);
 
   const show = () => {
     logView.show();
@@ -244,7 +273,7 @@ export default async function createThreadsTab({ debug, addon, console, msg }) {
   return {
     tab,
     content: logView.outerElement,
-    buttons: [],
+    buttons: [stepButton],
     show,
     hide,
   };

@@ -137,6 +137,8 @@ const padWithEmptyMappings = (array, length) => {
   return array;
 };
 
+const createEmptyMappingList = (length) => padWithEmptyMappings([], length);
+
 const getMovementConfiguration = (usedKeys) => ({
   usesArrows:
     usedKeys.has("ArrowUp") || usedKeys.has("ArrowDown") || usedKeys.has("ArrowRight") || usedKeys.has("ArrowLeft"),
@@ -157,16 +159,22 @@ class GamepadData {
   }
 
   resetMappings() {
+    this.hints = this.gamepadLib.getHints();
     this.buttonMappings = this.getDefaultButtonMappings().map(transformAndCopyMapping);
     this.axesMappings = this.getDefaultAxisMappings().map(transformAndCopyMapping);
   }
 
+  clearMappings() {
+    this.buttonMappings = createEmptyMappingList(this.gamepad.buttons.length);
+    this.axesMappings = createEmptyMappingList(this.gamepad.axes.length);
+  }
+
   getDefaultButtonMappings() {
     let buttons;
-    if (this.gamepadLib.hints.importedSettings) {
-      buttons = this.gamepadLib.hints.importedSettings.buttons;
+    if (this.hints.importedSettings) {
+      buttons = this.hints.importedSettings.buttons;
     } else {
-      const usedKeys = this.gamepadLib.hints.usedKeys;
+      const usedKeys = this.hints.usedKeys;
       const alreadyUsedKeys = new Set();
       const { usesArrows, usesWASD } = getMovementConfiguration(usedKeys);
       if (usesWASD) {
@@ -358,14 +366,14 @@ class GamepadData {
 
   getDefaultAxisMappings() {
     let axes = [];
-    if (this.gamepadLib.hints.importedSettings) {
-      axes = this.gamepadLib.hints.importedSettings.axes;
+    if (this.hints.importedSettings) {
+      axes = this.hints.importedSettings.axes;
     } else {
       // Only return default axis mappings when there are 4 axes, like an xbox controller
       // If there isn't exactly 4, we can't really predict what the axes mean
       // Some controllers map the dpad to *both* buttons and axes at the same time, which would cause conflicts.
       if (this.gamepad.axes.length === 4) {
-        const usedKeys = this.gamepadLib.hints.usedKeys;
+        const usedKeys = this.hints.usedKeys;
         const { usesArrows, usesWASD } = getMovementConfiguration(usedKeys);
         if (usesWASD) {
           axes.push(defaultAxesMappings.wasd[0]);
@@ -420,8 +428,6 @@ class GamepadLib extends EventTarget {
 
     this.connectCallbacks = [];
 
-    this.hints = defaultHints();
-
     this.keysPressedThisFrame = new Set();
     this.oldKeysPressed = new Set();
 
@@ -450,26 +456,28 @@ class GamepadLib extends EventTarget {
     });
   }
 
-  ensureHintsGenerated() {
-    if (this.hints.generated) {
-      return;
-    }
-    if (this.getHintsLazily) {
-      Object.assign(this.hints, this.getHintsLazily());
-    }
-    this.hints.generated = true;
+  getHints() {
+    return Object.assign(defaultHints(), this.getUserHints());
+  }
+
+  getUserHints() {
+    // to be overridden by users
+    return {};
   }
 
   resetControls() {
-    this.hints = defaultHints();
-    this.ensureHintsGenerated();
     for (const gamepad of this.gamepads.values()) {
       gamepad.resetMappings();
     }
   }
 
+  clearControls() {
+    for (const gamepad of this.gamepads.values()) {
+      gamepad.clearMappings();
+    }
+  }
+
   handleConnect(e) {
-    this.ensureHintsGenerated();
     for (const callback of this.connectCallbacks) {
       callback();
     }
@@ -701,7 +709,7 @@ class GamepadEditor extends EventTarget {
     this.onSelectorChange = this.onSelectorChange.bind(this);
     this.onGamepadsChange = this.onGamepadsChange.bind(this);
 
-    this.selector.onchange = this.onSelectorChange;
+    this.selector.addEventListener("change", this.onSelectorChange);
     this.gamepadLib.addEventListener("gamepadconnected", this.onGamepadsChange);
     this.gamepadLib.addEventListener("gamepaddisconnected", this.onGamepadsChange);
 
@@ -754,7 +762,11 @@ class GamepadEditor extends EventTarget {
     if (key === "ArrowLeft") return this.msg("key-left");
     if (key === "ArrowRight") return this.msg("key-right");
     if (key === "Enter") return this.msg("key-enter");
-    return key.toUpperCase();
+    if (key.length === 1) {
+      return key.toUpperCase();
+    }
+    // Convert eg. "PageUp" -> "Page Up"
+    return key.replace(/[a-z]([A-Z])/, (n) => `${n[0]} ${n[1]}`)
   }
 
   createButtonMapping(mappingList, index, { property = "high", allowClick = true } = {}) {
@@ -815,15 +827,36 @@ class GamepadEditor extends EventTarget {
       }
     };
 
-    const handleKeyDown = (e) => {
+    const handleKeyEvent = (e) => {
       if (isAcceptingInput) {
         e.preventDefault();
         const key = e.key;
-        if (["Alt", "Shift", "Control"].includes(key)) {
+        // TW: We allow binding to control and shift
+        if (["Alt"].includes(key)) {
           return;
         }
         const mapping = mappingList[index];
-        if (key.length === 1 || ["ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft", "Enter"].includes(key)) {
+        const KEYS = [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowRight",
+          "ArrowLeft",
+          "Enter",
+          // TW: We support more keys
+          // "Backspace",
+          // "Delete",
+          "Shift",
+          "CapsLock",
+          "ScrollLock",
+          "Control",
+          // "Escape",
+          "Insert",
+          "Home",
+          "End",
+          "PageUp",
+          "PageDown",
+        ];
+        if (key.length === 1 || KEYS.includes(key)) {
           mapping.type = "key";
           mapping[property] = key;
         } else if (key !== "Escape") {
@@ -835,6 +868,15 @@ class GamepadEditor extends EventTarget {
         e.preventDefault();
         e.target.click();
       }
+    };
+
+    const MODIFIER_KEYS = ["Shift", "Control"];
+    const handleKeyDown = (e) => {
+      if (!MODIFIER_KEYS.includes(e.key)) handleKeyEvent(e);
+    };
+
+    const handleKeyUp = (e) => {
+      if (MODIFIER_KEYS.includes(e.key)) handleKeyEvent(e);
     };
 
     const handleBlur = () => {
@@ -851,6 +893,7 @@ class GamepadEditor extends EventTarget {
 
     input.addEventListener("mouseup", handleClick);
     input.addEventListener("keydown", handleKeyDown);
+    input.addEventListener("keyup", handleKeyUp);
     input.addEventListener("blur", handleBlur);
     update();
 

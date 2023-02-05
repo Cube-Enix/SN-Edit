@@ -1,53 +1,64 @@
-.sa-onion-controls-container {
-  display: flex;
-  flex-direction: row;
-  height: calc(1.95rem + 2px);
-}
-
 .sa-onion-button {
   position: relative;
 }
 .sa-onion-button:focus-within {
   background-color: hsla(0, 100%, 65%, 0.2);
 }
+[theme="dark"] .sa-onion-image {
+  filter: brightness(0) invert(0.8);
+}
+.sa-onion-button[data-enabled="true"] .sa-onion-image {
+  filter: brightness(0) invert(1);
+}
 .sa-onion-button[data-enabled="true"] {
-  background-color: #ff964c;
+  background-color: #ff4c4c;
+}
+
+.sa-onion-group {
+  position: relative;
+  flex-direction: row;
+}
+
+.sa-onion-settings-wrapper {
+  position: absolute;
+  justify-items: center;
+  left: 50%;
+  width: 1.95rem;
+  height: 1.95rem;
+  display: grid;
 }
 
 .sa-onion-settings {
   position: absolute;
-  bottom: 0;
-  right: 16px;
+  bottom: 100%;
   /* based on the styles for the color dropdown */
   padding: 4px;
   border-radius: 4px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--paint-ui-pane-border, #ddd);
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.3);
   transition-property: bottom, opacity;
   transition-duration: 500ms;
   transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
   opacity: 0;
   pointer-events: none;
-  background: white;
-  color: black;
+  background: var(--ui-primary, white);
+  min-height: 100%;
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
 }
 .sa-onion-settings[data-visible="true"] {
-  bottom: 16px;
+  bottom: calc(100% + 22px);
   pointer-events: auto;
   opacity: 1;
-}
-[dir="rtl"] .sa-onion-settings {
-  right: initial;
-  left: 24px;
-}
-.sa-onion-settings .sa-onion-button {
-  border-color: #d9d9d9 !important; /* override dark mode */
 }
 
 .sa-onion-settings-line {
   display: flex;
   justify-content: flex-end;
   align-items: baseline;
+  gap: 0.25em;
 }
 
 .sa-onion-settings-input {
@@ -75,22 +86,13 @@
   position: absolute;
   bottom: 0;
   transform: translateY(100%);
-  right: 138px;
-}
-[dir="rtl"] .sa-onion-settings-tip {
-  right: 84px;
+  right: calc(50% - 7px);
 }
 .sa-onion-settings-polygon {
-  fill: white;
-  stroke: #ddd;
+  fill: var(--ui-primary, white);
+  stroke: var(--paint-ui-pane-border, #ddd);
 }
 
-[theme="dark"] .sa-onion-image[data-image="settings"] {
-  filter: invert(1);
-}
-[theme="dark"] .sa-onion-image[data-image="increment"] {
-  filter: none;
-}
-[theme="dark"] .sa-onion-image[data-image="decrement"] {
-  filter: none;
+.sa-onion-settings-label {
+  white-space: nowrap;
 }

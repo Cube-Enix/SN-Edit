@@ -6,6 +6,10 @@ const manifest = {
   "credits": [
     {
       "name": "Jeffalo"
+    },
+    {
+      "name": "OregSam",
+      "link": "https://scratch.mit.edu/users/simiagain/"
     }
   ],
   "dynamicDisable": true,
@@ -19,9 +23,18 @@ const manifest = {
       "url": "style.css"
     }
   ],
+  "settings": [
+    {
+      "dynamic": true,
+      "id": "showicononly",
+      "name": "Show icon only",
+      "default": false,
+      "type": "boolean"
+    }
+  ],
   "tags": [
     "recommended"
   ],
-  "enabledByDefault": true
+  "enabledByDefault": false
 };
 export default manifest;

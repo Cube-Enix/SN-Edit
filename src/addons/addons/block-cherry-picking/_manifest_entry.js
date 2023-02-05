@@ -6,12 +6,10 @@ const manifest = {
   "description": "Adds the ability to drag a single block out of the middle of a script (instead of the entire stack attached below it) while holding the Ctrl key.",
   "info": [
     {
-      "type": "notice",
       "text": "On macOS, use the Cmd key instead of the Ctrl key.",
       "id": "macContextDisabled"
     },
     {
-      "type": "notice",
       "text": "If \"flip controls\" is enabled, grabbing blocks individually will be the default behavior. Hold Ctrl to drag the entire stack.",
       "id": "flipControls"
     }
@@ -19,7 +17,7 @@ const manifest = {
   "credits": [
     {
       "name": "lisa_wolfgang",
-      "link": "https://scratch.mit.edu/users/lisa_wolfgang"
+      "link": "https://scratch.mit.edu/users/lisa_wolfgang/"
     },
     {
       "name": "GarboMuffin"
