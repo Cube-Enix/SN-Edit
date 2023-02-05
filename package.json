@@ -1,5 +1,5 @@
 {
-  "name": "sn-edit",
+  "name": "scratch-gui",
   "version": "2.0.5",
   "description": "GraphicaL User Interface for creating and running SNext projects",
   "main": "./dist/scratch-gui.js",
