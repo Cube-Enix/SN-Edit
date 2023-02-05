@@ -268,11 +268,11 @@ class Interface extends React.Component {
                                     {/* https://github.com/LLK/scratch-gui/pull/8269 */}
                                     {/* https://github.com/LLK/scratch-www/pull/6773 */}
                                     <p>
-                                        <i>{'Version 2.0.6'}</i>
+                                        <i>{'Version 2.0.5'}</i>
                                     </p>
                                     <p>
                                         {/* eslint-disable-next-line max-len */}
-                                        {"Build patches!"}
+                                        {"Extension patches!"}
                                     </p>
                                     <p>
                                         {'For more information, visit '}
