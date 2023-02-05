@@ -1,37 +1,38 @@
 /* inserted by pull.js */
 import _twAsset0 from "!url-loader!./icons/close.svg";
-import _twAsset1 from "!url-loader!./icons/debug.svg";
-import _twAsset2 from "!url-loader!./icons/delete.svg";
-import _twAsset3 from "!url-loader!./icons/download-white.svg";
-import _twAsset4 from "!url-loader!./icons/error.svg";
-import _twAsset5 from "!url-loader!./icons/logs.svg";
-import _twAsset6 from "!url-loader!./icons/performance.svg";
-import _twAsset7 from "!url-loader!./icons/play.svg";
-import _twAsset8 from "!url-loader!./icons/step.svg";
-import _twAsset9 from "!url-loader!./icons/subthread.svg";
-import _twAsset10 from "!url-loader!./icons/threads.svg";
-import _twAsset11 from "!url-loader!./icons/warning.svg";
+import _twAsset1 from "!url-loader!./icons/debug-unread.svg";
+import _twAsset2 from "!url-loader!./icons/debug.svg";
+import _twAsset3 from "!url-loader!./icons/delete.svg";
+import _twAsset4 from "!url-loader!./icons/download-white.svg";
+import _twAsset5 from "!url-loader!./icons/error.svg";
+import _twAsset6 from "!url-loader!./icons/logs.svg";
+import _twAsset7 from "!url-loader!./icons/performance.svg";
+import _twAsset8 from "!url-loader!./icons/play.svg";
+import _twAsset9 from "!url-loader!./icons/step.svg";
+import _twAsset10 from "!url-loader!./icons/subthread.svg";
+import _twAsset11 from "!url-loader!./icons/threads.svg";
+import _twAsset12 from "!url-loader!./icons/warning.svg";
 const _twGetAsset = (path) => {
   if (path === "/icons/close.svg") return _twAsset0;
-  if (path === "/icons/debug.svg") return _twAsset1;
-  if (path === "/icons/delete.svg") return _twAsset2;
-  if (path === "/icons/download-white.svg") return _twAsset3;
-  if (path === "/icons/error.svg") return _twAsset4;
-  if (path === "/icons/logs.svg") return _twAsset5;
-  if (path === "/icons/performance.svg") return _twAsset6;
-  if (path === "/icons/play.svg") return _twAsset7;
-  if (path === "/icons/step.svg") return _twAsset8;
-  if (path === "/icons/subthread.svg") return _twAsset9;
-  if (path === "/icons/threads.svg") return _twAsset10;
-  if (path === "/icons/warning.svg") return _twAsset11;
+  if (path === "/icons/debug-unread.svg") return _twAsset1;
+  if (path === "/icons/debug.svg") return _twAsset2;
+  if (path === "/icons/delete.svg") return _twAsset3;
+  if (path === "/icons/download-white.svg") return _twAsset4;
+  if (path === "/icons/error.svg") return _twAsset5;
+  if (path === "/icons/logs.svg") return _twAsset6;
+  if (path === "/icons/performance.svg") return _twAsset7;
+  if (path === "/icons/play.svg") return _twAsset8;
+  if (path === "/icons/step.svg") return _twAsset9;
+  if (path === "/icons/subthread.svg") return _twAsset10;
+  if (path === "/icons/threads.svg") return _twAsset11;
+  if (path === "/icons/warning.svg") return _twAsset12;
   throw new Error(`Unknown asset: ${path}`);
 };
 
 import { isPaused, setPaused, onPauseChanged, setup } from "./module.js";
 import createLogsTab from "./logs.js";
 import createThreadsTab from "./threads.js";
-import createPerformanceTab from "./performance.js";
-import Utils from "../find-bar/blockly/Utils.js";
+import DevtoolsUtils from "../editor-devtools/blockly/Utils.js";
 
 const removeAllChildren = (element) => {
   while (element.firstChild) {
@@ -39,7 +40,7 @@ const removeAllChildren = (element) => {
   }
 };
 
-export default async function ({ addon, console, msg }) {
+export default async function ({ addon, global, console, msg }) {
   setup(addon.tab.traps.vm);
 
   let logsTab;
@@ -114,7 +115,11 @@ export default async function ({ addon, console, msg }) {
   debuggerButton.addEventListener("click", () => setInterfaceVisible(true));
 
   const setHasUnreadMessage = (unreadMessage) => {
-    debuggerButtonContent.classList.toggle("sa-debugger-unread", unreadMessage);
+    // setting image.src is slow, only do it when necessary
+    const newImage = _twGetAsset((unreadMessage ? "/icons/debug-unread.svg" : "/icons/debug.svg"));
+    if (debuggerButtonImage.src !== newImage) {
+      debuggerButtonImage.src = newImage;
+    }
   };
 
   const interfaceContainer = Object.assign(document.createElement("div"), {
@@ -132,21 +137,6 @@ export default async function ({ addon, console, msg }) {
   const tabContentContainer = Object.assign(document.createElement("div"), {
     className: "sa-debugger-tab-content",
   });
-
-  const compilerWarning = document.createElement("a");
-  compilerWarning.addEventListener("click", () => {
-    addon.tab.redux.dispatch({
-      type: "scratch-gui/modals/OPEN_MODAL",
-      modal: "settingsModal"
-    });
-  });
-  compilerWarning.className = "sa-debugger-log sa-debugger-compiler-warning";
-  compilerWarning.textContent = "The debugger works best when the compiler is disabled.";
-  const updateCompilerWarningVisibility = () => {
-    compilerWarning.hidden = !vm.runtime.compilerOptions.enabled;
-  };
-  vm.on("COMPILER_OPTIONS_CHANGED", updateCompilerWarningVisibility);
-  updateCompilerWarningVisibility();
 
   let isInterfaceVisible = false;
   const setInterfaceVisible = (_isVisible) => {
@@ -196,7 +186,7 @@ export default async function ({ addon, console, msg }) {
   interfaceHeader.addEventListener("mousedown", handleStartDrag);
 
   interfaceHeader.append(tabListElement, buttonContainerElement);
-  interfaceContainer.append(interfaceHeader, compilerWarning, tabContentContainer);
+  interfaceContainer.append(interfaceHeader, tabContentContainer);
   document.body.append(interfaceContainer);
 
   const createHeaderButton = ({ text, icon, description }) => {
@@ -272,8 +262,6 @@ export default async function ({ addon, console, msg }) {
     afterStepCallbacks.push(cb);
   };
 
-  const getBlock = (target, id) => target.blocks.getBlock(id) || vm.runtime.flyoutBlocks.getBlock(id);
-
   const getTargetInfoById = (id) => {
     const target = vm.runtime.getTargetById(id);
     if (target) {
@@ -298,11 +286,11 @@ export default async function ({ addon, console, msg }) {
     };
   };
 
-  const createBlockLink = (targetInfo, blockId) => {
+  const createBlockLink = (targetId, blockId) => {
     const link = document.createElement("a");
     link.className = "sa-debugger-log-link";
 
-    const { exists, name, originalId } = targetInfo;
+    const { exists, name, originalId } = getTargetInfoById(targetId);
     link.textContent = name;
     if (exists) {
       // We use mousedown instead of click so that you can still go to blocks when logs are rapidly scrolling
@@ -344,21 +332,11 @@ export default async function ({ addon, console, msg }) {
     // Don't scroll to blocks in the flyout
     if (block.workspace.isFlyout) return;
 
-    new Utils(addon).scrollBlockIntoView(blockId);
+    new DevtoolsUtils(addon).scrollBlockIntoView(blockId);
   };
 
-  /**
-   * @param {string} procedureCode
-   * @returns {string}
-   */
-  const formatProcedureCode = (procedureCode) => {
-    const customBlock = addon.tab.getCustomBlock(procedureCode);
-    if (customBlock) {
-      procedureCode = customBlock.displayName;
-    }
-    // May be slightly incorrect in some edge cases.
-    return procedureCode.replace(/%[nbs]/g, "()");
-  };
+  // May be slightly incorrect in some edge cases.
+  const formatProcedureCode = (proccode) => proccode.replace(/%[nbs]/g, "()");
 
   // May be slightly incorrect in some edge cases.
   const formatBlocklyBlockData = (jsonData) => {
@@ -418,7 +396,7 @@ export default async function ({ addon, console, msg }) {
       return null;
     }
 
-    const block = getBlock(target, blockId);
+    const block = target.blocks.getBlock(blockId);
     if (!block || block.opcode === "text") {
       return null;
     }
@@ -426,6 +404,7 @@ export default async function ({ addon, console, msg }) {
     let text;
     let category;
     let shape;
+    let color;
     if (
       block.opcode === "data_variable" ||
       block.opcode === "data_listcontents" ||
@@ -447,12 +426,13 @@ export default async function ({ addon, console, msg }) {
       const customBlock = addon.tab.getCustomBlock(proccode);
       if (customBlock) {
         category = "addon-custom-block";
+        color = customBlock.color;
       } else {
         category = "more";
       }
     } else if (block.opcode === "procedures_definition") {
       const prototypeBlockId = block.inputs.custom_block.block;
-      const prototypeBlock = getBlock(target, prototypeBlockId);
+      const prototypeBlock = target.blocks.getBlock(prototypeBlockId);
       const proccode = prototypeBlock.mutation.proccode;
       text = ScratchBlocks.ScratchMsgs.translate("PROCEDURES_DEFINITION", "define %1").replace(
         "%1",
@@ -482,8 +462,7 @@ export default async function ({ addon, console, msg }) {
       if (!text) {
         return null;
       }
-      // jsonData.extensions is not guaranteed to exist
-      category = jsonData.extensions?.includes("scratch_extension") ? "pen" : jsonData.category;
+      category = jsonData.category;
       const isStatement =
         (jsonData.extensions &&
           (jsonData.extensions.includes("shape_statement") ||
@@ -497,12 +476,33 @@ export default async function ({ addon, console, msg }) {
       return null;
     }
 
+    if (!color) {
+      const blocklyCategoryMap = {
+        "data-lists": "data_lists",
+        list: "data_lists",
+        events: "event",
+      };
+      const blocklyColor = ScratchBlocks.Colours[blocklyCategoryMap[category] || category];
+      if (blocklyColor) {
+        color = blocklyColor.primary;
+      } else {
+        // block probably belongs to an extension
+        color = ScratchBlocks.Colours.pen.primary;
+      }
+    }
+
     const element = document.createElement("span");
-    element.className = "sa-debugger-block-preview sa-block-color";
+    element.className = "sa-debugger-block-preview";
     element.textContent = text;
+    element.style.backgroundColor = color;
     element.dataset.shape = shape;
 
-    element.classList.add(`sa-block-color-${category}`);
+    // data-category is used for editor-theme3 compatibility
+    const colorCategoryMap = {
+      list: "data-lists",
+      more: "custom",
+    };
+    element.dataset.category = colorCategoryMap[category] || category;
 
     return element;
   };
@@ -513,7 +513,6 @@ export default async function ({ addon, console, msg }) {
       createHeaderTab,
       setHasUnreadMessage,
       addAfterStepCallback,
-      getBlock,
       getTargetInfoById,
       createBlockLink,
       createBlockPreview,
@@ -570,12 +569,9 @@ export default async function ({ addon, console, msg }) {
   document.addEventListener(
     "click",
     (e) => {
-      if (e.target.closest("[class*='stage-header_stage-button-first']:not(.sa-hide-stage-button)")) {
+      if (e.target.closest("[class*='stage-header_stage-button-first']")) {
         document.body.classList.add("sa-debugger-small");
-      } else if (
-        e.target.closest("[class*='stage-header_stage-button-last']") ||
-        e.target.closest(".sa-hide-stage-button")
-      ) {
+      } else if (e.target.closest("[class*='stage-header_stage-button-last']")) {
         document.body.classList.remove("sa-debugger-small");
       }
     },

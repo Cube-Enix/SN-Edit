@@ -1,35 +1,21 @@
-export default async function ({ addon, console, msg }) {
-  function makeStyle() {
-    let style = document.createElement("style");
-    style.textContent = `
-    .blocklyText {
-        fill: #fff;
-        font-family: "Helvetica Neue", Helvetica, sans-serif;
-        font-size: 12pt;
-        font-weight: 500;
-    }
-    .blocklyNonEditableText>text, .blocklyEditableText>text {
-        fill: #575E75;
-    }
-    .blocklyDropdownText {
-        fill: #fff !important;
-    }
-    `;
-    for (let userstyle of document.querySelectorAll(".scratch-addons-style[data-addons*='editor-theme3']")) {
-      if (userstyle.disabled) continue;
-      style.textContent += userstyle.textContent;
-    }
-    return style;
+export default async function ({ addon, global, console, msg }) {
+  let style = document.createElement("style");
+  style.textContent = `
+  .blocklyText {
+      fill: #fff;
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 12pt;
+      font-weight: 500;
   }
-
-  function setCSSVars(element) {
-    for (let property of document.documentElement.style) {
-      if (property.startsWith("--editorTheme3-"))
-        element.style.setProperty(property, document.documentElement.style.getPropertyValue(property));
-    }
+  .blocklyNonEditableText>text, .blocklyEditableText>text {
+      fill: #575E75;
   }
-
-  let exSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  .blocklyDropdownText {
+      fill: #fff !important;
+  }
+  `;
+  let exSVG = document.createElement("svg");
+  exSVG.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   exSVG.setAttribute("xmlns:html", "http://www.w3.org/1999/xhtml");
   exSVG.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
   exSVG.setAttribute("version", "1.1");
@@ -58,8 +44,7 @@ export default async function ({ addon, console, msg }) {
   );
 
   addon.tab.createBlockContextMenu(
-    (items) => {
-      if (addon.self.disabled) return items;
+    (items, block) => {
       let svgchild = document.querySelector("svg.blocklySvg g.blocklyBlockCanvas");
 
       const pasteItemIndex = items.findIndex((obj) => obj._isDevtoolsFirstItem);
@@ -90,14 +75,12 @@ export default async function ({ addon, console, msg }) {
           separator: false,
         }
       );
-
       return items;
     },
     { workspace: true }
   );
   addon.tab.createBlockContextMenu(
     (items, block) => {
-      if (addon.self.disabled) return items;
       const makeSpaceItemIndex = items.findIndex((obj) => obj._isDevtoolsFirstItem);
       const insertBeforeIndex =
         makeSpaceItemIndex !== -1
@@ -126,7 +109,6 @@ export default async function ({ addon, console, msg }) {
           separator: false,
         }
       );
-
       return items;
     },
     { blocks: true }
@@ -163,7 +145,9 @@ export default async function ({ addon, console, msg }) {
       }
     });
     if (!isExportPNG) {
-      exportData(new XMLSerializer().serializeToString(svg));
+      let tmp = document.createElement("div");
+      tmp.appendChild(svg);
+      exportData(tmp.innerHTML);
     } else {
       exportPNG(svg);
     }
@@ -179,8 +163,7 @@ export default async function ({ addon, console, msg }) {
       "transform",
       `translate(0,${dataShapes === "hat" ? "18" : "0"}) ${isExportPNG ? "scale(2)" : ""}`
     );
-    setCSSVars(svg);
-    svg.append(makeStyle());
+    svg.append(style);
     svg.append(svgchild);
     return svg;
   }
@@ -208,8 +191,7 @@ export default async function ({ addon, console, msg }) {
         isExportPNG ? "scale(2)" : ""
       }`
     );
-    setCSSVars(svg);
-    svg.append(makeStyle());
+    svg.append(style);
     svg.append(svgchild);
     return svg;
   }
@@ -232,12 +214,13 @@ export default async function ({ addon, console, msg }) {
   }
 
   function exportPNG(svg) {
-    const serializer = new XMLSerializer();
+    const div = document.createElement("div");
+    div.appendChild(svg);
 
     const iframe = document.createElement("iframe");
     // iframe.style.display = "none"
     document.body.append(iframe);
-    iframe.contentDocument.write(serializer.serializeToString(svg));
+    iframe.contentDocument.write(div.innerHTML);
     let { width, height } = iframe.contentDocument.body.querySelector("svg g").getBoundingClientRect();
     height = height + 20 * 2; //  hat block height restore
     svg.setAttribute("width", width + "px");
@@ -248,10 +231,7 @@ export default async function ({ addon, console, msg }) {
 
     let img = document.createElement("img");
 
-    img.setAttribute(
-      "src",
-      "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(serializer.serializeToString(svg))))
-    );
+    img.setAttribute("src", "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(div.innerHTML))));
     img.onload = function () {
       canvas.height = img.height;
       canvas.width = img.width;

@@ -1,45 +1,5 @@
-export default async function ({ addon, console }) {
-  /** @type {HTMLElement|null} */
-  let currentDraggingElement = null;
-
-  /** @type {WeakMap<HTMLElement, Animation>} */
-  const allAnimations = new WeakMap();
-
-  const FORWARD = 1;
-  const REVERSE = -1;
-
-  /**
-   * @param {HTMLElement} element
-   * @param {number} direction
-   * @returns {Animation}
-   */
-  const animateElement = (element, direction) => {
-    /** @type {Animation} */
-    let animation;
-    if (allAnimations.has(element)) {
-      animation = allAnimations.get(element);
-    } else {
-      animation = element.animate(
-        [
-          {
-            // this object intentionally empty so the element animates from whatever its default value
-            // is in CSS.
-          },
-          {
-            backgroundColor: "hsla(0, 100%, 77%, 1)",
-          },
-        ],
-        {
-          duration: 250,
-          fill: "forwards",
-          easing: "ease",
-        }
-      );
-      allAnimations.set(element, animation);
-    }
-
-    animation.playbackRate = direction;
-  };
+export default async function ({ addon, global, console }) {
+  const DRAG_OVER_CLASS = "sa-dragged-over";
 
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
   const reactAwareSetValue = (el, value) => {
@@ -117,7 +77,7 @@ export default async function ({ addon, console }) {
       callback = async (files) => {
         const text = (await Promise.all(Array.from(files, (file) => file.text())))
           .join("")
-          // Match pasting behavior: remove all newline characters at the end
+          // Match pasting behaviour: remove all newline characters at the end
           .replace(/[\r\n]+$/, "")
           .replace(/\r?\n|\r/g, " ");
         const selectionStart = el.selectionStart;
@@ -131,21 +91,10 @@ export default async function ({ addon, console }) {
 
     e.preventDefault();
 
-    if (el === currentDraggingElement) {
+    if (el.classList.contains(DRAG_OVER_CLASS)) {
       return;
     }
-    currentDraggingElement = el;
-
-    /** @type {HTMLElement[]} */
-    const elementsToAnimate = [
-      el,
-      el.querySelector('div[class*="stage-selector_header_"]'),
-      el.querySelector('div[class*="sprite-info_sprite-info"]'),
-      el.querySelector('div[class*="monitor_list-body"]'),
-    ].filter((i) => i);
-    for (const el of elementsToAnimate) {
-      animateElement(el, FORWARD);
-    }
+    el.classList.add(DRAG_OVER_CLASS);
 
     const handleDrop = (e) => {
       e.preventDefault();
@@ -167,15 +116,10 @@ export default async function ({ addon, console }) {
     };
 
     const cleanup = () => {
-      currentDraggingElement = null;
-
+      el.classList.remove(DRAG_OVER_CLASS);
       el.removeEventListener("dragover", handleDragOver);
       el.removeEventListener("dragleave", handleDragLeave);
       el.removeEventListener("drop", handleDrop);
-
-      for (const el of elementsToAnimate) {
-        animateElement(el, REVERSE);
-      }
     };
 
     el.addEventListener("dragover", handleDragOver);

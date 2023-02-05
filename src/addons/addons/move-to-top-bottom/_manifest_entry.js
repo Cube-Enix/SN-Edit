@@ -3,13 +3,7 @@ const manifest = {
   "enabledByDefault": true,
   "editorOnly": true,
   "name": "Move costume to top or bottom",
-  "description": "Adds options to the right click context menu for costumes and sounds to move them to the top or the bottom of the list.",
-  "info": [
-    {
-      "text": "This addon was previously part of the \"developer tools\" addon but has moved here.",
-      "id": "developer-tools"
-    }
-  ],
+  "description": "Adds a right click context menu item to move a costume or a sound to the top or the bottom of the list. Previously part of the developer tools.",
   "tags": [],
   "userscripts": [
     {

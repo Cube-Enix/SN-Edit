@@ -8,11 +8,11 @@ const manifest = {
   ],
   "credits": [
     {
-      "name": "Tacodiva",
+      "name": "Tacodude7729",
       "link": "https://scratch.mit.edu/users/Tacodude7729/"
     }
   ],
-  "enabledByDefault": false,
+  "enabledByDefault": true,
   "dynamicDisable": true,
   "userstyles": [
     {

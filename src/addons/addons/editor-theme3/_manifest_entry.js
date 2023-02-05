@@ -10,105 +10,7 @@ const manifest = {
     },
     {
       "name": "TheColaber",
-      "link": "https://scratch.mit.edu/users/TheColaber/"
-    }
-  ],
-  "customCssVariables": [
-    {
-      "name": "inputColor-text",
-      "value": {
-        "type": "alphaThreshold",
-        "source": {
-          "type": "settingValue",
-          "settingId": "input-color"
-        },
-        "opaque": {
-          "type": "textColor",
-          "source": {
-            "type": "settingValue",
-            "settingId": "input-color"
-          }
-        },
-        "transparent": {
-          "type": "map",
-          "source": {
-            "type": "settingValue",
-            "settingId": "text"
-          },
-          "options": {
-            "white": "#ffffff",
-            "black": "#575e75",
-            "colorOnWhite": "#575e75",
-            "colorOnBlack": "#ffffff"
-          }
-        }
-      }
-    },
-    {
-      "name": "inputColor-blackText",
-      "value": {
-        "type": "alphaThreshold",
-        "source": {
-          "type": "settingValue",
-          "settingId": "input-color"
-        },
-        "opaque": {
-          "type": "textColor",
-          "black": "#000000",
-          "source": {
-            "type": "settingValue",
-            "settingId": "input-color"
-          }
-        },
-        "transparent": {
-          "type": "map",
-          "source": {
-            "type": "settingValue",
-            "settingId": "text"
-          },
-          "options": {
-            "white": "#ffffff",
-            "black": "#000000",
-            "colorOnWhite": "#000000",
-            "colorOnBlack": "#ffffff"
-          }
-        }
-      }
-    },
-    {
-      "name": "commentText",
-      "value": {
-        "type": "textColor",
-        "source": {
-          "type": "settingValue",
-          "settingId": "comment-color"
-        }
-      }
-    },
-    {
-      "name": "commentTextTransparent",
-      "value": {
-        "type": "textColor",
-        "black": "rgba(0, 0, 0, 0.50)",
-        "white": "rgba(255, 255, 255, 0.50)",
-        "source": {
-          "type": "settingValue",
-          "settingId": "comment-color"
-        }
-      }
-    },
-    {
-      "name": "commentBorder",
-      "value": {
-        "type": "multiply",
-        "source": {
-          "type": "settingValue",
-          "settingId": "comment-color"
-        },
-        "r": 0.7,
-        "g": 0.7,
-        "b": 0.7
-      }
+      "link": "https://scratch.mit.edu/users/TheColaber"
     }
   ],
   "dynamicDisable": true,
@@ -121,30 +23,6 @@ const manifest = {
   "userstyles": [
     {
       "url": "theme3.css"
-    },
-    {
-      "url": "black_text.css",
-      "if": {
-        "settings": {
-          "text": "black"
-        }
-      }
-    },
-    {
-      "url": "color_on_white.css",
-      "if": {
-        "settings": {
-          "text": "colorOnWhite"
-        }
-      }
-    },
-    {
-      "url": "color_on_black.css",
-      "if": {
-        "settings": {
-          "text": "colorOnBlack"
-        }
-      }
     }
   ],
   "settings": [
@@ -241,7 +119,7 @@ const manifest = {
       "name": "TurboWarp",
       "id": "tw-color",
       "type": "color",
-      "default": "#ff4c4c",
+      "default": "#ff964c",
       "allowTransparency": true
     },
     {
@@ -262,15 +140,7 @@ const manifest = {
       "name": "Block inputs",
       "id": "input-color",
       "type": "color",
-      "default": "#FFFFFF",
-      "allowTransparency": true
-    },
-    {
-      "dynamic": true,
-      "name": "Comments",
-      "id": "comment-color",
-      "type": "color",
-      "default": "#FEF49C"
+      "default": "#FFFFFF"
     },
     {
       "dynamic": true,
@@ -320,7 +190,6 @@ const manifest = {
         "custom-color": "#5f49d8",
         "Pen-color": "#0FBD8C",
         "sa-color": "#29BEB8",
-        "comment-color": "#FEF49C",
         "input-color": "#FFFFFF",
         "text": "white"
       }
@@ -342,7 +211,6 @@ const manifest = {
         "custom-color": "#632d99",
         "Pen-color": "#0e9a6c",
         "sa-color": "#29beb8",
-        "comment-color": "#FFFFD2",
         "input-color": "#ffffff",
         "text": "white"
       }
@@ -365,7 +233,6 @@ const manifest = {
         "Pen-color": "#064734",
         "tw-color": "#660000",
         "sa-color": "#166966",
-        "comment-color": "#423f24",
         "input-color": "#202020",
         "text": "white"
       }
@@ -387,7 +254,6 @@ const manifest = {
         "custom-color": "#FF6680",
         "Pen-color": "#0FBD8C",
         "sa-color": "#29BEB8",
-        "comment-color": "#FEF49C",
         "input-color": "#202020",
         "text": "colorOnBlack"
       }

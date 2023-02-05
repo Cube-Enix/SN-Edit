@@ -13,6 +13,11 @@ const manifest = {
       "url": "userscript.js"
     }
   ],
+  "userstyles": [
+    {
+      "url": "dragged-over.css"
+    }
+  ],
   "settings": [
     {
       "dynamic": true,

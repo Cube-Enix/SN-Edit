@@ -7,50 +7,14 @@ const manifest = {
   "credits": [
     {
       "name": "TheColaber",
-      "link": "https://scratch.mit.edu/users/TheColaber/"
-    },
-    {
-      "name": "Maximouse",
-      "link": "https://scratch.mit.edu/users/Maximouse/"
+      "link": "https://scratch.mit.edu/users/TheColaber"
     }
   ],
   "info": [
     {
+      "type": "notice",
       "text": "\"Palette area hover\" mode only extends the viewing area. If you want to be able to drag blocks into that area without them getting trashed, use one of the other modes.",
       "id": "hoverExplanation"
-    }
-  ],
-  "dynamicDisable": true,
-  "customCssVariables": [
-    {
-      "name": "lockDisplay",
-      "value": {
-        "type": "map",
-        "source": {
-          "type": "settingValue",
-          "settingId": "toggle"
-        },
-        "options": {
-          "hover": "flex",
-          "cathover": "flex",
-          "category": "none"
-        }
-      }
-    },
-    {
-      "name": "placeholderDisplay",
-      "value": {
-        "type": "map",
-        "source": {
-          "type": "settingValue",
-          "settingId": "toggle"
-        },
-        "options": {
-          "hover": "block",
-          "cathover": "none",
-          "category": "none"
-        }
-      }
     }
   ],
   "userscripts": [
@@ -65,7 +29,6 @@ const manifest = {
   ],
   "settings": [
     {
-      "dynamic": true,
       "name": "Toggle on...",
       "id": "toggle",
       "type": "select",
@@ -83,21 +46,21 @@ const manifest = {
           "name": "Category click"
         }
       ],
-      "default": "cathover"
+      "default": "hover"
     },
     {
       "dynamic": true,
-      "name": "Animation speed",
+      "name": "Animation duration",
       "id": "speed",
       "type": "select",
       "potentialValues": [
         {
           "id": "none",
-          "name": "Instant"
+          "name": "None"
         },
         {
           "id": "short",
-          "name": "Quick"
+          "name": "Short"
         },
         {
           "id": "default",
@@ -105,7 +68,7 @@ const manifest = {
         },
         {
           "id": "long",
-          "name": "Slow"
+          "name": "Long"
         }
       ],
       "default": "default"

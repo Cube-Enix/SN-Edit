@@ -5,6 +5,7 @@ const manifest = {
   "description": "Ctrl+Click the green flag to mute/unmute the project.",
   "info": [
     {
+      "type": "notice",
       "text": "On macOS, use the Cmd key instead of the Ctrl key.",
       "id": "macOS"
     }
@@ -12,7 +13,7 @@ const manifest = {
   "credits": [
     {
       "name": "TheColaber",
-      "link": "https://scratch.mit.edu/users/TheColaber/"
+      "link": "https://scratch.mit.edu/users/TheColaber"
     }
   ],
   "userscripts": [
@@ -20,7 +21,6 @@ const manifest = {
       "url": "userscript.js"
     }
   ],
-  "dynamicDisable": true,
   "enabledByDefault": true,
   "tags": [
     "recommended"

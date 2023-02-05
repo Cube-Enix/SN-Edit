@@ -58,20 +58,12 @@
   margin-bottom: 10px;
 }
 
-.sa-gamepad-extra-options {
-  display: none;
-}
-.sa-gamepad-has-controller .sa-gamepad-extra-options {
-  display: block;
-}
-
 .sa-gamepad-store-settings {
-  display: block;
+  display: none;
 }
 .sa-gamepad-store-settings > input {
   margin-right: 4px;
 }
-
-.sa-gamepad-reset-button {
-  margin: 8px 8px 8px 0;
+.sa-gamepad-has-controller .sa-gamepad-store-settings {
+  display: block;
 }

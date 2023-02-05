@@ -1,8 +1,5 @@
-[dir="ltr"] [class^="stage-header_stage-size-toggle-group"] [class^="stage-header_stage-button-icon"] {
+[class^="stage-header_stage-button-icon"] {
   transform: scaleX(-1);
-}
-[dir="rtl"] [class^="stage-header_stage-size-toggle-group"] [class^="stage-header_stage-button-icon"] {
-  transform: none;
 }
 [class^="target-pane_target-pane"] {
   flex-direction: row-reverse;
@@ -57,24 +54,5 @@
 }
 
 .Popover {
-  /* See hide-flyout */
-  z-index: 51;
-}
-
-/* hide-stage compatibility */
-
-.sa-stage-hidden [class*="stage-header_stage-size-row"] {
-  right: auto;
-  left: 0.5rem;
-  width: calc(240px + 0.125rem);
-  justify-content: flex-end;
-}
-
-[dir="rtl"] .sa-stage-hidden [class*="stage-header_stage-size-row"] {
-  left: auto;
-  right: 0.5rem;
-}
-
-.sa-stage-hidden [class*="gui_tab-list_"] {
-  padding-inline-start: calc(240px + 1.125rem);
+  z-index: 40;
 }

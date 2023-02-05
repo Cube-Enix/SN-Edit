@@ -67,9 +67,7 @@ export default async ({ addon, console, msg }) => {
       content.appendChild(recordOptionDelay);
 
       // Audio
-      const recordOptionAudio = Object.assign(document.createElement("p"), {
-        className: "mediaRecorderPopupOption",
-      });
+      const recordOptionAudio = document.createElement("p");
       const recordOptionAudioInput = Object.assign(document.createElement("input"), {
         type: "checkbox",
         defaultChecked: true,
@@ -85,9 +83,7 @@ export default async ({ addon, console, msg }) => {
       content.appendChild(recordOptionAudio);
 
       // Mic
-      const recordOptionMic = Object.assign(document.createElement("p"), {
-        className: "mediaRecorderPopupOption",
-      });
+      const recordOptionMic = document.createElement("p");
       const recordOptionMicInput = Object.assign(document.createElement("input"), {
         type: "checkbox",
         defaultChecked: false,
@@ -102,9 +98,7 @@ export default async ({ addon, console, msg }) => {
       content.appendChild(recordOptionMic);
 
       // Green flag
-      const recordOptionFlag = Object.assign(document.createElement("p"), {
-        className: "mediaRecorderPopupOption",
-      });
+      const recordOptionFlag = document.createElement("p");
       const recordOptionFlagInput = Object.assign(document.createElement("input"), {
         type: "checkbox",
         defaultChecked: true,
@@ -119,9 +113,7 @@ export default async ({ addon, console, msg }) => {
       content.appendChild(recordOptionFlag);
 
       // Stop sign
-      const recordOptionStop = Object.assign(document.createElement("p"), {
-        className: "mediaRecorderPopupOption",
-      });
+      const recordOptionStop = document.createElement("p");
       const recordOptionStopInput = Object.assign(document.createElement("input"), {
         type: "checkbox",
         defaultChecked: true,

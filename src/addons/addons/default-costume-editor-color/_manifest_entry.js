@@ -20,7 +20,7 @@ const manifest = {
       "name": "Default fill color",
       "id": "fill",
       "type": "color",
-      "default": "#9966FF"
+      "default": "#f7aa32"
     },
     {
       "dynamic": true,
@@ -36,20 +36,21 @@ const manifest = {
       "type": "integer",
       "min": 0,
       "max": 100,
-      "default": 4
+      "default": 5
     },
     {
       "dynamic": true,
-      "name": "Use previous color instead of resetting after switching tools",
+      "name": "Use previous color instead of default when switching tools",
       "id": "persistence",
       "type": "boolean",
       "default": true
     }
   ],
   "tags": [
+    "beta",
     "new"
   ],
   "dynamicDisable": true,
-  "enabledByDefault": false
+  "enabledByDefault": true
 };
 export default manifest;

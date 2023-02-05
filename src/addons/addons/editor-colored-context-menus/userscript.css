@@ -4,12 +4,12 @@
 }
 .sa-contextmenu-colored .blocklyContextMenu .goog-menuitem-highlight,
 .sa-contextmenu-colored .s3dev-mi:hover {
-  background-color: #0001;
+  background-color: var(--sa-contextmenu-hover) !important;
   border-color: transparent !important;
 }
 .sa-contextmenu-colored .blocklyContextMenu .goog-menuitem[style*="border-top"] {
   border-top-color: var(--sa-contextmenu-border) !important;
 }
 .sa-contextmenu-colored .blocklyContextMenu .goog-menuitem .goog-menuitem-content {
-  color: white;
+  color: var(--sa-contextmenu-text);
 }

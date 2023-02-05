@@ -5,7 +5,7 @@ const manifest = {
   "description": "Adds a new \"debugger\" window to the editor. Allows for logging into the \"Logs\" tab of the debugger window using the \"log\", \"warn\" and \"error\" blocks.",
   "credits": [
     {
-      "name": "Tacodiva",
+      "name": "Tacodude7729",
       "link": "https://scratch.mit.edu/users/Tacodude7729/"
     },
     {
@@ -71,6 +71,6 @@ const manifest = {
   "tags": [
     "beta"
   ],
-  "enabledByDefault": false
+  "enabledByDefault": true
 };
 export default manifest;

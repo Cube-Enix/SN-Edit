@@ -1,6 +1,4 @@
-import { removeAlpha } from "../../libraries/common/cs/text-color.esm.js";
-
-export default async function ({ addon, console }) {
+export default async function ({ addon, global, console }) {
   const ScratchBlocks = await addon.tab.traps.getBlockly();
 
   const applyContextMenuColor = (block) => {
@@ -12,11 +10,16 @@ export default async function ({ addon, console }) {
     if (!background) {
       return;
     }
-    const fill = removeAlpha(background.getAttribute("fill"));
-    const border = background.getAttribute("stroke") || "#0003";
+    const style = window.getComputedStyle(background);
+    const fill = style.getPropertyValue("fill");
+    const border = style.getPropertyValue("stroke") || "#0003";
+    const textColor = style.getPropertyValue("--sa-block-text-color") || "#fff";
+    const hoverBg = style.getPropertyValue("--sa-block-secondary-color") || "#0001";
     widgetDiv.classList.add("sa-contextmenu-colored");
     widgetDiv.style.setProperty("--sa-contextmenu-bg", fill);
     widgetDiv.style.setProperty("--sa-contextmenu-border", border);
+    widgetDiv.style.setProperty("--sa-contextmenu-text", textColor);
+    widgetDiv.style.setProperty("--sa-contextmenu-hover", hoverBg);
   };
 
   const originalHandleRightClick = ScratchBlocks.Gesture.prototype.handleRightClick;

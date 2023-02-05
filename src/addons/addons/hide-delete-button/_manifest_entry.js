@@ -7,21 +7,18 @@ const manifest = {
   "updateUserstylesOnSettingsChange": true,
   "settings": [
     {
-      "dynamic": true,
       "name": "Sprites",
       "id": "sprites",
       "type": "boolean",
       "default": true
     },
     {
-      "dynamic": true,
       "name": "Costumes and backdrops",
       "id": "costumes",
       "type": "boolean",
       "default": true
     },
     {
-      "dynamic": true,
       "name": "Sounds",
       "id": "sounds",
       "type": "boolean",

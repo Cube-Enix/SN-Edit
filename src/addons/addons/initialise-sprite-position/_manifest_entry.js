@@ -7,10 +7,9 @@ const manifest = {
   "credits": [
     {
       "name": "pufferfish101007",
-      "link": "https://scratch.mit.edu/users/pufferfish101007/"
+      "link": "https://scratch.mit.edu/users/pufferfish101007"
     }
   ],
-  "dynamicDisable": true,
   "userscripts": [
     {
       "url": "userscript.js"
@@ -41,30 +40,9 @@ const manifest = {
       "name": "Randomize the position of library sprites",
       "type": "boolean",
       "default": false
-    },
-    {
-      "dynamic": true,
-      "id": "duplicate",
-      "name": "Behavior when duplicating sprites",
-      "type": "select",
-      "default": "randomize",
-      "potentialValues": [
-        {
-          "id": "custom",
-          "name": "Send to specified x/y values"
-        },
-        {
-          "id": "keep",
-          "name": "Keep the same as the original sprite"
-        },
-        {
-          "id": "randomize",
-          "name": "Randomize"
-        }
-      ]
     }
   ],
   "tags": [],
-  "enabledByDefault": false
+  "enabledByDefault": true
 };
 export default manifest;

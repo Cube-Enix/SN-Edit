@@ -11,7 +11,7 @@ const _twGetAsset = (path) => {
   throw new Error(`Unknown asset: ${path}`);
 };
 
-export default async function ({ addon, console, msg }) {
+export default async function ({ addon, global, console, msg }) {
   const paper = await addon.tab.traps.getPaper();
 
   const paintEditorCanvasContainer = await addon.tab.waitForElement("[class^='paint-editor_canvas-container']");
@@ -588,6 +588,10 @@ export default async function ({ addon, console, msg }) {
     return el;
   };
 
+  const paintEditorControlsContainer = document.createElement("div");
+  paintEditorControlsContainer.className = "sa-onion-controls-container";
+  paintEditorControlsContainer.dir = "";
+
   const toggleControlsGroup = createGroup();
   addon.tab.displayNoneWhileDisabled(toggleControlsGroup, { display: "flex" });
 
@@ -596,19 +600,19 @@ export default async function ({ addon, console, msg }) {
   toggleButton.addEventListener("click", () => setEnabled(!settings.enabled));
   toggleButton.title = msg("toggle");
   toggleButton.appendChild(createButtonImage("toggle"));
+  toggleControlsGroup.appendChild(toggleButton);
 
   const settingButton = createButton();
   settingButton.addEventListener("click", () => setSettingsOpen(!areSettingsOpen()));
   settingButton.title = msg("settings");
   settingButton.appendChild(createButtonImage("settings"));
+  toggleControlsGroup.appendChild(settingButton);
+
+  paintEditorControlsContainer.appendChild(toggleControlsGroup);
 
   //
   // Settings page
   //
-
-  const settingPageWrapper = document.createElement("div");
-  settingPageWrapper.className = "sa-onion-settings-wrapper";
-  toggleControlsGroup.append(settingPageWrapper, toggleButton, settingButton);
 
   const settingsPage = document.createElement("div");
   settingsPage.className = "sa-onion-settings";
@@ -780,24 +784,25 @@ export default async function ({ addon, console, msg }) {
     while (true) {
       const canvasControls = await addon.tab.waitForElement("[class^='paint-editor_canvas-controls']", {
         markAsSeen: true,
-        reduxEvents: [
-          "scratch-gui/navigation/ACTIVATE_TAB",
-          "scratch-gui/mode/SET_PLAYER",
-          "fontsLoaded/SET_FONTS_LOADED",
-          "scratch-gui/locales/SELECT_LOCALE",
-          "scratch-gui/targets/UPDATE_TARGET_LIST",
-        ],
+        reduxEvents: ["scratch-gui/navigation/ACTIVATE_TAB", "scratch-gui/mode/SET_PLAYER"],
         reduxCondition: (state) =>
           state.scratchGui.editorTab.activeTabIndex === 1 && !state.scratchGui.mode.isPlayerOnly,
       });
       const zoomControlsContainer = canvasControls.querySelector("[class^='paint-editor_zoom-controls']");
+      const canvasContainer = document.querySelector("[class^='paint-editor_canvas-container']");
 
-      addon.tab.appendToSharedSpace({
-        space: "paintEditorZoomControls",
-        element: toggleControlsGroup,
-        order: 1,
-      });
-      settingPageWrapper.appendChild(settingsPage);
+      // TODO: when leaving the paint editor, references to the old zoom controls are kept around by our DOM
+      // Need to investigate whether this leaks memory or other issues.
+      const oldZoomControlsContainer = paintEditorControlsContainer.querySelector(
+        "[class^='paint-editor_zoom-controls']"
+      );
+      if (oldZoomControlsContainer) {
+        oldZoomControlsContainer.parentNode.removeChild(oldZoomControlsContainer);
+      }
+
+      paintEditorControlsContainer.appendChild(zoomControlsContainer);
+      canvasControls.appendChild(paintEditorControlsContainer);
+      canvasContainer.appendChild(settingsPage);
 
       if (!hasRunOnce) {
         hasRunOnce = true;

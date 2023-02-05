@@ -1,5 +1,3 @@
-@import url("../editor-theme3/compatibility.css");
-
 [dir="ltr"] .sa-debugger-container {
   margin-right: 0.2rem;
 }
@@ -12,22 +10,6 @@
   display: none !important;
 }
 
-.sa-debugger-container [class*="button_content_"] {
-  position: relative;
-}
-
-.sa-debugger-unread::after {
-  content: "";
-  position: absolute;
-  top: 1px;
-  right: 0;
-  display: block;
-  width: 6px;
-  height: 6px;
-  background-color: var(--editorDarkMode-highlightText, #4d97ff);
-  border-radius: 50%;
-}
-
 .sa-debugger-interface {
   display: none;
   position: absolute;
@@ -38,11 +20,6 @@
 }
 [theme="dark"] .sa-debugger-interface {
   background: var(--ui-primary);
-}
-
-.sa-debugger-interface [class*="card_header-buttons_"] {
-  background-color: #29beb8;
-  border-color: #3aa8a4;
 }
 
 .sa-debugger-interface h1 {
@@ -275,10 +252,9 @@
 }
 
 .sa-debugger-block-preview {
+  color: white;
   padding: 1px 6px;
   margin-right: 4px;
-  background-color: var(--sa-block-colored-background);
-  color: var(--sa-block-text);
 }
 .sa-debugger-block-preview[data-shape="round"] {
   border-radius: 100px;
@@ -289,18 +265,4 @@
 
 .sa-debugger-thread-compiled {
   font-style: italic;
-}
-
-.sa-debugger-compiler-warning {
-  position: relative;
-  display: block;
-  text-align: center;
-  height: 24px;
-  color: #2121bf;
-}
-.sa-debugger-compiler-warning[hidden] {
-  display: none;
-}
-[theme="dark"] .sa-debugger-compiler-warning {
-  color: #bdbdf9;
 }

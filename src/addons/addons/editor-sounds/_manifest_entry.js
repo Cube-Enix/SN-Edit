@@ -9,7 +9,6 @@ const manifest = {
       "name": "GarboMuffin"
     }
   ],
-  "dynamicDisable": true,
   "userscripts": [
     {
       "url": "userscript.js"
