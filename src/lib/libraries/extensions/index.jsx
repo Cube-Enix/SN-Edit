@@ -132,43 +132,43 @@ export default [
     {
         name: (
             <FormattedMessage
-                defaultMessage="Box2d"
-                description="Name of Box2d extension"
-                id="sn.box.name"
+                defaultMessage="Browser"
+                description="Name of Browser extension"
+                id="sn.net.name"
             />
         ),
-        extensionId: 'griffpatch',
-        collaborator: 'Griffpatch',
-        iconURL: boxIconURL,
-        insetIconURL: boxInsetIconURL,
+        extensionId: 'net',
+        iconURL: customExtensionIcon,
+        insetIconURL: customExtensionIcon,
         description: (
             <FormattedMessage
-                defaultMessage="Box2d Physics Extension Created by Griffpatch"
-                description="box2d"
-                id="sn.box.description"
+                defaultMessage="Interact with the Web through SN-Edit"
+                description="Allow you interface the web"
+                id="sn.net.description"
             />
         ),
         featured: true,
-        incompatibleWithScratch: true
+        incompatibleWithScratch: true,
+        internetConnectionRequired: true
     },
-    // Lol what is this extension???
+    // Debug this
     // {
     //     name: (
     //         <FormattedMessage
-    //             defaultMessage="Ten"
-    //             description="Name of Hash extension"
-    //             id="sn.tn.name"
+    //             defaultMessage="Box2d"
+    //             description="Name of Box2d extension"
+    //             id="sn.box.name"
     //         />
     //     ),
-    //     extensionId: 'snten',
-    //     collaborator: 'PenguinMod',
-    //     iconURL: customExtensionIcon,
-    //     insetIconURL: customExtensionIcon,
+    //     extensionId: 'griffpatch',
+    //     collaborator: 'Griffpatch',
+    //     iconURL: boxIconURL,
+    //     insetIconURL: boxInsetIconURL,
     //     description: (
     //         <FormattedMessage
-    //             defaultMessage="Cryptographyc "
-    //             description="pleabdse  work"
-    //             id="sn.tn.description"
+    //             defaultMessage="Box2d Physics Extension Created by Griffpatch"
+    //             description="box2d"
+    //             id="sn.box.description"
     //         />
     //     ),
     //     featured: true,
