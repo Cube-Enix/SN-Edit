@@ -31532,38 +31532,38 @@ __webpack_require__.r(__webpack_exports__);
   incompatibleWithScratch: true
 }, {
   name: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
-    defaultMessage: "Box2d",
-    id: "sn.box.name"
+    defaultMessage: "Browser",
+    id: "sn.net.name"
   }),
-  extensionId: 'griffpatch',
-  collaborator: 'Griffpatch',
-  iconURL: _box_box_png__WEBPACK_IMPORTED_MODULE_37___default.a,
-  insetIconURL: _box_box_small_svg__WEBPACK_IMPORTED_MODULE_38___default.a,
+  extensionId: 'net',
+  iconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_41___default.a,
+  insetIconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_41___default.a,
   description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
-    defaultMessage: "Box2d Physics Extension Created by Griffpatch",
-    id: "sn.box.description"
+    defaultMessage: "Interact with the Web through SN-Edit",
+    id: "sn.net.description"
   }),
   featured: true,
-  incompatibleWithScratch: true
+  incompatibleWithScratch: true,
+  internetConnectionRequired: true
 },
-// Lol what is this extension???
+// Debug this
 // {
 //     name: (
 //         <FormattedMessage
-//             defaultMessage="Ten"
-//             description="Name of Hash extension"
-//             id="sn.tn.name"
+//             defaultMessage="Box2d"
+//             description="Name of Box2d extension"
+//             id="sn.box.name"
 //         />
 //     ),
-//     extensionId: 'snten',
-//     collaborator: 'PenguinMod',
-//     iconURL: customExtensionIcon,
-//     insetIconURL: customExtensionIcon,
+//     extensionId: 'griffpatch',
+//     collaborator: 'Griffpatch',
+//     iconURL: boxIconURL,
+//     insetIconURL: boxInsetIconURL,
 //     description: (
 //         <FormattedMessage
-//             defaultMessage="Cryptographyc "
-//             description="pleabdse  work"
-//             id="sn.tn.description"
+//             defaultMessage="Box2d Physics Extension Created by Griffpatch"
+//             description="box2d"
+//             id="sn.box.description"
 //         />
 //     ),
 //     featured: true,
