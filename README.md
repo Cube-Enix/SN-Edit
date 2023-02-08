@@ -2,7 +2,7 @@
 You may have notcied that we look **way** different! Thats because we've moved from our old SheepTester fork to a new Turbowarp fork. Sn-Edit looks different and thats because we've added TONS of new features! We hope that you enjoy this update.
 
 # SN-Edit: The Official SNext Editor
-Welcome to SN-Edit! This is the official site for Editing games for SNext. We provide tools many devs will need to make their games amazing! With superior cloud servers, forced 16:9 aspect ratio 60 fps and more, you're sure to make this your new editor.
+Welcome to SN-Edit! This is the official site for Editing games for SNext (baller). We provide tools many devs will need to make their games amazing! With superior cloud servers, forced 16:9 aspect ratio 60 fps and more, you're sure to make this your new editor.
 
 ## License
 Cube Enix's modifications to Scratch are licensed under the GNU General Public License v3.0. See LICENSE or https://www.gnu.org/licenses/ for details.
