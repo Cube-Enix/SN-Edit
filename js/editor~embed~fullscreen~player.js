@@ -31535,7 +31535,7 @@ __webpack_require__.r(__webpack_exports__);
     defaultMessage: "Browser",
     id: "sn.net.name"
   }),
-  extensionId: 'net',
+  extensionId: 'snnet',
   iconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_41___default.a,
   insetIconURL: _custom_custom_svg__WEBPACK_IMPORTED_MODULE_41___default.a,
   description: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_1__["FormattedMessage"], {
