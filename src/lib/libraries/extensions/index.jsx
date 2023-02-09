@@ -137,7 +137,7 @@ export default [
                 id="sn.net.name"
             />
         ),
-        extensionId: 'net',
+        extensionId: 'snnet',
         iconURL: customExtensionIcon,
         insetIconURL: customExtensionIcon,
         description: (
