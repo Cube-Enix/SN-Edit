@@ -1,5 +1,14 @@
-# Welcome to the new SN-Edit
-You may have notcied that we look **way** different! Thats because we've moved from our old SheepTester fork to a new Turbowarp fork. Sn-Edit looks different and thats because we've added TONS of new features! We hope that you enjoy this update.
+# ⚠️ SN-Edit is No Longer Mainatined ⚠️
+Its been an amazing time building an editor in SN-Edit. However as Cubix refocuses its resources to [bring SNext to the Infinite Level](https://github.com/Cubix-Dev/SNext?tab=readme-ov-file#-snext-is-going-to-the-infinite-level), we don't have the resources nor the need to maintain an editor especially since editors like Turbowarp have seen massive improvements, even implementing some of the features that SN-Edit was created to add.
+
+SN-Edit isn't getting deleted. You are more than welcome to use SN-Edit for your own Infinite project and chances are, all Cubix Dev Tools for Scratch will run perfectly fine with SN-Edit. However don't expect any updates for this editor. We will not be accepting pull requests as we are not actively maintaining this repository.
+
+SN-Edit was created to be a tool for serious tool for developers dedicated to create genienely good scratch projects, more than just improved runtime but providing valuable developer tools out the box without any configuring needed. We wanted to make developing easier for developers. This change is desgined to achieve that vert mission. We can't just leave our small but supportive userbase hanging though:
+
+## CubeTools Lite is coming!
+Some developers used tools like HighClass and SNAP to create their games. These extensions are not available anywhere else which can cause issues when migrating from SN-Edit to another visual editor. As such, we'll be bundling the original Cubix tools for developers who wish to migrate. More details about this will be coming soon.
+
+<hr>
 
 # SN-Edit: The Official SNext Editor
 Welcome to SN-Edit! This is the official site for Editing games for SNext. We provide tools many devs will need to make their games amazing! With superior cloud servers, forced 16:9 aspect ratio 60 fps and more, you're sure to make this your new editor.
